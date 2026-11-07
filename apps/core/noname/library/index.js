@@ -1515,15 +1515,14 @@ export class Library {
 				},
 				update_link: {
 					name: "更新地址",
-					init: "coding",
+					init: "github",
 					unfrequent: true,
 					item: {
-						coding: "URC",
-						github: "GitHub",
+						github: "C3nHx / GitHub Releases",
 					},
 					onclick(item) {
 						game.saveConfig("update_link", item);
-						lib.updateURL = lib.updateURLS[item] || lib.updateURLS.coding;
+						lib.updateURL = lib.updateURLS[item] || lib.updateURLS.github;
 					},
 				},
 				extension_source: {

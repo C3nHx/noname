@@ -191,7 +191,7 @@
 	"connect_characters": ["diy"],
 	"connect_cards": ["huodong", "guozhan", "sp", "zhulu", "yingbian", "yongjian", "xianxia"],
 	"plays": [],
-	"extensions": [],
+	"extensions": ["天庭","奇妙工具","自用美化"],
 	"banned": [],
 	"bannedcards": [],
 	"forbidlist": [],
@@ -284,5 +284,8 @@
 		["akane_quanqing", "relianying"],
 		["akane_quanqing", "shangshi"],
 		["dcruyi", "cxliushi"]
-	]
+	],
+	"extension_天庭_enable": true,
+	"extension_奇妙工具_enable": true,
+	"extension_自用美化_enable": true
 }

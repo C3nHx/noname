@@ -1,5 +1,6 @@
 import { build as buildElectron, Platform, Arch, type PackagerOptions, type Configuration } from "electron-builder";
 import { build as buildVite } from "vite";
+import { forkVersion, nativeVersions } from "../core/noname/util/distribution.js";
 
 async function main(targets: PackagerOptions["targets"], config: Partial<Configuration> = {}) {
 	const appPaths = await buildElectron({
@@ -7,17 +8,14 @@ async function main(targets: PackagerOptions["targets"], config: Partial<Configu
 			asar: false,
 			appId: "com.libnoname.noname",
 			productName: "noname",
+			buildVersion: nativeVersions.windows,
 			directories: {
 				output: "../../output",
 			},
-			files: [
-				{ from: "dist", to: "" },
-				{ from: "../../dist", to: "" },
-				{ from: "../../dist/node_modules", to: "node_modules" },
-				"package.json",
-			],
+			files: [{ from: "dist", to: "" }, { from: "../../dist", to: "" }, { from: "../../dist/node_modules", to: "node_modules" }, "package.json"],
 			extraMetadata: {
 				main: "app/main.js",
+				version: forkVersion,
 			},
 			...config,
 		},
@@ -48,6 +46,8 @@ switch (process.argv[2]) {
 		main(Platform.MAC.createTarget("dmg", Arch.arm64, Arch.x64), {
 			mac: {
 				identity: null,
+				bundleVersion: nativeVersions.build,
+				bundleShortVersion: nativeVersions.marketing,
 			},
 		});
 		break;

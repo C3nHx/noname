@@ -1,6 +1,9 @@
 export type BuildChannel = "dev" | "test" | "nightly" | "release";
 
 export interface BuildInfo {
+	version?: string;
+	upstreamVersion?: string;
+	repository?: string;
 	/**
 	 * 构建渠道。
 	 */

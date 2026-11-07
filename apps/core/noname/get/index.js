@@ -10,6 +10,7 @@ import { security, CodeSnippet, ErrorManager } from "@/util/sandbox.js";
 import JSZip from "jszip";
 import { HTMLPoptipElement } from "@/library/poptip.js";
 import { CacheContext } from "@/library/cache/cacheContext.js";
+import { getRuntimeURL } from "@/library/update-urls.js";
 
 // 用于标识Map、Set等对象在序列化中的类型
 // 使用了md5("__noname_type")的值作为键
@@ -1542,15 +1543,7 @@ export class Get {
 		return `###${str}###${lib.translate[`${skill}_info`]}`;
 	}
 	url(master) {
-		var url = lib.config.updateURL || lib.updateURL;
-		if (url[url.length - 1] != "/") {
-			url += "/";
-		}
-		if (master != "nodev") {
-			return url + "master/";
-		} else {
-			return url + "v" + lib.version + "/";
-		}
+		return getRuntimeURL(lib.config.updateURL || lib.updateURL, master, lib.version);
 	}
 	round(num, f) {
 		var round = Math.pow(10, f);

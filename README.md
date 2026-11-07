@@ -1,11 +1,11 @@
 <h1 align="center">无名杀</h1>
 
 <p align="center">
-  <a href="https://github.com/libnoname/noname/actions/workflows/build.yml"><img alt="构建状态" src="https://img.shields.io/github/actions/workflow/status/libnoname/noname/build.yml?branch=main&style=flat-square"></a>
-  <a href="https://github.com/libnoname/noname/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/libnoname/noname?display_name=tag&style=flat-square"></a>
-  <a href="https://github.com/libnoname/noname/releases"><img alt="累计下载" src="https://img.shields.io/github/downloads/libnoname/noname/total?style=flat-square"></a>
-  <a href="https://github.com/libnoname/noname/graphs/contributors"><img alt="项目贡献者" src="https://img.shields.io/github/contributors/libnoname/noname?style=flat-square"></a>
-  <a href="./LICENSE"><img alt="许可证" src="https://img.shields.io/github/license/libnoname/noname?style=flat-square"></a>
+  <a href="https://github.com/C3nHx/noname/actions/workflows/build.yml"><img alt="构建状态" src="https://img.shields.io/github/actions/workflow/status/C3nHx/noname/build.yml?branch=main&style=flat-square"></a>
+  <a href="https://github.com/C3nHx/noname/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/C3nHx/noname?display_name=tag&style=flat-square"></a>
+  <a href="https://github.com/C3nHx/noname/releases"><img alt="累计下载" src="https://img.shields.io/github/downloads/C3nHx/noname/total?style=flat-square"></a>
+  <a href="https://github.com/C3nHx/noname/graphs/contributors"><img alt="项目贡献者" src="https://img.shields.io/github/contributors/C3nHx/noname?style=flat-square"></a>
+  <a href="./LICENSE"><img alt="许可证" src="https://img.shields.io/github/license/C3nHx/noname?style=flat-square"></a>
 </p>
 
 ## 项目使用约定
@@ -17,6 +17,8 @@
 2. 请不要用于商业用途。
 
 ## 快速启动
+
+当前 fork 的版本、更新源和发布规则见 [分支发布说明](./docs/fork-release.md)。上游来源仍为 [libnoname/noname](https://github.com/libnoname/noname)。
 
 ### 环境要求
 

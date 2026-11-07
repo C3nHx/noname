@@ -2,11 +2,11 @@
     "name": "noname",
     "productName": "无名杀",
     "description": "",
-    "version": "1.11.7",
+    "version": "1.11.7-c3nhx.1",
     "license": "GPL-3.0-only",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/libnoname/noname.git"
+        "url": "git+https://github.com/C3nHx/noname.git"
     },
     "type": "module",
     "main": "dist",

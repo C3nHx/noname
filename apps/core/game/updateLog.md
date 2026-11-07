@@ -1,4 +1,12 @@
-# [[unreleased]]更新内容
+# C3nHx 1.11.7-c3nhx.1
+
+- 基于上游 1.11.7，保留上游更新内容。
+- 新增独立联机大厅密钥校验和客户端密钥输入。
+- 使用对齐上游的分支修订号，统一核心、桌面和移动端版本元数据。
+- 更新检查与下载切换到 C3nHx/noname 的 GitHub Releases。
+- 刷新发行工作流，支持分支标签、可选移动端构建和固定版本编译运行时。
+
+# 上游 1.11.7 更新内容
 
 ※ 我们继续和一些优秀且具有开源精神的代码编写者保持着积极合作。在这一版本中，我们通过接收GitHub的Pull Request，整合了 @7Ji @Foxissimo-8 @linmuxi222 @mengxinzxz @rintim @WeiqiaoCode @wwwasdea @Xiazhiliao @YYUZDS @zziyoo 共10位贡献者编写的代码（排名不分先后）。
 

@@ -2417,7 +2417,7 @@ export class Create {
 		}
 		lib.init.js(lib.assetURL + "game", "keyWords", function () {});
 
-		lib.updateURL = lib.updateURLS[lib.config.update_link] || lib.updateURLS.coding;
+		lib.updateURL = lib.updateURLS[lib.config.update_link] || lib.updateURLS.github;
 
 		lib.init.cssstyles();
 

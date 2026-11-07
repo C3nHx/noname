@@ -2,11 +2,11 @@ name: Nightly Publish
 
 on:
   schedule:
-    - cron: '11 13 * * *' # 每天的 21:11 运行
+    - cron: "11 13 * * *" # 每天的 21:11 运行
   workflow_dispatch: # 允许手动点击按钮触发编译
 
 permissions:
-  contents: write  # 允许 Actions 推送代码到仓库
+  contents: write # 允许 Actions 推送代码到仓库
 
 jobs:
   publish:
@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -44,11 +44,14 @@ jobs:
           echo "date=${BUILD_DATE//-/}" >> "$GITHUB_OUTPUT"
 
       - name: Build and Generate test pack
-        run: pnpm generateTestPack
+        run: |
+          pnpm version:check
+          pnpm test:distribution
+          pnpm generateTestPack
 
       - name: Upload Nightly Artifact
         uses: actions/upload-artifact@v7
         with:
-          name: 测试包-${{ steps.info.outputs.date }}
+          name: C3nHx-noname-nightly-${{ steps.info.outputs.date }}
           path: output/testpack
           retention-days: 7

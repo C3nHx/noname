@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import remote from "@electron/remote/main/index.js";
 import { LOCAL_HOST, registerLocalProtocol } from "./local-protocol";
+import { repositoryURL } from "../../core/noname/util/distribution.js";
 remote.initialize();
 const dirname = path.join(import.meta.dirname, "../");
 
@@ -60,7 +61,7 @@ app.on("open-url", (event, urlStr) => {
 
 app.setAboutPanelOptions({
 	iconPath: "noname.ico",
-	website: "https://github.com/libnoname/noname",
+	website: repositoryURL,
 });
 
 process.env["ELECTRON_DEFAULT_ERROR_MODE"] = "true";
@@ -148,8 +149,7 @@ function createMainWindow() {
 					label: "版权声明",
 					click: () => {
 						dialog.showMessageBoxSync(win, {
-							message:
-								"【无名杀】属于个人（水乎）开发项目且【完全免费】。如非法倒卖用于牟利将承担法律责任 开发团队将追究到底",
+							message: "【无名杀】属于个人（水乎）开发项目且【完全免费】。如非法倒卖用于牟利将承担法律责任 开发团队将追究到底",
 							type: "info",
 							title: "版权声明",
 							icon: path.join(app.getAppPath(), "app", "noname.ico"),

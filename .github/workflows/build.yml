@@ -3,9 +3,10 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write  # 允许 Actions 推送代码到仓库
+  contents: write # 允许 Actions 推送代码到仓库
 
 jobs:
   build:
@@ -26,7 +27,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -35,25 +36,12 @@ jobs:
         env:
           NONAME_BUILD_CHANNEL: test
           NONAME_BUILD_COMMIT: ${{ github.sha }}
-        run: pnpm build
+        run: |
+          pnpm version:check
+          pnpm test:distribution
+          pnpm build
 
       - name: Deploy dist to branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          mkdir /tmp/dist
-          cp -r dist/* /tmp/dist/
-
-          git fetch origin
-          git checkout --orphan build-output
-          git reset --hard
-          rm -rf *
-
-          cp -r /tmp/dist/* .
-
-          git add .
-          git commit -m "Deploy dist from $GITHUB_SHA"
-          git push -f origin build-output
+        run: node scripts/publish-runtime.mjs build-output

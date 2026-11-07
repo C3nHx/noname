@@ -6,6 +6,7 @@ import { Target, viteStaticCopy } from "vite-plugin-static-copy";
 import generateImportMap from "./vite-plugin-importmap";
 import jit from "@noname/jit";
 import type { BuildChannel, BuildInfo } from "../noname/util/meta";
+import { distribution, forkVersion, repositoryName } from "../noname/util/distribution.js";
 
 const root = join(import.meta.dirname, "..");
 
@@ -38,6 +39,9 @@ async function main() {
 	 * 本体编译过程需要直接复制的文件
 	 */
 	const staticModules: Target[] = [
+		{ src: "../../LICENSE", dest: "" },
+		{ src: "../../README.md", dest: "" },
+		{ src: "../../docs/fork-release.md", dest: "docs" },
 		// { src: "character", dest: "" },
 		// { src: "card", dest: "" },
 		// { src: "mode", dest: "" },
@@ -230,6 +234,9 @@ function writeBuildInfo() {
 	}
 
 	const buildInfo: BuildInfo = {
+		version: forkVersion,
+		upstreamVersion: distribution.upstreamVersion,
+		repository: repositoryName,
 		channel,
 		commit,
 		builtAt: process.env.NONAME_BUILD_TIME || "unknown",

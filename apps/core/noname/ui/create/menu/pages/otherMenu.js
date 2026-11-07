@@ -4,6 +4,8 @@ import { createApp } from "vue";
 import { security } from "@/util/sandbox.js";
 import { formatBuildLabel } from "@/util/meta";
 import dedent from "dedent";
+import { releasesURL } from "@/util/distribution.js";
+import { getLatestRelease, checkVersion } from "@/library/update.js";
 
 export const otherMenu = function (/** @type { boolean | undefined } */ connectMenu) {
 	if (connectMenu) {
@@ -164,20 +166,46 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 		var li3 = document.createElement("li");
 		const buildLabel = formatBuildLabel(lib.buildInfo);
 		li1.textContent = `游戏版本：${lib.version}${buildLabel ? ` (${buildLabel})` : ""}`;
-		li3.innerHTML = "由于无名杀正在重构项目结构，在线更新暂时无法使用，请访问github主页获取最新版本。";
+		li3.textContent = "更新来自 C3nHx/noname。下载 Release 安装包后更新，当前不支持游戏内自动覆盖安装。";
 
 		/** @type { HTMLParagraphElement } */
 		var updatepx = ui.create.node("p");
 		updatepx.style.whiteSpace = "nowrap";
 		updatepx.style.marginTop = "8px";
-		var buttonx = ui.create.node("button", "访问项目主页", function () {
-			window.open("https://github.com/libnoname/noname");
+		var buttonx = ui.create.node("button", "打开本分支 Release", function () {
+			window.open(releasesURL);
 		});
 		updatepx.appendChild(buttonx);
+		const status = document.createElement("li");
+		const downloads = document.createElement("li");
+		const checkButton = ui.create.node("button", "检查本分支更新", async function () {
+			checkButton.disabled = true;
+			status.textContent = "正在检查已发布的版本…";
+			downloads.replaceChildren();
+			try {
+				const release = await getLatestRelease();
+				status.textContent = checkVersion(release.version, lib.version) > 0 ? `发现新版本：${release.version}` : `当前已是最新分支版本，最新发布为 ${release.version}`;
+				for (const asset of release.assets.filter(asset => /\.(zip|exe|apk|ipa)$/.test(asset.name))) {
+					const link = document.createElement("a");
+					link.href = asset.url;
+					link.textContent = asset.name;
+					link.target = "_blank";
+					link.rel = "noopener noreferrer";
+					downloads.append(link, document.createElement("br"));
+				}
+			} catch (error) {
+				status.textContent = `检查失败：${error instanceof Error ? error.message : String(error)}`;
+			} finally {
+				checkButton.disabled = false;
+			}
+		});
+		updatepx.appendChild(checkButton);
 
 		ul.appendChild(li1);
 		ul.appendChild(li3);
 		ul.appendChild(updatepx);
+		ul.appendChild(status);
+		ul.appendChild(downloads);
 		page.appendChild(ul);
 	})();
 	(function () {
