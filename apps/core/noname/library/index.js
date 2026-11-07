@@ -10,6 +10,7 @@
  */
 import { ai, get, game, _status, ui } from "noname";
 import { LibInit } from "./init/index.js";
+import { forgetLobbyPassword, rememberLobbyPassword } from "@/game/lobby-auth.js";
 import { Announce } from "./announce/index.js";
 import { experimental } from "./experimental/index.js";
 import * as Element from "./element/index.js";
@@ -10301,13 +10302,8 @@ export class Library {
 		NodeWS: Element.NodeWS,
 		Character: Element.Character,
 		ws: {
-			onopen: function () {
-				if (_status.connectCallback) {
-					_status.connectCallback(true);
-					delete _status.connectCallback;
-				}
-			},
 			onmessage: function (messageevent) {
+				if (this !== game.ws) return;
 				if (messageevent.data == "heartbeat") {
 					this.send("heartbeat");
 					return;
@@ -10334,6 +10330,11 @@ export class Library {
 					console.log(e);
 					console.log("invalid message: " + messageevent.data);
 					return;
+				}
+				if ((message[0] === "roomlist" || message[0] === "opened") && _status.connectCallback) {
+					const callback = _status.connectCallback;
+					delete _status.connectCallback;
+					callback(true);
 				}
 				lib.message.client[message.shift()].apply(null, message);
 			},
@@ -12419,7 +12420,15 @@ export class Library {
 				_status.enteringroom = false;
 				ui.create.connecting(true);
 			},
+			lobby_auth_required: function () {
+				game.ws.lobbyAuthRequired = true;
+				game.send("server", "lobby_auth", game.ws.lobbyPassword);
+			},
 			roomlist: function (list, events, clients, wsid) {
+				if (game.ws.lobbyAuthRequired) {
+					rememberLobbyPassword(game.ws.url, game.ws.lobbyPassword);
+				}
+				game.ws.lobbyPassword = "";
 				game.send("server", "key", [game.onlineKey, lib.version]);
 				game.online = true;
 				game.onlinehall = true;
@@ -13200,6 +13209,25 @@ export class Library {
 				}
 			},
 			denied: function (reason) {
+				if (reason === "lobby_auth" || reason === "lobby_timeout") {
+					forgetLobbyPassword(game.ws.url);
+					game.ws.lobbyPassword = "";
+					game.ws._nocallback = true;
+					game.ws.close();
+					game.ws = null;
+					game.sandbox = null;
+					game.online = false;
+					const callback = _status.connectCallback;
+					delete _status.connectCallback;
+					alert(reason === "lobby_timeout" ? "大厅认证超时，请重新连接" : "大厅密钥错误或未填写，请重新输入");
+					if (callback) callback(false, reason);
+					if (ui.lobbyPassword) {
+						ui.lobbyPassword.value = "";
+						ui.lobbyPassword.focus();
+					}
+					if (_status.connectDenied) _status.connectDenied();
+					return;
+				}
 				switch (reason) {
 					case "version":
 						alert("加入失败：版本不匹配，请将游戏更新至最新版");

@@ -1,5 +1,6 @@
 export interface ServerOptions {
 	port?: number;
+	lobbyPassword?: string;
 }
 
 export interface ServerInstance {

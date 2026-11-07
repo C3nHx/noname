@@ -56,6 +56,29 @@ export default {
 			node.style.textAlign = "center";
 			node.style.overflow = "hidden";
 
+			const password = document.createElement("input");
+			password.type = "password";
+			password.placeholder = "大厅密钥（公开大厅可留空）";
+			password.setAttribute("aria-label", "大厅密钥");
+			password.autocomplete = "off";
+			password.className = "shadowed";
+			Object.assign(password.style, {
+				position: "absolute",
+				boxSizing: "border-box",
+				width: "420px",
+				height: "44px",
+				padding: "8px 10px",
+				left: "calc(50% - 210px)",
+				top: "calc(50% + 40px)",
+				fontSize: "22px",
+				textAlign: "center",
+				color: "inherit",
+				background: "rgba(0, 0, 0, 0.25)",
+				border: "none",
+			});
+			ui.window.appendChild(password);
+			ui.lobbyPassword = password;
+
 			let connectionStarted = false;
 			const connect = (e, invitationText) => {
 				connectionStarted = true;
@@ -67,31 +90,40 @@ export default {
 				const ip = node.textContent;
 				game.requireSandboxOn(ip);
 				game.saveConfig("last_ip", ip);
-				game.connect(ip, success => {
-					if (success) {
-						if (invitationText) {
-							_status.read_clipboard_text = invitationText;
+				game.connect(
+					ip,
+					(success, reason) => {
+						if (success) {
+							if (invitationText) {
+								_status.read_clipboard_text = invitationText;
+								return;
+							}
+							const info = lib.config.reconnect_info;
+							if (info && info[0] === _status.ip) {
+								game.onlineID = info[1];
+								if (typeof (game.roomId = info[2]) === "string") {
+									game.roomIdServer = true;
+								}
+							}
 							return;
 						}
-						const info = lib.config.reconnect_info;
-						if (info && info[0] === _status.ip) {
-							game.onlineID = info[1];
-							if (typeof (game.roomId = info[2]) === "string") {
-								game.roomIdServer = true;
+						if (event.textnode) {
+							if (reason !== "lobby_auth" && reason !== "lobby_timeout") {
+								alert(invitationText ? "邀请链接解析失败" : "连接失败");
 							}
+							event.textnode.textContent = "输入联机地址";
 						}
-						return;
-					}
-					if (event.textnode) {
-						alert(invitationText ? "邀请链接解析失败" : "连接失败");
-						event.textnode.textContent = "输入联机地址";
-					}
-				});
+					},
+					password.value || undefined
+				);
 			};
 			node.addEventListener("keydown", e => {
 				if (e.key === "Enter") {
 					connect(e);
 				}
+			});
+			password.addEventListener("keydown", e => {
+				if (e.key === "Enter") connect(e);
 			});
 			ui.window.appendChild(node);
 			ui.ipnode = node;
@@ -115,7 +147,7 @@ export default {
 			Object.assign(button.style, {
 				width: "70px",
 				left: "calc(50% - 35px)",
-				top: "calc(50% + 60px)",
+				top: "calc(50% + 105px)",
 			});
 			ui.window.appendChild(button);
 			ui.ipbutton = button;

@@ -1,4 +1,5 @@
 import type { IncomingMessage } from "node:http";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { WebSocket, WebSocketServer } from "ws";
 
 import type { ServerInstance, ServerOptions } from "../types";
@@ -39,6 +40,10 @@ interface EventItem {
 
 export function createServer(options: ServerOptions = {}): ServerInstance {
 	const port = options.port ?? 8082;
+	if (options.lobbyPassword === "") {
+		throw new Error("LOBBY_PASSWORD must not be empty; unset it to run a public lobby");
+	}
+	const passwordHash = options.lobbyPassword === undefined ? undefined : createHash("sha256").update(options.lobbyPassword).digest();
 
 	const clients = new Map<string, Client>();
 	const rooms = new Map<string, Room>();
@@ -302,33 +307,59 @@ export function createServer(options: ServerOptions = {}): ServerInstance {
 
 		client.wsid = util.newId();
 		client.clientIp = ip;
-		clients.set(client.wsid, client);
+		let state: "pending" | "authenticated" | "rejected" = "pending";
 
-		client.keyCheck = setTimeout(() => {
-			util.sendl(client, "denied", "key");
-			setTimeout(() => client.close(), 500);
-		}, 2000);
+		const rejectAuthentication = (reason: "lobby_auth" | "lobby_timeout") => {
+			state = "rejected";
+			clearClientTimers(client);
+			util.sendl(client, "denied", reason);
+			client.close(1008, "Lobby authentication required");
+		};
 
-		util.sendl(client, "roomlist", util.buildRoomList(), util.checkEvents(), util.buildClientList(), client.wsid);
+		const enterLobby = () => {
+			state = "authenticated";
+			clearTimeout(client.keyCheck);
+			clients.set(client.wsid, client);
+			client.keyCheck = setTimeout(() => {
+				util.sendl(client, "denied", "key");
+				setTimeout(() => client.close(), 500);
+			}, 2000);
+			util.sendl(client, "roomlist", util.buildRoomList(), util.checkEvents(), util.buildClientList(), client.wsid);
 
-		// heartbeat
-		client.heartbeat = setInterval(() => {
-			if (client.beat) {
-				client.close();
-				clearInterval(client.heartbeat);
-				return;
-			}
-			client.beat = true;
-			try {
-				client.send("heartbeat");
-			} catch {
-				client.close();
-			}
-		}, 60000);
+			client.heartbeat = setInterval(() => {
+				if (client.beat) {
+					client.close();
+					clearInterval(client.heartbeat);
+					return;
+				}
+				client.beat = true;
+				try {
+					client.send("heartbeat");
+				} catch {
+					client.close();
+				}
+			}, 60000);
+		};
 
 		// message handler
 		client.on("message", msg => {
 			const raw = msg.toString();
+			if (state === "rejected") return;
+			if (state === "pending") {
+				let credentials: unknown;
+				try {
+					credentials = JSON.parse(raw);
+				} catch {
+					rejectAuthentication("lobby_auth");
+					return;
+				}
+				if (!Array.isArray(credentials) || credentials.length !== 3 || credentials[0] !== "server" || credentials[1] !== "lobby_auth" || typeof credentials[2] !== "string" || !passwordHash || !timingSafeEqual(createHash("sha256").update(credentials[2]).digest(), passwordHash)) {
+					rejectAuthentication("lobby_auth");
+					return;
+				}
+				enterLobby();
+				return;
+			}
 			if (raw === "heartbeat") {
 				client.beat = false;
 				return;
@@ -361,6 +392,7 @@ export function createServer(options: ServerOptions = {}): ServerInstance {
 		// disconnect handler
 		client.on("close", () => {
 			clearClientTimers(client);
+			if (!clients.has(client.wsid)) return;
 
 			// remove rooms owned by this client
 			rooms.forEach((room, key) => {
@@ -383,6 +415,13 @@ export function createServer(options: ServerOptions = {}): ServerInstance {
 			if (client.room) util.updateRooms();
 			else util.updateClients();
 		});
+
+		if (passwordHash) {
+			client.keyCheck = setTimeout(() => rejectAuthentication("lobby_timeout"), 10000);
+			util.sendl(client, "lobby_auth_required");
+		} else {
+			enterLobby();
+		}
 	};
 
 	return {
@@ -416,10 +455,11 @@ export function createServer(options: ServerOptions = {}): ServerInstance {
 			const server = wss;
 			wss = undefined;
 
-			const curClients = [...clients];
-			for (const [_, client] of curClients) {
+			for (const client of clients.values()) {
 				clearClientTimers(client);
-				client.close();
+			}
+			for (const socket of server.clients) {
+				socket.terminate();
 			}
 
 			return new Promise<void>((resolve, reject) => {

@@ -15,7 +15,7 @@ function readPort(): number {
 }
 
 const port = readPort();
-const server = createServer({ port });
+const server = createServer({ port, lobbyPassword: process.env.LOBBY_PASSWORD });
 
 const stop = async () => {
 	await server.stop();

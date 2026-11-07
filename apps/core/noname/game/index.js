@@ -16,6 +16,7 @@ import { isClass, userAgentLowerCase, GeneratorFunction, AsyncFunction, delay } 
 import { DynamicStyle } from "./dynamic-style/index.js";
 import { GamePromises } from "./promises.js";
 import { normalizeConnectAddress } from "./connect-url.js";
+import { readLobbyPassword } from "./lobby-auth.js";
 import { Check } from "./check.js";
 
 import { security } from "@/util/sandbox.js";
@@ -2120,9 +2121,10 @@ export class Game {
 	}
 	/**
 	 * @param { string } ip
-	 * @param { (result: boolean) => any } callback
+	 * @param { (result: boolean, reason?: string) => any } callback
+	 * @param { string } [lobbyPassword]
 	 */
-	connect(ip, callback) {
+	connect(ip, callback, lobbyPassword) {
 		// 如果已经联机了就不需要再连接了
 		if (game.online || typeof ip !== "string" || !ip?.length) {
 			return;
@@ -2146,7 +2148,11 @@ export class Game {
 				game.ws.close();
 				delete game.ws;
 			}
-			game.ws = new WebSocket(url);
+			game.ws = Object.assign(new WebSocket(url), {
+				lobbyPassword: lobbyPassword ?? readLobbyPassword(url),
+				lobbyAuthRequired: false,
+				_nocallback: false,
+			});
 		} catch {
 			alert("错误：无效联机地址");
 			if (callback) {
@@ -2156,7 +2162,6 @@ export class Game {
 		}
 
 		game.sandbox = security.createSandbox(ip);
-		game.ws.onopen = lib.element.ws.onopen;
 		game.ws.onmessage = lib.element.ws.onmessage;
 		game.ws.onerror = lib.element.ws.onerror;
 		game.ws.onclose = lib.element.ws.onclose;
@@ -9047,6 +9052,11 @@ ${e instanceof Error ? e.stack : String(e)}`);
 		game.me = null;
 	}
 	clearConnect() {
+		if (ui.lobbyPassword) {
+			ui.lobbyPassword.value = "";
+			ui.lobbyPassword.remove();
+			delete ui.lobbyPassword;
+		}
 		if (ui.ipnode) {
 			ui.ipnode.remove();
 			delete ui.ipnode;

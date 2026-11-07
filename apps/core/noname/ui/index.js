@@ -3,6 +3,8 @@ import { Click } from "./click/index.js";
 import { Create } from "./create/index.js";
 
 export class UI {
+	/** @type {HTMLInputElement | undefined} */
+	lobbyPassword;
 	updates = [];
 	thrown = [];
 	touchlines = [];
