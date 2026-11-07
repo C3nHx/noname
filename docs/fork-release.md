@@ -2,6 +2,31 @@
 
 本分支从 `C3nHx/noname` 的 GitHub Releases 检查和下载安装包，上游代码来源仍为 `libnoname/noname`。
 
+## 分支维护
+
+`main` 保留上游基线，`fork` 是默认集成与发布分支，汇总大厅鉴权、版本渠道和扩展集成。`feat/lobby-auth` 的鉴权提交已经是 `fork` 的祖先，无需重复 cherry-pick 或制造空合并。
+
+同步上游时，在 `fork` 合并上游提交，保留 fork 的功能历史，不将发布改动推回作为基线的 `main`：
+
+```sh
+git remote add upstream https://github.com/libnoname/noname.git
+git fetch upstream main
+git switch main
+git merge --ff-only upstream/main
+git push origin main
+git switch fork
+git merge main
+pnpm version:sync
+pnpm version:check
+pnpm test:distribution
+pnpm build
+git push origin fork
+```
+
+已存在 upstream remote 时跳过添加命令。浅克隆若缺少共同祖先，先获取完整历史再合并，不使用 `--allow-unrelated-histories` 拼接历史。上游版本变化时同步修改 distribution.js 的基线版本，并重新验证扩展和大厅兼容性。
+
+Build 在推送 `fork` 时执行。Nightly 显式检出 `fork`。Release 从 `fork` 上的版本标签构建，仍以 GitHub Releases 为正式分发渠道。扩展来源和构建细节见 [扩展集成说明](./bundled-extensions.md)。
+
 ## 维护版本
 
 版本格式为 `<上游版本>-c3nhx.<分支修订号>`。当前版本是 `1.11.7-c3nhx.1`，对应上游 `1.11.7` 和第 1 次分支修订。
@@ -52,7 +77,7 @@ core、完整包以及各平台产物附带 SHA-256 文件。更新页面列出 
 
 源码标签的根目录没有游戏运行时文件，因此不能用源码标签直接替代编译文件下载渠道。
 
-- `build-output` 是 main 或手动 Build 产生的测试构建。
+- `build-output` 是 fork 或手动 Build 产生的测试构建。
 - `runtime-v1.11.7-c3nhx.1` 是该版本编译运行时的不可变标签，Release 构建阶段创建。同名标签重复构建时内容必须一致。
 - `release-output` 只在最新 Release 成功发布后更新。旧版本补发不会覆盖它。
 

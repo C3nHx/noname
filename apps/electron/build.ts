@@ -1,6 +1,7 @@
 import { build as buildElectron, Platform, Arch, type PackagerOptions, type Configuration } from "electron-builder";
 import { build as buildVite } from "vite";
 import { forkVersion, nativeVersions } from "../core/noname/util/distribution.js";
+import { copyFile } from "node:fs/promises";
 
 async function main(targets: PackagerOptions["targets"], config: Partial<Configuration> = {}) {
 	const appPaths = await buildElectron({
@@ -25,8 +26,12 @@ async function main(targets: PackagerOptions["targets"], config: Partial<Configu
 }
 
 await buildVite();
+await copyFile("noname.ico", "dist/app/noname.ico");
 
 switch (process.argv[2]) {
+	case "dir":
+		await main(Platform.WINDOWS.createTarget("dir", Arch.x64), { win: { signAndEditExecutable: false } });
+		break;
 	case "win":
 		main(Platform.WINDOWS.createTarget("nsis", Arch.x64), {
 			win: {

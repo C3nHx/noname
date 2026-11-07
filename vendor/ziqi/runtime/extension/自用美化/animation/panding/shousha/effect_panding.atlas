@@ -1,0 +1,62 @@
+
+effect_panding.png
+size: 522,76
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Cha1
+  rotate: true
+  xy: 0, 0
+  size: 76, 64
+  orig: 76, 64
+  offset: 0, 0
+  index: -1
+Cha2
+  rotate: true
+  xy: 66, 0
+  size: 76, 64
+  orig: 76, 64
+  offset: 0, 0
+  index: -1
+Cha3
+  rotate: true
+  xy: 132, 0
+  size: 76, 64
+  orig: 76, 64
+  offset: 0, 0
+  index: -1
+Cha4
+  rotate: true
+  xy: 198, 0
+  size: 76, 64
+  orig: 76, 64
+  offset: 0, 0
+  index: -1
+gou1
+  rotate: true
+  xy: 264, 0
+  size: 76, 63
+  orig: 76, 63
+  offset: 0, 0
+  index: -1
+gou2
+  rotate: true
+  xy: 329, 0
+  size: 76, 63
+  orig: 76, 63
+  offset: 0, 0
+  index: -1
+gou3
+  rotate: true
+  xy: 394, 0
+  size: 76, 63
+  orig: 76, 63
+  offset: 0, 0
+  index: -1
+gou4
+  rotate: true
+  xy: 459, 0
+  size: 76, 63
+  orig: 76, 63
+  offset: 0, 0
+  index: -1

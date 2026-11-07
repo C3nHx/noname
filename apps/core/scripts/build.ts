@@ -7,6 +7,7 @@ import generateImportMap from "./vite-plugin-importmap";
 import jit from "@noname/jit";
 import type { BuildChannel, BuildInfo } from "../noname/util/meta";
 import { distribution, forkVersion, repositoryName } from "../noname/util/distribution.js";
+import { stageBundledExtensions, stageExtensionDependencies } from "../../../scripts/bundle-extensions.mjs";
 
 const root = join(import.meta.dirname, "..");
 
@@ -97,6 +98,8 @@ async function main() {
 		await buildIndividual(type, target, input, importMap, copies);
 	}
 
+	await stageBundledExtensions(join(root, "dist"));
+	await stageExtensionDependencies(join(root, "dist"));
 	writeBuildInfo();
 }
 

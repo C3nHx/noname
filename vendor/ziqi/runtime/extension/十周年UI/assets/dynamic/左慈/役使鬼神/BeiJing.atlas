@@ -1,0 +1,27 @@
+
+BeiJing.png
+size: 755,755
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+13-guang_00
+  rotate: true
+  xy: 535, 395
+  size: 252, 43
+  orig: 252, 72
+  offset: 0, 14
+  index: -1
+14-yun_00
+  rotate: false
+  xy: 535, 649
+  size: 208, 104
+  orig: 216, 144
+  offset: 5, 22
+  index: -1
+bg
+  rotate: false
+  xy: 2, 2
+  size: 531, 751
+  orig: 531, 751
+  offset: 0, 0
+  index: -1

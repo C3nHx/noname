@@ -30,6 +30,10 @@ export default function vitePluginJIT(importMap: Record<string, string> = {}): P
 		},
 
 		closeBundle() {
+			const htmlPath = path.resolve("dist/index.html");
+			let html = fs.readFileSync(htmlPath, "utf8");
+			for (const [specifier, url] of Object.entries(resolvedImportMap)) html = html.replaceAll(`src="${specifier}"`, `src="${url}"`);
+			fs.writeFileSync(htmlPath, html);
 			const gameJs = path.resolve("dist/game/game.js");
 			fs.mkdirSync(path.dirname(gameJs), { recursive: true });
 			fs.writeFileSync(

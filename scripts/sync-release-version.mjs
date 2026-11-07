@@ -8,6 +8,7 @@ const check = process.argv.includes("--check");
 const edits = [
 	["apps/core/package.json", /("version"\s*:\s*")[^"]+("\s*,)/, `$1${forkVersion}$2`],
 	["apps/electron/package.json", /("version"\s*:\s*")[^"]+("\s*,)/, `$1${forkVersion}$2`],
+	["apps/core/game/config.json", /("version"\s*:\s*")[^"]+("\s*,)/, `$1${forkVersion}$2`],
 	["apps/core/game/update.js", /(version:\s*")[^"]+("\s*,)/, `$1${forkVersion}$2`],
 	["apps/mobile/native/android/app/build.gradle.kts", /versionCode = \d+/, `versionCode = ${nativeVersions.androidCode}`],
 	["apps/mobile/native/android/app/build.gradle.kts", /versionName = "[^"]+"/, `versionName = "${forkVersion}"`],

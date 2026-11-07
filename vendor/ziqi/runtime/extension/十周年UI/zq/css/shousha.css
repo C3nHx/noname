@@ -1,0 +1,122 @@
+/*去掉本体提示文字底部的半透明阴影条框 */
+#arena.decadeUI > .dialog.prompt .content .caption,
+#arena.decadeUI > .dialog.prompt .content .caption > .text {
+	background: none !important;
+	box-shadow: none !important;
+}
+
+/*文字弹出*/
+#arena > .damage.skill-popup {
+	margin-top: -9px;
+	margin-left: 3px;
+	font-size: 25px;
+	font-family: "HYZLSJ";
+	-webkit-text-stroke: 1px #ab8d35;
+	text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000;
+}
+
+/*失效锁*/
+.skillitem .suo,
+.skillitem .suo1 {
+	left: calc(50% - 18px) !important;
+}
+
+/*●技能标记*/
+#arena[data-player-mark-style="decade"]>.player>.dui-marks {
+	width: 106.3px;
+	left: 20.8px;
+	bottom: 70px;
+	border-radius: 6px;
+}
+#arena[data-player-mark-style="decade"]>.player>.dui-marks>.mark {
+	left: 0px;
+	bottom: -2px;
+}
+#arena[data-player-mark-style="decade"]>.player>.dui-marks>.mark>.mark-text {
+	font-size: 18px;
+	margin-left: 8px;
+	left: -12px;
+}
+#arena[data-player-mark-style="decade"]>.player>.dui-marks>.mark>.mark-count {
+	margin-left: -10px;
+	margin-right: 2px;
+	font-size: 17.5px;
+}
+
+/*控制按钮*/
+.control {
+	margin-top: 2px !important;
+}
+
+/* 聊天气泡 */
+.player > .chat-bubble {
+	text-shadow: none;
+	font-weight: bold;
+}
+
+/*牌序*/
+.lbtn-paixu {
+	--w: 70px;
+	--h: calc(var(--w) * 55/68);
+	width: var(--w);
+	height: var(--h);
+	top: calc(100% - 190px);
+	right: calc(100% - 89px);
+}
+/*记录*/
+.latn-jilu {
+	display: block;
+	position: absolute;
+	top: calc(100% - 135px);
+	right: calc(100% - 89px);
+	background-size: 100% 100%;
+	border-radius: 1px;
+	--w: 70px;
+	--h: calc(var(--w) * 55/68);
+	width: var(--w);
+	height: var(--h);
+}
+/* ●查看牌堆 */
+.cardRoundNumber {
+	top: 32px !important;
+	right: 150px !important;
+	z-index: 3 !important;
+}
+
+/*右手手牌数图片*/
+.handcardNumber {
+	bottom: 2px !important;
+	right: 279px !important;
+}
+/*左手手牌数图片*/
+.handcardNumber1 {
+	bottom: 6.8px !important;
+	left: 2px !important;
+}
+
+/*卡牌标记类*/
+.card > .gaintag.info,
+.card.button > .gaintag.info {
+	position: absolute;
+	--w: 66px;
+	--h: calc(var(--w) * 50 / 104); /*高和长*/
+	width: var(--w); /*按比例调节*/
+	height: var(--h); /*同理*/
+	left: -2px;
+	top: calc(50% + 10px);
+	right: 4px;
+	color: #fef2f2;
+	font-size: 17px;
+	/*font-weight: bold;*/
+	font-family: shousha;
+	line-height: 32px;
+	text-align: center;
+	text-shadow: -1.7px 0px 3px #a01358, 0px -1.7px 3px #a01358, 1.7px 0px 3px #a01358, 0px 1.7px 3px #a01358;
+	white-space: nowrap;
+	background-image: url("../image/card-base/biaoji.png") !important;
+	background-size: 100% 100%;
+	border-radius: none;
+	border: none;
+	pointer-events: none;
+	z-index: 2;
+}

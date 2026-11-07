@@ -7,6 +7,7 @@ import { LOCAL_HOST, registerLocalProtocol } from "./local-protocol";
 import { repositoryURL } from "../../core/noname/util/distribution.js";
 remote.initialize();
 const dirname = path.join(import.meta.dirname, "../");
+const dataHome = process.env.NONAME_DATA_HOME || path.join(dirname, "Home");
 
 // 获取单实例锁
 const gotTheLock = app.requestSingleInstanceLock();
@@ -28,15 +29,15 @@ function setPath(path1: any, path2: any) {
 	app.setPath(path1, path2);
 }
 
-setPath("home", path.join(dirname, "Home"));
-setPath("appData", path.join(dirname, "Home", "AppData"));
-setPath("userData", path.join(dirname, "Home", "UserData"));
-setPath("temp", path.join(dirname, "Home", "Temp"));
-setPath("cache", path.join(dirname, "Home", "Cache"));
+setPath("home", dataHome);
+setPath("appData", path.join(dataHome, "AppData"));
+setPath("userData", path.join(dataHome, "UserData"));
+setPath("temp", path.join(dataHome, "Temp"));
+setPath("cache", path.join(dataHome, "Cache"));
 //崩溃转储文件存储的目录
-setPath("crashDumps", path.join(dirname, "Home", "crashDumps"));
+setPath("crashDumps", path.join(dataHome, "crashDumps"));
 //日志目录
-setPath("logs", path.join(dirname, "Home", "logs"));
+setPath("logs", path.join(dataHome, "logs"));
 
 //崩溃处理
 crashReporter.start({
@@ -77,7 +78,7 @@ function createMainWindow() {
 		width: 1000,
 		height: 800,
 		title: "无名杀",
-		icon: path.join(dirname, "noname.ico"),
+		icon: path.join(dirname, "app", "noname.ico"),
 		webPreferences: {
 			webSecurity: false,
 			preload: path.join(dirname, "app/preload.js"),

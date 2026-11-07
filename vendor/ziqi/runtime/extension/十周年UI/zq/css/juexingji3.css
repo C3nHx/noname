@@ -1,0 +1,102 @@
+/*online欢杀*/
+.wmmh-skill-common-icon {
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position-x: 50%;
+	width: 3%;
+	height: 12.5%;
+	top: 50%;
+	left: 50%;
+	transform: translate(calc(-50% + 136px), calc(-50% + 10px));
+	z-index: 203 !important; /*●修复: 技能名最高*/
+	visibility: hidden;
+	animation: avatartu 2.6s linear;
+}
+.wmmh-skill-common-jinengming {
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(calc(-50% + 122px), calc(-50% - 148px));
+	font-size: 80px;
+	font-family: xinwei;
+	font-weight: 300;
+	background-image: linear-gradient(180deg, #fef6c1 15%, #e6c67e 30%, #d2b869 45%, #fef6c1 50%, #e6c67e 80%, #d2b869 90%);
+	text-shadow: none;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(4px 4px 4px BLACK);
+	/*max-width: 60px;*/
+	white-space: break-spaces;
+	line-height: 90%;
+	visibility: hidden;
+	z-index: 202 !important; /*●修复: 武将图高于骨骼201*/
+	animation: avatarming 2.6s linear;
+	-webkit-text-stroke: 0.5px rgba(137, 99, 64, 0.5);
+}
+/* 觉醒技 */
+/*觉醒武将图*/
+.juexingwujiangtu {
+    background-size: 120%;
+    background-position-x: 45%;
+	background-position-y: 20%;    
+    width: 30%;
+    height: 60%;
+    top: 10%;
+    left: 35%;
+    z-index:202!important; /*●修复 原998: 与技能名201/icon200同级贴合, 避免询问弹窗被夹在中间*/
+    visibility:hidden;   
+    border-radius:50%;
+	animation: avatartu 2.6s linear;
+}
+@keyframes avatartu {
+	0% {
+		visibility: visible;
+		translate: scale(0);
+		opacity: 0;
+	}
+	20% {
+		translate: scale(0);
+		opacity: 0;
+	}
+	35% {
+		translate: scale(1);
+		opacity: 1;
+	}
+	100% {
+		translate: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes avatarming {
+	0% {
+		visibility: visible;
+		translate: scale(0);
+		opacity: 0;
+	}
+	20% {
+		translate: scale(0);
+		opacity: 0;
+	}
+	35% {
+		translate: scale(1);
+		opacity: 1;
+	}
+	100% {
+		translate: scale(1);
+		opacity: 1;
+	}
+}
+
+.juexingicon {
+	background-image: url("../assets/animation/juexingji/juexingji3/image/juexingicon.png") !important;
+}
+
+.xiandingicon {
+	background-image: url("../assets/animation/juexingji/juexingji3/image/xiandingicon.png") !important;
+}
+
+.shimingicon {
+	background-image: url("../assets/animation/juexingji/juexingji3/image/shimingicon.png") !important;
+}

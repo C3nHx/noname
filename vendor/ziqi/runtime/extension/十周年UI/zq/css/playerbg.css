@@ -1,0 +1,14 @@
+/* 单将背景 */
+.player:not(.fullskin2):not(.double-character):not([data-double="1"]) {
+	background: url("../../image/ui/player-bg/bj1.png") no-repeat center center !important;
+	background-size: 100% 100% !important;
+}
+
+/* 双将背景 */
+.player.fullskin2,
+.player.double-character,
+.player[data-double="1"],
+.player.double {
+	background: url("../../image/ui/player-bg/bj2.png") no-repeat center center !important;
+	background-size: 100% 100% !important;
+}

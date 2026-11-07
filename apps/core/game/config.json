@@ -113,7 +113,7 @@
 	"brokenFile": [],
 	"max_loadtime": "20000",
 	"theme": "simple",
-	"layout": "long2",
+	"layout": "nova",
 	"cardback_style": "liusha",
 	"cardshape": "oblong",
 	"hp_style": "glass",
@@ -191,7 +191,7 @@
 	"connect_characters": ["diy"],
 	"connect_cards": ["huodong", "guozhan", "sp", "zhulu", "yingbian", "yongjian", "xianxia"],
 	"plays": [],
-	"extensions": ["天庭","奇妙工具","自用美化"],
+	"extensions": ["十周年UI","天庭","全能搜索","斗转星移","千幻聆音","皮肤切换","奇妙工具","自用美化","懒人包","应用配置","拖拽读取"],
 	"banned": [],
 	"bannedcards": [],
 	"forbidlist": [],
@@ -229,6 +229,10 @@
 				"nei": 5,
 				"fan": 3
 			},
+			"choice_zhu": 3,
+			"choice_zhong": 4,
+			"choice_nei": 5,
+			"choice_fan": 3,
 			"show_identity": true,
 			"difficulty": "normal",
 			"dierestart": true
@@ -287,5 +291,15 @@
 	],
 	"extension_天庭_enable": true,
 	"extension_奇妙工具_enable": true,
-	"extension_自用美化_enable": true
+	"extension_自用美化_enable": true,
+	"extension_十周年UI_enable": true,
+	"extension_全能搜索_enable": true,
+	"extension_斗转星移_enable": true,
+	"extension_千幻聆音_enable": true,
+	"extension_皮肤切换_enable": true,
+	"extension_懒人包_enable": true,
+	"extension_应用配置_enable": true,
+	"extension_拖拽读取_enable": true,
+	"version": "1.11.7-c3nhx.1",
+	"new_tutorial": true
 }

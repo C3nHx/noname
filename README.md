@@ -1,7 +1,7 @@
 <h1 align="center">无名杀</h1>
 
 <p align="center">
-  <a href="https://github.com/C3nHx/noname/actions/workflows/build.yml"><img alt="构建状态" src="https://img.shields.io/github/actions/workflow/status/C3nHx/noname/build.yml?branch=main&style=flat-square"></a>
+  <a href="https://github.com/C3nHx/noname/actions/workflows/build.yml"><img alt="构建状态" src="https://img.shields.io/github/actions/workflow/status/C3nHx/noname/build.yml?branch=fork&style=flat-square"></a>
   <a href="https://github.com/C3nHx/noname/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/C3nHx/noname?display_name=tag&style=flat-square"></a>
   <a href="https://github.com/C3nHx/noname/releases"><img alt="累计下载" src="https://img.shields.io/github/downloads/C3nHx/noname/total?style=flat-square"></a>
   <a href="https://github.com/C3nHx/noname/graphs/contributors"><img alt="项目贡献者" src="https://img.shields.io/github/contributors/C3nHx/noname?style=flat-square"></a>
@@ -19,6 +19,8 @@
 ## 快速启动
 
 当前 fork 的版本、更新源和发布规则见 [分支发布说明](./docs/fork-release.md)。上游来源仍为 [libnoname/noname](https://github.com/libnoname/noname)。
+
+`fork` 汇总大厅鉴权、分支发行和十一项扩展，`main` 保留上游基线。扩展来源、兼容修复和构建方式见 [扩展集成说明](./docs/bundled-extensions.md)。
 
 ### 环境要求
 
@@ -56,7 +58,7 @@ pnpm dev
 
 安卓： <https://github.com/nonameShijian/noname-shijian-android/releases/tag/v1.6.8>
 
-PC:  <https://github.com/nonameShijian/noname/releases/tag/v1.75>
+PC: <https://github.com/nonameShijian/noname/releases/tag/v1.75>
 
 网页端推荐使用 Chrome 系内核浏览器游玩，暂不支持 Firefox 浏览器
 

@@ -7,6 +7,7 @@ import { security, initializeSandboxRealms } from "@/util/sandbox.js";
 import { CacheContext } from "@/library/cache/cacheContext.js";
 import { importCardPack, importCharacterPack, importExtension, importMode } from "./import.js";
 import { loadCard, loadCardPile, loadCharacter, loadExtension, loadMode, loadPlay } from "./loading.js";
+import { supportsExtension } from "../util/bundled-extensions.js";
 
 // 无名杀，启动！
 export async function boot() {
@@ -692,7 +693,7 @@ async function getExtensionList() {
 		await game.promises.saveConfig("extensions", extensions);
 	}
 
-	return toLoad;
+	return toLoad.filter(name => supportsExtension(name, typeof window.process === "object" && typeof window.process.versions?.electron === "string"));
 }
 
 function initSheet() {

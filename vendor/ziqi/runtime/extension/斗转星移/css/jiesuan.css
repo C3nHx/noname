@@ -1,0 +1,459 @@
+.js-bg {
+	pointer-events: none;
+}
+
+.js-bg .dz-backBtn,
+.js-bg .js-func-btns {
+	pointer-events: auto !important;
+}
+
+.js-ditu {
+	left: 50%;
+	top: 50%;
+	width: 430px;
+	height: 430px;
+	transform: translate(-50%, -47%);
+	font-family: shousha;
+}
+
+.js-xuanzhuanguang {
+	background-image: url("../image/jiesuan/ring_231_00000.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	left: calc(50% - 150px);
+	top: -21%;
+	width: 300px;
+	height: 300px;
+	opacity: 0;
+	transform: rotate(0deg);
+	animation: xuanzhuanguang-anim 5s linear infinite 0.1s;
+}
+
+@keyframes xuanzhuanguang-anim {
+	0% {
+		opacity: 1;
+		transform: rotate(0deg);
+	}
+
+	100% {
+		opacity: 1;
+		transform: rotate(360deg);
+	}
+}
+
+/* 胜利牌 */
+.js-shenglizhejinpaipai {
+	background-image: url("../image/jiesuan/shenglizhejinpaipai.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	left: calc(50% - 180px);
+	top: -2%;
+	width: 360px;
+	height: 209px;
+	animation: shenglizhejinpaipai-anim 0.7s linear both;
+}
+
+@keyframes shenglizhejinpaipai-anim {
+	0% {
+		transform: scale(3);
+		opacity: 0.3;
+	}
+
+	23.8% {
+		transform: scale(0.8);
+		opacity: 1;
+	}
+
+	33.3% {
+		transform: scale(1.1);
+		opacity: 1;
+	}
+
+	47.6% {
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	61.9% {
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	66.7% {
+		transform: scale(0.8);
+		opacity: 1;
+	}
+
+	81.0% {
+		transform: scale(1.05);
+		opacity: 1;
+	}
+
+	90.4% {
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.js-shenglizhejinpaipai.light {
+	background-image: url("../image/jiesuan/shenglizhepai2_00000.png");
+	left: 0;
+	top: 0;
+	animation: shenglizhejinpaipai-anim2 0.7s linear both;
+}
+
+@keyframes shenglizhejinpaipai-anim2 {
+	0% {
+		opacity: 0;
+	}
+
+	23% {
+		opacity: 0;
+	}
+
+	23.8% {
+		opacity: 1;
+	}
+
+	38.1% {
+		opacity: 0;
+	}
+
+	61.9% {
+		opacity: 0;
+	}
+
+	66.7% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+/* 胜利 */
+/* .js-shengli-ditu {
+  left: calc(50% - 96px);
+  top: 10%;
+  width: 190px;
+  height: 105px;
+  opacity: 0;
+  animation: shengli-txt-anim 0.33s linear forwards 0.3s;
+} */
+
+.gold-text {
+	position: static;
+	font-size: 78px;
+	text-shadow: none;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter:blur(0.4px) drop-shadow(0px 0px 0px black) drop-shadow(1px 1px 1px black) drop-shadow(0px 0px 0px black) drop-shadow(0px 0px 3px black) drop-shadow(1px 0px 3px black);
+	white-space: break-spaces;
+	-webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
+	font-family: xingkai;
+  
+	background-image: linear-gradient(180deg, #e3bf53 30%, #DCC034 68%, #BC9100 91%);
+}
+.js-shengli-ditu {
+	top: 10%;
+	width: 100%;
+	text-align: center;
+	height: 105px;
+	opacity: 0;
+	animation: shengli-txt-anim 0.33s linear forwards 0.3s;
+}
+
+@keyframes shengli-txt-anim {
+	0% {
+		transform: scale(3);
+		opacity: 0.3;
+	}
+
+	40.4% {
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	50.5% {
+		transform: scale(0.8);
+		opacity: 1;
+	}
+
+	80.8% {
+		transform: scale(1.05);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.js-shengli-ditu > .sheng {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("../image/jiesuan/shenglizijinse02.png");
+	background-size: contain;
+	background-position: center;
+  background-repeat: no-repeat;
+}
+
+.js-shengli-ditu > .li {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("../image/jiesuan/shenglizijinse01.png");
+	background-size: contain;
+	background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 彩带 */
+.js-caidai {
+	left: 49.5%;
+	top: 20%;
+	width: 310px;
+	height: 114px;
+	background-size: contain;
+	background-position: center;
+	opacity: 0;
+	background-image: url("../image/jiesuan/shenglizhepdai1_00000.png"), url("../image/jiesuan/shenglizhepdai1_00001.png"), url("../image/jiesuan/shenglizhepdai1_00002.png"), url("../image/jiesuan/shenglizhepdai1_00003.png"), url("../image/jiesuan/shenglizhepdai1_00004.png"), url("../image/jiesuan/shenglizhepdai1_00006.png"), url("../image/jiesuan/shenglizhepdai1_00008.png");
+	animation: caidai-anim 0.26s linear forwards 0.5s;
+}
+
+.js-caidai.left {
+	left: auto;
+	right: 49.5%;
+	transform: scaleX(-1);
+}
+
+@keyframes caidai-anim {
+	0% {
+		opacity: 1;
+		background-image: url("../image/jiesuan/shenglizhepdai1_00000.png");
+	}
+
+	16.6% {
+		background-image: url("../image/jiesuan/shenglizhepdai1_00001.png");
+	}
+
+	33.2% {
+		background-image: url("../image/jiesuan/shenglizhepdai1_00002.png");
+	}
+
+	49.8% {
+		background-image: url("../image/jiesuan/shenglizhepdai1_00003.png");
+	}
+
+	66.4% {
+		background-image: url("../image/jiesuan/shenglizhepdai1_00004.png");
+	}
+
+	83% {
+		background-image: url("../image/jiesuan/shenglizhepdai1_00006.png");
+	}
+
+	100% {
+		opacity: 1;
+		background-image: url("../image/jiesuan/shenglizhepdai1_00008.png");
+	}
+}
+
+/* 面板 */
+.js-result-bg {
+	left: calc(50% - 225px);
+	top: 45%;
+	width: 450px;
+	height: 160px;
+	background-image: url("../image/jiesuan/general_result_bg.png");
+	background-size: contain;
+	background-position: center;
+	opacity: 0;
+	transform-origin: 50% 30%;
+	animation: result-anim 0.43s linear forwards;
+}
+
+.js-result-bg.shengli {
+	animation: result-anim 0.16s linear forwards 0.45s;
+}
+
+@keyframes result-anim {
+	0% {
+		opacity: 0.3;
+		transform: scale(0.7);
+	}
+
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.js-result-box {
+	left: 8%;
+	top: 24%;
+	width: 84%;
+	height: 60%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.js-result-box > .res-item {
+	position: relative;
+	width: 100%;
+	height: auto;
+	text-align: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.js-result-box > .res-item > .jinpiao {
+	position: relative;
+	margin-right: 10px;
+}
+
+.js-result-box > .res-item > .number {
+	position: relative;
+	margin: 0 -1.5px;
+}
+
+.js-result-box > .res-item > .xiaohao {
+	position: relative;
+	font-size: 22px;
+	color: #cecc1e;
+	display: flex;
+	align-items: center;
+}
+
+.js-result-box > .res-item > .shengyu {
+	position: relative;
+	font-size: 22px;
+	color: #dcdccf;
+	display: flex;
+	align-items: center;
+}
+
+/* 失败牌 */
+.js-pingjuzhehuipaipai {
+	background-image: url("../image/jiesuan/pingjuzhehuipaipai.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	left: calc(50% - 200px);
+	top: 36%;
+	width: 360px;
+	height: 209px;
+}
+
+.js-lose-bglight {
+	background-image: url("../image/jiesuan/haha001sb_00000.png");
+	background-size: contain;
+	background-position: center;
+	left: calc(50% - 258px);
+	top: -45%;
+	width: 550px;
+	height: 550px;
+	opacity: 0;
+	animation: pingjuzhehuipaipai-anim 0.43s linear both;
+}
+
+@keyframes pingjuzhehuipaipai-anim {
+	0% {
+		transform: scale(0.8);
+		opacity: 0.3;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.js-lose-liefeng {
+	left: 35.5%;
+	top: 12.5%;
+	width: 70px;
+	height: 153px;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.js-shibai-ditu {
+	left: calc(50% - 88px);
+	top: 24%;
+	width: 185px;
+	height: 100px;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.js-shibai-ditu.dy {
+	left: calc(50% - 89px);
+	top: 23%;
+	width: 187px;
+	height: 106px;
+}
+
+.js-shibai-ditu > .shi {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("../image/jiesuan/shibaizihuise.png");
+	background-size: contain;
+	background-position: center;
+}
+
+.js-shibai-ditu > .bai {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("../image/jiesuan/shibaizihuick.png");
+	background-size: contain;
+	background-position: center;
+}
+
+/* 按钮块 */
+.js-func-btns {
+	left: 0;
+	top: 84%;
+	width: 100%;
+	height: 70px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.js-func-btns > .js-btn {
+	position: relative;
+	width: 186px;
+	height: 80px;
+	background-image: url("../image/jiesuan/game_result_btn_bg.png");
+	background-size: contain;
+	background-position: center;
+	line-height: 72px;
+	font-size: 30px;
+	text-align: center;
+	font-weight: bolder;
+	color: #9fbb61;
+}
