@@ -20,6 +20,7 @@ val releaseSigningConfigured = listOf(
     releaseKeyAlias,
     releaseKeyPassword,
 ).all { it != null }
+val unsignedBuild = providers.gradleProperty("nonameUnsigned").orNull == "true"
 
 plugins {
     id("com.android.application")
@@ -56,6 +57,8 @@ android {
             }
         }
         logger.lifecycle("Release signing is configured.")
+    } else if (unsignedBuild) {
+        logger.lifecycle("Unsigned build requested; the APK must be signed before installation.")
     } else {
         logger.warn("Release signing is not configured; falling back to the debug keystore.")
     }
@@ -73,7 +76,9 @@ android {
                 "proguard-rules.pro"
             )
             manifestPlaceholders["enableAnalytics"] = "false"
-            signingConfig = if (releaseSigningConfigured) {
+            signingConfig = if (unsignedBuild) {
+                null
+            } else if (releaseSigningConfigured) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("debug")

@@ -1,0 +1,238 @@
+name: Build Installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Source commit or tag, empty uses this workflow commit
+        type: string
+        default: ""
+      windows:
+        description: Windows x64 NSIS installer
+        type: boolean
+        default: true
+      android:
+        description: Android APK
+        type: boolean
+        default: true
+      ios:
+        description: iOS IPA
+        type: boolean
+        default: true
+      require_signing:
+        description: Android and iOS require existing signing materials to pass
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  NONAME_BUILD_CHANNEL: test
+
+jobs:
+  windows:
+    name: Windows installer
+    if: ${{ inputs.windows }}
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build Windows installer
+        run: |
+          pnpm version:check
+          pnpm test:distribution
+          pnpm build
+          pnpm -F @noname/electron build:win
+          mkdir -p installers
+          VER="$(node --input-type=module -e 'import { forkVersion } from "./apps/core/noname/util/distribution.js"; console.log(forkVersion)')"
+          EXE="$(find output -maxdepth 1 -name '*.exe' | head -n 1)"
+          test -n "$EXE"
+          cp "$EXE" "installers/noname.Setup.${VER}.exe"
+          cd installers
+          sha256sum *.exe > windows.sha256
+          ls -lh *.exe
+      - uses: actions/upload-artifact@v7
+        with:
+          name: noname-windows-${{ github.run_id }}
+          path: installers/
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+
+  android:
+    name: Android APK
+    if: ${{ inputs.android }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          chmod +x apps/mobile/native/android/gradlew
+      - run: pnpm install --frozen-lockfile
+      - name: Load existing Android signing materials
+        id: signing
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [[ -z "$ANDROID_KEYSTORE_BASE64$ANDROID_KEYSTORE_PASSWORD$ANDROID_KEY_ALIAS$ANDROID_KEY_PASSWORD" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          : "${ANDROID_KEYSTORE_BASE64:?Missing keystore}"
+          : "${ANDROID_KEYSTORE_PASSWORD:?Missing store password}"
+          : "${ANDROID_KEY_ALIAS:?Missing key alias}"
+          : "${ANDROID_KEY_PASSWORD:?Missing key password}"
+          SIGNING_DIR="$RUNNER_TEMP/noname-android-signing"
+          mkdir -p "$SIGNING_DIR"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$SIGNING_DIR/release.jks"
+          echo "ANDROID_KEYSTORE_PATH=$SIGNING_DIR/release.jks" >> "$GITHUB_ENV"
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+      - name: Build Android APK
+        env:
+          SIGNED: ${{ steps.signing.outputs.configured }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          pnpm version:check
+          mkdir -p installers
+          VER="$(node --input-type=module -e 'import { forkVersion } from "./apps/core/noname/util/distribution.js"; console.log(forkVersion)')"
+          if [[ "$SIGNED" == true ]]; then
+            pnpm -F @noname/mobile build:android
+            APK="apps/mobile/native/android/app/build/outputs/apk/release/app-release.apk"
+            "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
+            cp "$APK" "installers/noname.${VER}.android.apk"
+          else
+            pnpm -F @noname/mobile build:android --unsigned
+            cp apps/mobile/native/android/app/build/outputs/apk/release/app-release-unsigned.apk "installers/noname.${VER}.android.unsigned.apk"
+          fi
+          printf '{"signed":%s,"installable":%s}\n' "$SIGNED" "$SIGNED" > installers/android-signing-status.json
+          cd installers
+          sha256sum *.apk > android.sha256
+          ls -lh *.apk
+      - uses: actions/upload-artifact@v7
+        with:
+          name: noname-android-${{ github.run_id }}
+          path: installers/
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+      - name: Require existing release signature
+        if: ${{ inputs.require_signing && steps.signing.outputs.configured != 'true' }}
+        run: |
+          echo "::error::Existing Android signing materials were not supplied. The compiled unsigned APK cannot be installed."
+          exit 1
+      - name: Remove signing file
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP/noname-android-signing/release.jks"
+
+  ios:
+    name: iOS IPA
+    if: ${{ inputs.ios }}
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python3 -m py_compile apps/mobile/scripts/package-ios.py
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build and sync full iOS resources
+        run: |
+          pnpm version:check
+          pnpm build
+          pnpm -F @noname/mobile sync:ios
+          test -f apps/mobile/native/ios/App/CapApp-SPM/Package.swift
+          df -h .
+      - name: Load existing Apple signing materials
+        env:
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+        run: |
+          python3 - <<'PY'
+          import base64, os, pathlib
+          certificate = os.environ.get('IOS_CERTIFICATE_BASE64', '')
+          profile = os.environ.get('IOS_PROVISION_PROFILE_BASE64', '')
+          if bool(certificate) != bool(profile):
+              raise SystemExit('Both Apple P12 and provisioning profile are required')
+          if certificate and profile:
+              directory = pathlib.Path(os.environ['RUNNER_TEMP']) / 'noname-apple-signing'
+              directory.mkdir(mode=0o700, exist_ok=True)
+              (directory / 'signing.p12').write_bytes(base64.b64decode(certificate, validate=True))
+              (directory / 'app.mobileprovision').write_bytes(base64.b64decode(profile, validate=True))
+              with open(os.environ['GITHUB_ENV'], 'a') as stream:
+                  stream.write(f'IOS_CERTIFICATE_PATH={directory / "signing.p12"}\n')
+                  stream.write(f'IOS_PROVISION_PROFILE_PATH={directory / "app.mobileprovision"}\n')
+          PY
+      - name: Build iOS IPA
+        id: package
+        env:
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+        run: python3 apps/mobile/scripts/package-ios.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: noname-ios-${{ github.run_id }}
+          path: installers/
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+      - name: Require existing Apple signature
+        if: ${{ inputs.require_signing && steps.package.outputs.signed != 'true' }}
+        run: |
+          echo "::error::Existing Apple signing materials were not supplied. The compiled unsigned IPA cannot be installed."
+          exit 1
+      - name: Remove signing files
+        if: ${{ always() }}
+        run: |
+          rm -f "$RUNNER_TEMP/noname-apple-signing/signing.p12"
+          rm -f "$RUNNER_TEMP/noname-apple-signing/app.mobileprovision"

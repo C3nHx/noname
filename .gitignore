@@ -1,5 +1,6 @@
 dist
 output
+installers/
 node_modules
 package-lock.json
 

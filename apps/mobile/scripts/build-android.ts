@@ -7,7 +7,7 @@ const workspaceRoot = resolve(mobileRoot, "../..");
 const androidRoot = resolve(mobileRoot, "native/android");
 
 const args = new Set(process.argv.slice(2));
-const variant = process.argv.find((arg) => arg.startsWith("--variant="))?.split("=", 2)[1] ?? "release";
+const variant = process.argv.find(arg => arg.startsWith("--variant="))?.split("=", 2)[1] ?? "release";
 const normalizedVariant = variant.toLowerCase();
 const task = args.has("--aab") ? `bundle${capitalize(normalizedVariant)}` : `assemble${capitalize(normalizedVariant)}`;
 
@@ -21,6 +21,7 @@ if (args.has("--help")) {
 Options:
   --variant=<name>  Gradle variant to build (default: release)
   --aab             Build an Android App Bundle instead of an APK
+  --unsigned        Prepare an unsigned APK for later signing
   --skip-web-build  Reuse the existing dist directory
 `);
 	process.exit(0);
@@ -38,13 +39,10 @@ run("pnpm", ["sync:android"], mobileRoot, "Capacitor sync");
 
 const gradleCommand = process.platform === "win32" ? "gradlew.bat" : "bash";
 const gradleArgs = process.platform === "win32" ? [task, "--no-daemon", "--stacktrace"] : ["gradlew", task, "--no-daemon", "--stacktrace"];
+if (args.has("--unsigned")) gradleArgs.push("-PnonameUnsigned=true");
 run(gradleCommand, gradleArgs, androidRoot, `Android ${task}`);
 
-const output = resolve(
-	androidRoot,
-	"app/build/outputs",
-	args.has("--aab") ? `bundle/${normalizedVariant}/app-${normalizedVariant}.aab` : `apk/${normalizedVariant}/app-${normalizedVariant}.apk`
-);
+const output = resolve(androidRoot, "app/build/outputs", args.has("--aab") ? `bundle/${normalizedVariant}/app-${normalizedVariant}.aab` : `apk/${normalizedVariant}/app-${normalizedVariant}${args.has("--unsigned") ? "-unsigned" : ""}.apk`);
 
 if (!existsSync(output)) {
 	throw new Error(`Gradle completed, but the expected artifact was not found: ${output}`);
