@@ -2,6 +2,8 @@
 
 资源仓库为 <https://cnb.cool/c4nhx/noname-resources>。仓库主分支保存用途说明，资源放在按客户端版本区分的 Release 中。客户端核心包和解密配置不上传到此仓库。
 
+从上游同步开始的完整维护流程见 [noname-upstream-release skill](../.agents/skills/noname-upstream-release/SKILL.md)。当前 GitHub 工作流不会自动执行此 CNB 发布脚本，构建和上传需要分别完成。本次发布与 Web 部署状态见 [Web 资源分发遗留](./resource-delivery-follow-up.md)。
+
 ## 构建并发布
 
 安装并登录 [CNB CLI](https://docs.cnb.cool/zh/develops/cnb-cli.md)。发布需要该仓库的 `repo-release:rw` 权限。官方 `cnb_cli` OAuth 应用可能拒绝 Release 写操作；此时通过 `CNB_TOKEN` 提供有相应权限的个人访问令牌。不要把令牌写入脚本、提交或命令输出。
