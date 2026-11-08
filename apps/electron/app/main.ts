@@ -83,7 +83,7 @@ function createMainWindow() {
 			webSecurity: false,
 			preload: path.join(dirname, "app/preload.js"),
 			nodeIntegration: true, //主页面用node
-			nodeIntegrationInSubFrames: true, //子页面用node
+			nodeIntegrationInSubFrames: false,
 			nodeIntegrationInWorker: true, //worker用node
 			contextIsolation: false, //必须为false
 			plugins: true, //启用插件
