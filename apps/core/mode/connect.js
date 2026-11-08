@@ -164,10 +164,6 @@ export default {
 				ui.hall_button.style.display = "none";
 			}
 			ui.recentIP = ui.create.system("最近连接", null, true);
-			const clickLink = function () {
-				node.textContent = this.textContent;
-				connect();
-			};
 			lib.setPopped(
 				ui.recentIP,
 				() => {
@@ -180,15 +176,18 @@ export default {
 					});
 					const list = ui.create.div(".caption");
 					for (const ip of lib.config.recentIP) {
-						ui.create.div(".text.textlink", list, clickLink).textContent = get.trimip(ip);
+						ui.create.div(".text.textlink", list, () => {
+							node.textContent = ip;
+							password.value = "";
+							connect();
+						}).textContent = get.trimip(ip);
 					}
 					uiintro.add(list);
 					const clear = uiintro.add('<div class="text center">清除</div>');
 					clear.style.paddingTop = 0;
 					clear.style.paddingBottom = "3px";
 					clear.listen(() => {
-						lib.config.recentIP.length = 0;
-						game.saveConfig("recentIP", []);
+						game.clearRecentConnections();
 						uiintro.delete();
 					});
 					return uiintro;

@@ -19,7 +19,7 @@ on:
         type: boolean
         default: false
       ios:
-        description: Build experimental unsigned iOS IPA
+        description: Build full-resource unsigned iOS IPA
         type: boolean
         default: false
 
@@ -341,10 +341,6 @@ jobs:
         working-directory: apps/mobile
         run: pnpm sync:ios
 
-      - name: Strip character art and voice
-        working-directory: apps/mobile
-        run: pnpm exec tsx scripts/strip-ios-assets.ts
-
       - name: Free disk
         run: rm -rf dist
 
@@ -358,59 +354,24 @@ jobs:
           restore-keys: |
             spm-${{ runner.os }}-
 
-      - name: Build unsigned iOS app
-        working-directory: apps/mobile/native/ios/App
-        run: |
-          xcodebuild \
-            -project App.xcodeproj \
-            -scheme App \
-            -configuration Release \
-            -sdk iphoneos \
-            -destination "generic/platform=iOS" \
-            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-            -clonedSourcePackagesDirPath "$RUNNER_TEMP/SourcePackages" \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGN_ENTITLEMENTS="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            ONLY_ACTIVE_ARCH=YES \
-            ARCHS=arm64 \
-            EXCLUDED_ARCHS="i386 x86_64" \
-            DEBUG_INFORMATION_FORMAT=dwarf \
-            GCC_GENERATE_DEBUGGING_SYMBOLS=NO \
-            COPY_PHASE_STRIP=YES \
-            STRIP_INSTALLED_PRODUCT=YES \
-            -quiet \
-            build
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
 
-      - name: Package unsigned IPA
-        id: package
-        run: |
-          APP_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Release-iphoneos/App.app"
-          IPA_NAME="noname.ios.experimental"
-          BUILD_DIR="$RUNNER_TEMP/ipa-build"
-          rm -rf "$BUILD_DIR"
-          mkdir -p "$BUILD_DIR/Payload"
-          cp -r "$APP_PATH" "$BUILD_DIR/Payload/"
-
-          find "$BUILD_DIR/Payload" -name "._*" -delete || true
-
-          cd "$BUILD_DIR"
-          zip -qry "$IPA_NAME.ipa" Payload -x '*.DS_Store' -x '*/._*'
-
-          shasum -a 256 "$IPA_NAME.ipa" > "$IPA_NAME.ipa.sha256"
-
-          echo "ipa_path=$BUILD_DIR/$IPA_NAME.ipa" >> "$GITHUB_OUTPUT"
+      - name: Package full-resource unsigned IPA
+        env:
+          NONAME_INSTALLER_OUTPUT: ${{ github.workspace }}/release
+        run: python3 apps/mobile/scripts/package-ios.py
 
       - name: Upload iOS package to release
         env:
           GH_TOKEN: ${{ github.token }}
-          IPA_PATH: ${{ steps.package.outputs.ipa_path }}
         run: |
           gh release upload "$RELEASE_TAG" \
-            "$IPA_PATH" \
-            "$IPA_PATH.sha256" \
+            release/*.ipa \
+            release/*.ipa.sha256 \
+            release/ios-signing-status.json \
             --clobber
 
   release:
@@ -422,7 +383,7 @@ jobs:
       - build-windows
       - build-android
       - build-ios
-    if: ${{ always() && !cancelled() && needs.create-release.result == 'success' && needs.build-core.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.build-windows.result) && contains(fromJSON('["success","skipped"]'), needs.build-android.result) && contains(fromJSON('["success","skipped"]'), needs.build-ios.result) }}
+    if: ${{ always() && !cancelled() && vars.RELEASE_DRAFT_ONLY != 'true' && needs.create-release.result == 'success' && needs.build-core.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.build-windows.result) && contains(fromJSON('["success","skipped"]'), needs.build-android.result) && contains(fromJSON('["success","skipped"]'), needs.build-ios.result) }}
     permissions:
       contents: write
 

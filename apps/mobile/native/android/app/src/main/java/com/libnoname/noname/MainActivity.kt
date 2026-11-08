@@ -6,6 +6,7 @@ import android.webkit.ServiceWorkerClient
 import android.webkit.ServiceWorkerController
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.webkit.WebViewAssetLoader
@@ -18,6 +19,7 @@ class MainActivity : BridgeActivity() {
         super.onCreate(savedInstanceState)
 
         val webView = bridge.webView
+        webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         if (BuildConfig.DEBUG) {
             webView.loadUrl("http://10.0.2.2:8080")
             return

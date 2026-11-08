@@ -16,7 +16,7 @@ import { isClass, userAgentLowerCase, GeneratorFunction, AsyncFunction, delay } 
 import { DynamicStyle } from "./dynamic-style/index.js";
 import { GamePromises } from "./promises.js";
 import { normalizeConnectAddress } from "./connect-url.js";
-import { readLobbyPassword } from "./lobby-auth.js";
+import { forgetAllLobbyPasswords, readLobbyPassword } from "./lobby-auth.js";
 import { Check } from "./check.js";
 
 import { security } from "@/util/sandbox.js";
@@ -2166,6 +2166,10 @@ export class Game {
 		game.ws.onerror = lib.element.ws.onerror;
 		game.ws.onclose = lib.element.ws.onclose;
 		_status.ip = ip;
+	}
+	clearRecentConnections() {
+		forgetAllLobbyPasswords();
+		game.saveConfig("recentIP", []);
 	}
 	send() {
 		if (game.observe && arguments[0] != "reinited") {

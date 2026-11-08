@@ -35,8 +35,8 @@ android {
         applicationId = "com.libnoname.noname"
         minSdk = rootProject.extra["minSdkVersion"] as Int
         targetSdk = rootProject.extra["targetSdkVersion"] as Int
-        versionCode = 111070001
-        versionName = "1.11.7-c3nhx.1"
+        versionCode = 111070002
+        versionName = "1.11.7-c3nhx.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -66,7 +66,6 @@ android {
     buildTypes {
         getByName("debug") {
             isDebuggable = true
-            manifestPlaceholders["enableAnalytics"] = "true"
         }
 
         getByName("release") {
@@ -75,7 +74,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            manifestPlaceholders["enableAnalytics"] = "false"
             signingConfig = if (unsignedBuild) {
                 null
             } else if (releaseSigningConfigured) {
