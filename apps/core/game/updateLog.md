@@ -8,7 +8,7 @@
 
 # 上游 1.11.7 更新内容
 
-※ 我们继续和一些优秀且具有开源精神的代码编写者保持着积极合作。在这一版本中，我们通过接收GitHub的Pull Request，整合了 @7Ji @Foxissimo-8 @linmuxi222 @mengxinzxz @rintim @WeiqiaoCode @wwwasdea @Xiazhiliao @YYUZDS @zziyoo 共10位贡献者编写的代码（排名不分先后）。
+※ 我们继续和一些优秀且具有开源精神的代码编写者保持着积极合作。在这一版本中，我们通过接收GitHub的Pull Request，整合了 7Ji、Foxissimo-8、linmuxi222、mengxinzxz、rintim、WeiqiaoCode、wwwasdea、Xiazhiliao、YYUZDS、zziyoo 共10位贡献者编写的代码（排名不分先后）。
 
 # 新武将
 
