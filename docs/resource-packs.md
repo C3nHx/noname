@@ -21,6 +21,8 @@
 
 资源服务应允许 `Access-Control-Allow-Origin: *`，正确返回加密分卷并支持 HTTPS。跨域下载不携带网页的认证信息。素材请求和分卷下载不需要经由游戏服务器转发。已有资源分卷不覆盖，内容变化或密钥轮换会生成新文件名。
 
+发布仓库与实际下载站可以分开配置。`NONAME_RESOURCE_BASE_URL` 保留版本仓库入口，`NONAME_RESOURCE_DELIVERY_URL` 指向支持 CORS 的 OSS、COS 或 CDN 目录。客户端默认使用分发地址，手动设置的下载地址优先。两个目录使用相同的分卷文件名和密文内容，解密规则不变。地址改变会更新核心构建标识，让浏览器刷新清单；已经缓存的素材仍按明文哈希复用。
+
 网页部署只需上传 `dist`。使用 HTTPS 或 localhost，以启用持久缓存和资源 Worker。保留 `resource-worker.js`、`resource-manifest.json`、`resource-version.json` 和 `noname/resources` 的相对位置。网页可以使用静态托管，核心文件读取和目录发现从构建清单获得；文件写入仍遵循原文件服务权限，资源下载不会写入服务器。
 
 每次打开网页先检查很小的 `resource-version.json`。构建标识变化时才刷新清单并切换核心缓存，避免长期命中旧代码。素材按自身哈希保存，核心更新不会让未变化的素材重新下载。

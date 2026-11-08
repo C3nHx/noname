@@ -163,6 +163,19 @@ test("rebuilding a full runtime keeps its core version and encrypted resource ca
 	assert.equal(rebuilt.core.includes("resource-manifest.json"), false);
 });
 
+test("switching the delivery host refreshes the core cache without changing encrypted resources", async t => {
+	const { directory, full, resources, manifest, key } = await fixture(t);
+	const deliveryURL = "https://resources.example/noname/v1/";
+	await splitRuntimeResources({ directory: full, resourceDirectory: resources, fullDirectory: path.join(directory, "full-copy"), profile: "full", partBytes: 20, key, deliveryURL });
+	const updated = parseResourceManifest(JSON.parse(await fs.readFile(path.join(full, "resource-manifest.json"), "utf8")));
+	assert.notEqual(updated.buildId, manifest.buildId);
+	assert.equal(updated.deliveryURL, deliveryURL);
+	assert.deepEqual(updated.packs, manifest.packs);
+	for (const address of ["file:///resources/", "https://user:password@resources.example/", "not a URL"]) {
+		assert.throws(() => parseResourceManifest({ ...updated, deliveryURL: address }), /分发地址/);
+	}
+});
+
 test("resource paths cannot escape the runtime or overwrite code", async t => {
 	const { manifest } = await fixture(t);
 	for (const filename of ["../a.png", "/a.png", "extension/../a.png", "a\\b.png"]) assert.throws(() => resourceURL("https://resources.example/", filename), /路径/);

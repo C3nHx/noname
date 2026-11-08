@@ -85,7 +85,7 @@ export async function prepareResourcePacks({ lib, game }) {
 			if (!storage) throw new Error("此浏览器不支持持久资源缓存，请使用 HTTPS 或本地客户端");
 			const pack = manifest.packs.find(pack => pack.id === id);
 			if (!pack) throw new Error("资源包不存在");
-			const source = new URL(state.source || manifest.baseURL, root);
+			const source = new URL(state.source || manifest.deliveryURL || manifest.baseURL, root);
 			if (!["https:", "http:"].includes(source.protocol) || source.username || source.password) throw new Error("请填写有效的公开资源地址");
 			await navigator.storage?.persist?.().catch(() => false);
 			const decrypt = await (decryptor ??= (async () => {
@@ -189,7 +189,7 @@ function mountResourcePanel(manager, save) {
 	};
 	const source = document.createElement("input");
 	source.type = "url";
-	source.value = manager.state.source || manager.manifest.baseURL;
+	source.value = manager.state.source || manager.manifest.deliveryURL || manager.manifest.baseURL;
 	source.setAttribute("aria-label", "公开资源下载地址");
 	source.onchange = async () => {
 		manager.state.source = source.value.trim();

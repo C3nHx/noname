@@ -22,7 +22,7 @@ async function inventory(directory, prefix = "") {
 	return files;
 }
 
-export async function splitRuntimeResources({ directory, resourceDirectory, fullDirectory, key, profile = "lite", baseURL = `${repositoryURL}/releases/download/v${forkVersion}/`, partBytes = 24 * 1024 * 1024 }) {
+export async function splitRuntimeResources({ directory, resourceDirectory, fullDirectory, key, profile = "lite", baseURL = `${repositoryURL}/releases/download/v${forkVersion}/`, deliveryURL = "", partBytes = 24 * 1024 * 1024 }) {
 	const keyConfig = resourceKeyConfig(key);
 	const decrypt = await createResourceDecryptor(keyConfig, keyConfig.keyId);
 	const root = path.resolve(directory);
@@ -92,13 +92,14 @@ export async function splitRuntimeResources({ directory, resourceDirectory, full
 		await flush();
 	}
 	const coreHash = createHash("sha256");
+	coreHash.update(JSON.stringify({ baseURL, deliveryURL }));
 	for (const filename of core) coreHash.update(filename).update(await fs.readFile(path.join(root, filename)));
 	const buildId = coreHash.digest("hex");
 	const version = JSON.stringify({ schemaVersion: 1, version: forkVersion, buildId }) + "\n";
 	core.push("resource-version.json");
 	await fs.writeFile(path.join(root, "resource-version.json"), version);
 	await fs.writeFile(path.join(fullDirectory, "resource-version.json"), version);
-	const manifest = parseResourceManifest({ schemaVersion: 2, encryption: { algorithm: "AES-256-GCM", keyId: keyConfig.keyId }, version: forkVersion, buildId, profile, baseURL, core, packs: [...groups.values()] });
+	const manifest = parseResourceManifest({ schemaVersion: 2, encryption: { algorithm: "AES-256-GCM", keyId: keyConfig.keyId }, version: forkVersion, buildId, profile, baseURL, ...(deliveryURL ? { deliveryURL } : {}), core, packs: [...groups.values()] });
 	const serialized = JSON.stringify(manifest) + "\n";
 	await fs.writeFile(path.join(root, "resource-manifest.json"), serialized);
 	await fs.writeFile(path.join(resourceDirectory, "resource-manifest.json"), serialized);

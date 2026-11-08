@@ -27,6 +27,8 @@ node scripts/publish-resources-cnb.mjs --repo c4nhx/noname-resources
 
 本次实测 CNB 的 Release 入口和最终文件域均拒绝带外站 Origin 的浏览器请求，返回 403。无 Origin 的服务端下载和校验正常，因此发布成功不代表网页能直接读取这些附件。Web 端还需要支持 CORS 的分发服务、服务端转发或下载后导入；不能仅凭响应头中的 CORS 声明判断可用性。
 
+使用独立分发服务时，将相同的 `.nrp` 和公开清单同步到版本目录，再通过 `NONAME_RESOURCE_DELIVERY_URL` 设置该目录。`NONAME_RESOURCE_BASE_URL` 继续指向 CNB Release，发布器仍在 CNB 校验源文件。只设置地址不会自动创建云存储或同步文件，必须先完成上传和实际浏览器跨域验证。
+
 已下载文件按明文哈希复用，换资源域或重新加密不会让未变化的本地文件重新下载。内容或密钥版本变化会产生新分卷名。保留旧 Release，供旧客户端继续下载。
 
 GitHub Release 工作流仍可提供加密资源镜像。客户端由构建时的 `NONAME_RESOURCE_BASE_URL` 或资源面板中的地址选择下载源，当前没有自动切换多源功能。

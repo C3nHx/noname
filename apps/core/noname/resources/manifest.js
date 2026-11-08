@@ -54,6 +54,15 @@ export function cacheKey(root, sha256) {
 export function parseResourceManifest(value) {
 	if (!value || typeof value !== "object" || value.schemaVersion !== 2 || !["lite", "full"].includes(value.profile) || typeof value.version !== "string" || !/^[a-f0-9]{64}$/.test(value.buildId) || typeof value.baseURL !== "string" || !Array.isArray(value.core) || !Array.isArray(value.packs)) throw new Error("资源清单格式不受支持");
 	if (value.encryption?.algorithm !== "AES-256-GCM" || !/^[a-f0-9]{32}$/.test(value.encryption.keyId)) throw new Error("资源加密配置无效");
+	if (value.deliveryURL !== undefined) {
+		let url;
+		try {
+			url = new URL(value.deliveryURL);
+		} catch {
+			throw new Error("资源分发地址无效");
+		}
+		if (typeof value.deliveryURL !== "string" || !["https:", "http:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error("资源分发地址无效");
+	}
 	if (!value.core.every(validResourcePath)) throw new Error("核心文件路径无效");
 	const paths = new Set(value.core);
 	const ids = new Set();
