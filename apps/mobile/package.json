@@ -13,6 +13,7 @@
     "sync:ios": "tsx scripts/sync.ts ios",
     "build:android": "tsx scripts/build-android.ts",
     "build:ios": "tsx scripts/build-ios.ts",
+    "test:android-startup": "node --import tsx --experimental-test-module-mocks --test test/android-startup.test.mjs",
     "lint": "pnpm eslint src/**"
   },
   "dependencies": {

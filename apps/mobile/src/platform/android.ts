@@ -25,13 +25,6 @@ let fs: SafFsPlugin;
 
 export async function initializeAndroid(): Promise<{ fs: MinimalFileSystem }> {
 	fs = registerPlugin<SafFsPlugin>("SafFs");
-	let access = await fs.hasAccess();
-	if (!access.granted) {
-		access = await fs.requestAccess();
-	}
-	if (!access.granted) {
-		throw new Error("未授权游戏目录");
-	}
 	// SafFs拥有方式then，直接返回会视为PromiseLike，得包一层
 	return { fs };
 }

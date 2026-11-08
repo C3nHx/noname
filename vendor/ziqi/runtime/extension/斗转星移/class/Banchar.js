@@ -2,6 +2,7 @@ import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import dzxy from "./Dzxy.js";
 import { DBtn, DEle } from "./baseEle.js";
 import { ScreenAdapter } from "./ScreenAdapter.js";
+import { applyBundledAiBans } from "../../../noname/util/bundled-config.js";
 /**方案框 */
 export class PlanFrame extends DEle {
 	constructor() {
@@ -190,6 +191,8 @@ export class Character extends DBtn {
 export class BanChar {
 	/**修改武将包并加入顶部按钮 */
 	modCharPack() {
+		if (lib.config[`${dzxy.dz}autoOpenPack`]) this.applyPlans();
+		applyBundledAiBans(lib, dzxy.originSaveConfig.bind(game));
 		//解决启动页重启问题
 		if (!dzxy.loadedSplash) dzxy.loadedSplash = [];
 		let fixRestart = true; //出现报错的话把true改成false
@@ -226,7 +229,6 @@ export class BanChar {
 				lib.config.characters = lib.config[`${dzxy.dz}plan${n}`]["pack"].slice();
 			}
 		}
-		if (lib.config[`${dzxy.dz}autoOpenPack`] && lib.config[`${dzxy.dz}plan4`]?.["banList"] != undefined) dzxy.originSaveConfig("forbidai_user", lib.config[`${dzxy.dz}plan4`]["banList"].slice());
 	}
 	/** 禁将功能判断模式重启 */
 	checkReload() {
@@ -362,17 +364,19 @@ export class BanChar {
 		//打开页面时自动点击第一个
 		this.planBtnClick(this.planFrame.btnList[0], flag);
 	}
+	applyPlans() {
+		const modePlan = lib.config[`${dzxy.dz}modePlan`] || {};
+		const connectPlan = lib.config[`${dzxy.dz}plan${modePlan.connect}`];
+		for (let mode of lib.config.all.mode) {
+			const plan = lib.config[`${dzxy.dz}plan${modePlan[mode]}`];
+			if (plan) dzxy.originSaveConfig(mode + "_banned", plan.banList.slice());
+			if (connectPlan) dzxy.originSaveConfig("connect_" + mode + "_banned", connectPlan.banList.slice());
+		}
+		lib.config.banned = lib.config[lib.config.mode + "_banned"] || [];
+	}
 	/**退出保存 */
 	backBtnClick(flag) {
-		//●保存每个模式的禁将
-		let cn = lib.config[`${dzxy.dz}modePlan`]["connect"];
-		var ct = lib.config[`${dzxy.dz}plan${cn}`]["banList"]; 
-		for (let mode of lib.config.all.mode) {
-			let n = lib.config[`${dzxy.dz}modePlan`][mode];
-			dzxy.originSaveConfig(mode + "_banned", lib.config[`${dzxy.dz}plan${n}`]["banList"]);
-			game.saveConfig("connect_" + mode + "_banned", ct);
-		}
-
+		this.applyPlans();
 		//保存每个方案开启的武将包
 		for (let i of this.planFrame.btnList) {
 			if (!i.tempPack) continue;
@@ -384,7 +388,7 @@ export class BanChar {
 			dzxy.saveCF("plan" + i.index);
 		}
 		//保存仅点将可用
-		dzxy.originSaveConfig("forbidai_user", lib.config[`${dzxy.dz}plan4`]["banList"]);
+		applyBundledAiBans(lib, dzxy.originSaveConfig.bind(game));
 		this.bigBg.delete();
 	}
 	//编辑

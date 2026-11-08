@@ -3,6 +3,7 @@ package com.libnoname.noname
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -35,10 +36,16 @@ class SafOverlayStore(private val context: Context) {
     }
 
     fun root(): DocumentFile {
-        val uri = rootUri ?: throw IllegalStateException("尚未授权游戏目录")
-        if (!hasPersistedAccess()) throw IllegalStateException("游戏目录授权已失效")
-        return DocumentFile.fromTreeUri(context, uri)
-            ?: throw IllegalStateException("无法打开游戏目录")
+        val uri = rootUri
+        if (uri != null && hasPersistedAccess()) {
+            return DocumentFile.fromTreeUri(context, uri)
+                ?: throw IllegalStateException("无法打开游戏目录")
+        }
+        val directory = File(context.filesDir, "game")
+        if (!directory.isDirectory && !directory.mkdirs()) {
+            throw IllegalStateException("无法创建应用游戏目录")
+        }
+        return DocumentFile.fromFile(directory)
     }
 
     fun segments(path: String): List<String> {
@@ -58,15 +65,14 @@ class SafOverlayStore(private val context: Context) {
         return segments(path).joinToString("/")
     }
 
-    fun findSaf(path: String, pnpmCompat: Boolean = false): DocumentFile? {
-        val exact = findSafExact(path)
+    fun findOverlay(path: String, pnpmCompat: Boolean = false): DocumentFile? {
+        val exact = findOverlayExact(path)
         if (exact != null || !pnpmCompat || !path.contains(".pnpm")) return exact
-        return findSafExact(path.replace(".pnpm", "_pnpm"))
+        return findOverlayExact(path.replace(".pnpm", "_pnpm"))
     }
 
-    fun findSafExact(path: String): DocumentFile? {
+    private fun findOverlayExact(path: String): DocumentFile? {
         val parts = segments(path)
-        if (!hasPersistedAccess()) return null
         return try {
             parts.fold(root() as DocumentFile?) { current, name ->
                 current?.findFile(name)
@@ -76,7 +82,7 @@ class SafOverlayStore(private val context: Context) {
         }
     }
 
-    fun openSafInput(file: DocumentFile): InputStream? {
+    fun openOverlayInput(file: DocumentFile): InputStream? {
         return context.contentResolver.openInputStream(file.uri)
     }
 

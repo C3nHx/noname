@@ -1,19 +1,10 @@
 import { lib, game, ui, get, ai, _status } from '../../noname.js';
 import { packs } from "./character/character.js";
 import { aReady } from "./character/aReady.js";
+import { bundledSettingKeys, bundledAiBans as forbidaiList, applyBundledAiBans } from '../../noname/util/bundled-config.js';
 export const type = 'extension';
 export default function () {
 	if(!lib.config.asset_version) game.saveConfig('asset_version', '无');//不再提示是否下载图片和字体素材
-    const forbidaiList=[
-        'eu_kaisa',
-		'pe_que',
-		'hm_shen_huangfusong',
-		'ca_shen_caocao',
-		'zombie_jiaxu',
-		'lord_goblin',
-		'shinin_wuguotai',
-		'pe_jun_caopi',
-    ];
 	const githubUrl = 'https://pd.qq.com/s/sydwvfnk?b=9';
 	const copyHandler = `navigator.clipboard.writeText('${githubUrl}').then(() => alert('已成功复制，粘贴到浏览器打开')).catch(() => alert('复制失败，请截图保存二维码'))`;
 
@@ -63,15 +54,15 @@ window.zqjc = {
         if (window.isImportingConfig) return;
         window.isImportingConfig = true;
         try {
-            const preset = JSON.parse(await game.promises.readFileAsText('extension/懒人包/config/config.json'));
-            const appearanceKeys = new Set(['layout', 'theme', 'cardback_style', 'cardshape', 'hp_style', 'menu_style', 'player_border', 'radius_size', 'image_background', 'image_character', 'card_font', 'font_size']);
+            const preset = JSON.parse(await game.promises.readFileAsText('game/config.json'));
+            const appearanceKeys = new Set(bundledSettingKeys);
             for (const [key, value] of Object.entries(preset)) {
-                if (appearanceKeys.has(key) || /^(?:extension_(?:十周年UI|千幻聆音|皮肤切换|斗转星移)_|qhly_)/.test(key)) {
+                if (appearanceKeys.has(key)) {
                     await game.promises.saveConfig(key, value);
                 }
             }
             await game.promises.saveConfig('version', lib.version);
-            alert('懒人包外观设置已恢复，即将重启游戏。');
+            alert('懒人包推荐设置已恢复，即将重启游戏。');
             game.reload();
         } finally { window.isImportingConfig = false; }
     },
@@ -189,10 +180,7 @@ window.zqjc = {
             }*/
             if (!lib.config.extension_十周年UI_enable || ["chess", "tafang"].includes(lib.config.mode)) game.saveConfig("show_round_menu", true);
 
-            const bool=lib.config.extension_懒人包_zq_aiforbidai_characters;
-            game.saveConfig('forbidai_user_identity', bool);
-            lib.config.forbidai_user[bool ? "addArray" : "removeArray"](forbidaiList);
-            game.saveConfig("forbidai_user", lib.config.forbidai_user);
+            applyBundledAiBans(lib, game.saveConfig.bind(game));
 
            	lib.onfree.push(function(){
             	if(_status.connectMode) setTimeout(() => {
@@ -508,6 +496,10 @@ lib.skill._swReplaceHandCards = {
 			    name: '<b><font color=\"#99FF75\">部分武将AI禁选',
 			    intro: '部分武将禁止AI使用，点击下方查看禁用列表',
 			    init: true,
+			    onclick: function (item) {
+			        game.saveConfig('extension_懒人包_zq_aiforbidai_characters', item);
+			        applyBundledAiBans(lib, game.saveConfig.bind(game));
+			    },
 			},
 			zq_aiforbidai_characters2: {
 			    name: '<ins><font color=\"#FFFACD\">点击查看AI禁选列表</ins>',

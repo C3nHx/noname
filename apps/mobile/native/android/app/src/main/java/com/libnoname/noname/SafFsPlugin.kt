@@ -14,6 +14,7 @@ import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.nio.charset.Charset
 
 @CapacitorPlugin(name = "SafFs")
@@ -45,13 +46,13 @@ class SafFsPlugin : Plugin() {
     @ActivityCallback
     fun handleOpenDocumentTree(call: PluginCall, result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK) {
-            call.reject("未选择游戏目录")
+            call.resolve(accessResult())
             return
         }
 
         val uri = result.data?.data
         if (uri == null) {
-            call.reject("未获取到目录授权")
+            call.resolve(accessResult())
             return
         }
 
@@ -73,7 +74,7 @@ class SafFsPlugin : Plugin() {
     fun statEntry(call: PluginCall) {
         wrap(call) {
             val entryName = call.getString("entryName") ?: throw IllegalArgumentException("缺少 entryName")
-            val file = store.findSaf(entryName)
+            val file = store.findOverlay(entryName)
             JSObject().put("type", when {
                 file != null && file.isFile -> "file"
                 file != null && file.isDirectory -> "directory"
@@ -128,7 +129,7 @@ class SafFsPlugin : Plugin() {
     fun removeFile(call: PluginCall) {
         wrap(call) {
             val fileName = call.getString("fileName") ?: throw IllegalArgumentException("缺少 fileName")
-            val file = store.findSaf(fileName)
+            val file = store.findOverlay(fileName)
             if (file == null) {
                 if (store.assetType(fileName) != EntryType.NONE) {
                     throw IllegalArgumentException("内置资源只读: $fileName")
@@ -151,10 +152,10 @@ class SafFsPlugin : Plugin() {
                 .filter { entry -> isVisible(entry.name) }
                 .forEach { entry -> entries[entry.name] = entry.isDirectory }
 
-            val safFolder = store.findSaf(dir)
-            if (safFolder != null) {
-                if (!safFolder.isDirectory) throw IllegalArgumentException("$dir 不是文件夹")
-                safFolder.listFiles()
+            val overlayFolder = store.findOverlay(dir)
+            if (overlayFolder != null) {
+                if (!overlayFolder.isDirectory) throw IllegalArgumentException("$dir 不是文件夹")
+                overlayFolder.listFiles()
                     .filter { file -> !file.name.isNullOrEmpty() && isVisible(file.name!!) }
                     .forEach { file -> entries[file.name!!] = file.isDirectory }
             } else if (entries.isEmpty() && store.assetType(dir) == EntryType.NONE) {
@@ -186,7 +187,7 @@ class SafFsPlugin : Plugin() {
     fun removeDir(call: PluginCall) {
         wrap(call) {
             val dir = call.getString("dir") ?: throw IllegalArgumentException("缺少 dir")
-            val folder = store.findSaf(dir)
+            val folder = store.findOverlay(dir)
             if (folder == null) {
                 if (store.assetType(dir) != EntryType.NONE) {
                     throw IllegalArgumentException("内置资源只读: $dir")
@@ -204,10 +205,10 @@ class SafFsPlugin : Plugin() {
     }
 
     private fun openOverlayInput(path: String): java.io.InputStream {
-        val safFile = store.findSaf(path)
-        if (safFile != null) {
-            if (!safFile.isFile) throw IllegalArgumentException("$path 不是文件")
-            return store.openSafInput(safFile) ?: throw IllegalStateException("无法读取文件")
+        val file = store.findOverlay(path)
+        if (file != null) {
+            if (!file.isFile) throw IllegalArgumentException("$path 不是文件")
+            return store.openOverlayInput(file) ?: throw IllegalStateException("无法读取文件")
         }
 
         return store.openAsset(path) ?: throw IllegalArgumentException("$path 不存在")
@@ -251,6 +252,12 @@ class SafFsPlugin : Plugin() {
         if (existing != null) {
             if (!existing.isFile) throw IllegalArgumentException("$path 不是文件")
             return existing
+        }
+
+        if (parent.uri.scheme == "file") {
+            val file = File(requireNotNull(parent.uri.path), name)
+            if (!file.createNewFile()) throw IllegalStateException("创建文件失败: $path")
+            return DocumentFile.fromFile(file)
         }
 
         val uri = DocumentsContract.createDocument(

@@ -50,6 +50,7 @@ async function main() {
 		{ src: "font", dest: "" },
 		{ src: "theme", dest: "" },
 		{ src: "game", dest: "" },
+		{ src: "noname/util/bundled-config.js", dest: "noname/util" },
 		{ src: "noname", dest: "src" },
 		{ src: "typings", dest: "src" },
 		{ src: "noname.js", dest: "src" },

@@ -4,7 +4,7 @@ import { banChar } from "./class/Banchar.js";
 import { ChooseChar_mod } from "./class/ChooseChar_mod.js";
 import { ChooseChar } from "./class/ChooseChar.js";
 import { PWGrade, GradeImg } from "./class/PWGrade.js";
-import { Other } from "./class/other.js";
+import { Other } from "./class/Other.js";
 import { charPage, skinPage } from "./class/Char_skin.js";
 import { Dsplash } from "./class/Dsplash.js";
 import { Character3 } from "./class/Mvp.js"

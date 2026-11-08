@@ -28,6 +28,8 @@ export const defaultConfig = {
 	server: false,
 	port: 8089,
 	debug: false,
+	readonly: false,
+	host: "localhost",
 	dirname: cwd(),
 };
 
@@ -67,9 +69,18 @@ export default function createApp(config: Partial<typeof defaultConfig> = {}) {
 	});
 
 	const { ensureSafe, wrap } = createFsHandler(cfg.dirname);
+	const writeRoutes = new Set(["/createDir", "/removeDir", "/writeFile", "/removeFile"]);
+
+	if (cfg.readonly) {
+		app.addHook("onRequest", async (req, reply) => {
+			if (writeRoutes.has(req.routeOptions.url ?? "")) {
+				return reply.code(403).send(failedJson(403, "This deployment provides read-only game resources"));
+			}
+		});
+	}
 
 	app.register(cors, {
-		origin: "*",
+		origin: cfg.readonly ? false : "*",
 		methods: ["GET", "POST", "OPTIONS"],
 	});
 
@@ -221,7 +232,7 @@ export default function createApp(config: Partial<typeof defaultConfig> = {}) {
 	// } else {
 	// 	app.listen(config.port, callback);
 	// }
-	app.listen({ port: cfg.port }, callback);
+	app.listen({ port: cfg.port, host: cfg.host }, callback);
 
 	return app;
 }

@@ -23744,8 +23744,8 @@
     },
     {
       "path": "extension/十周年UI/ui/styles/lbtn/window/shousha.css",
-      "bytes": 12472,
-      "sha256": "3b3a8d0514bfa74d42bc9a0c2e3dc5405de7fe4b17d117462cfe039109086b71"
+      "bytes": 12475,
+      "sha256": "1c76bf034479c01b051c24619a79236b3ce6c6cff257840dabc9b4cd8108ad9a"
     },
     {
       "path": "extension/十周年UI/ui/styles/lbtn/window/xinsha.css",
@@ -33684,8 +33684,8 @@
     },
     {
       "path": "extension/懒人包/extension.js",
-      "bytes": 25419,
-      "sha256": "8e2ccbbab297ff7a51dc7dd8c21d9528f9ab382d277541f83e7cb107bc58411e"
+      "bytes": 25048,
+      "sha256": "e03ee005e06a0c6bd6f6c3318d8bfcdea7a5d6b19e5783da77a3ac3200c052e5"
     },
     {
       "path": "extension/懒人包/info.json",
@@ -34204,8 +34204,8 @@
     },
     {
       "path": "extension/斗转星移/class/Banchar.js",
-      "bytes": 32171,
-      "sha256": "1e5645ee797c93dc96430c51f432ca73d295a367839a59fd84d494e0d3444ac9"
+      "bytes": 32292,
+      "sha256": "8da6101fcaa0f85aaac3771a3183d1d346b709ce8a5e6bd5fd622fb2b2a02eb9"
     },
     {
       "path": "extension/斗转星移/class/Char_skin.js",
@@ -34214,13 +34214,13 @@
     },
     {
       "path": "extension/斗转星移/class/ChooseChar.js",
-      "bytes": 45835,
-      "sha256": "0681fc05fd2263882f094b8bb32a9beb984e9ad2fdf657c6539c2104bf170d93"
+      "bytes": 45607,
+      "sha256": "9bd3a3b24658f0160f5ea2f14e10e84c86c8f6d5662b578f7a906ff481381805"
     },
     {
       "path": "extension/斗转星移/class/ChooseChar_mod.js",
       "bytes": 82813,
-      "sha256": "8870fdb35da302d838dc8b88fca1623c3e2df013ebce307dc78fa4f8a8355b8b"
+      "sha256": "fa41769636edf7264017154c0650a14d8e2875c3acf8cd4b376eb34bb8646223"
     },
     {
       "path": "extension/斗转星移/class/DoudizhuStats.js",
@@ -34240,7 +34240,7 @@
     {
       "path": "extension/斗转星移/class/Dzxy.js",
       "bytes": 26592,
-      "sha256": "424fc21f0b6c2f6567aa8590845c502f750a6b1bcb130ace20f32d0f96496272"
+      "sha256": "b66e2dfea11370a92f61bb2695b89f641808f2757571f0ba4b6abc8a053fff73"
     },
     {
       "path": "extension/斗转星移/class/Mvp.js",
@@ -34410,7 +34410,7 @@
     {
       "path": "extension/斗转星移/extension.js",
       "bytes": 9297,
-      "sha256": "8887fb66de37006a2c18f0e3c13de849efaa172fb79d48ff930577a265096401"
+      "sha256": "a0ec633388a9102dae51cb2654987abf882b44de0d60b1fe95c19a3d12ee7881"
     },
     {
       "path": "extension/斗转星移/image/banChar/adv_table_headbg.png",

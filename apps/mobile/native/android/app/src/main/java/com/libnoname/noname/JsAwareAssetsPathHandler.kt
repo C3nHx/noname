@@ -16,10 +16,10 @@ class JsAwarePathHandler(
     override fun handle(path: String): WebResourceResponse? {
         return try {
             val normalized = store.normalize(path)
-            val safFile = store.findSaf(normalized, pnpmCompat = true)
+            val file = store.findOverlay(normalized, pnpmCompat = true)
 
-            if (safFile != null && safFile.isFile) {
-                val stream = store.openSafInput(safFile)
+            if (file != null && file.isFile) {
+                val stream = store.openOverlayInput(file)
                 if (stream != null) {
                     return WebResourceResponse(guessMime(normalized), "UTF-8", stream)
                 }

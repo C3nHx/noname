@@ -290,13 +290,7 @@ export class ChooseChar {
   }
   /**获取换将时剩余武将 */
   getRepChar() {
-    if (this.allRepChar == undefined) {
-      // this.allRepChar = Object.keys(lib.character).filter(c => !lib.character[c][4] || !lib.character[c][4].includes('unseen'));
-      this.allRepChar = Object.keys(lib.character).filter(c => {
-        return !lib.filter.characterDisabled(c);
-      });
-    }
-    let list = this.allRepChar.slice();
+    let list = Object.keys(lib.character).filter(c => !lib.filter.characterDisabled(c));
     let currentChars = this.bigBg.querySelectorAll('.wujiang-char-base-back');
     let list2 = [];
     for (let i of currentChars) {
@@ -654,8 +648,7 @@ export class ChooseChar {
       this.deleteSkillTip();
       //背景
       if (this.subBg) {
-        this.subBg.show();
-        return;
+        this.subBg.remove();
       }
       this.subBg = dzxy.create.bigBg(document.body, 'image/chooseCharacter/ol_bg.jpg', () => this.deleteSkillTip());
       this.subBg.addEventListener('touchmove', (e) => {
@@ -805,7 +798,7 @@ export class ChooseChar {
             }
           }
         } catch (e) { }
-        packBtn.charList = recentCharList;
+        packBtn.charList = recentCharList.filter(id => allCharList.includes(id));
         packBtn.setText();
         packBtn.setClick(() => {
           packClick(packBtn);

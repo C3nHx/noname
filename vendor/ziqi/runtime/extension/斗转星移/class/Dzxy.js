@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import { DBtn } from "./baseEle.js";
 import { Predzxy } from "./Predzxy.js";
-import { Danmu } from "./other.js";
+import { Danmu } from "./Other.js";
 import playerConfig from "../playerConfig.js";
 class Dzxy extends Predzxy {
 	/**扩展路径 */

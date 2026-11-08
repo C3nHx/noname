@@ -2,9 +2,9 @@
 
 ## 一、安装环境（前置条件）
 
-### Node.js (^20.19.0 || >=22.12.0)
+### Node.js 22 LTS（最低 22.18.0）
 
-打开 [Node.js 官方下载页面](https://nodejs.org/)，找到最新的版本。
+安装仓库根目录 `.nvmrc` 指定的 Node.js 22 LTS 版本。已有 nvm 时，在仓库根目录运行 `nvm install` 和 `nvm use`；nvm-windows 需将 `.nvmrc` 中的版本号作为参数传入。也可从 [Node.js 官方下载页面](https://nodejs.org/) 下载对应安装包。
 
 - Windows：下载 `.msi` 安装包，点击“下一步”直到安装完成。
 - macOS：下载 `.pkg` 安装包，双击安装。

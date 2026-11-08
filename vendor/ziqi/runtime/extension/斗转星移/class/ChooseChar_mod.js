@@ -2,7 +2,7 @@ import { lib, game, ui, get, ai, _status } from "../../../noname.js";
 import { ChooseChar, ChooseChar_doudizhu, ChooseChar_versus, ChooseChar_doudizhu_huanle } from "./ChooseChar.js";
 import { SelChrFrame } from "./ChooseChar.js";
 import { Character2 } from "./ChooseChar.js";
-import { Timebar } from "./other.js";
+import { Timebar } from "./Other.js";
 
 dzxy.Timebar = Timebar;
 dzxy.Character2 = Character2;

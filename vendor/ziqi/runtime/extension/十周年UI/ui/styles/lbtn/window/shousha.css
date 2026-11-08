@@ -496,7 +496,7 @@
 	--h: calc(var(--w) * 169 / 365);
 	width: var(--w);
 	height: var(--h);
-	background-image: url("../../../assets/lbtn/SSCD/tuoguan2.png");
+	background-image: url("../../../assets/lbtn/shousha/tuoguan2.png");
 	background-size: 100% 100%;
 	-webkit-text-fill-color: transparent;
 	text-shadow: none !important;
