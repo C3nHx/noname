@@ -10,6 +10,8 @@ gh workflow run installers.yml --ref fork -f windows=true -f android=true -f ios
 
 Windows 安装程序使用正式 NSIS 构建。Android 和 iOS 使用已有签名材料，缺少材料时先生成明确标注为 unsigned 的编译产物，再将对应任务标为失败。unsigned APK、IPA 都不能作为已签名安装程序使用，也不会自动替换成新建的测试签名。
 
+需要本地安装与自签侧载测试包时，显式开启 `android_test_signing` 并关闭 `require_signing`。Android 使用 SDK 的测试证书生成可安装的 `.android.test.apk`，iOS 输出需自行签名侧载的 `.ios.unsigned.ipa`。云端测试证书不作为正式更新证书使用。
+
 ## Android 签名
 
 在本 fork 的 Actions secrets 配置已有密钥库的四项信息：

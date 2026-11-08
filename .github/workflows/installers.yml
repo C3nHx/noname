@@ -15,6 +15,10 @@ on:
         description: Android APK
         type: boolean
         default: true
+      android_test_signing:
+        description: Explicitly allow the Android SDK test certificate
+        type: boolean
+        default: false
       ios:
         description: iOS IPA
         type: boolean
@@ -98,6 +102,8 @@ jobs:
           java-version: "21"
           cache: gradle
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - name: Install Android SDK
         run: |
           yes | sdkmanager --licenses >/dev/null || true
@@ -128,6 +134,7 @@ jobs:
       - name: Build Android APK
         env:
           SIGNED: ${{ steps.signing.outputs.configured }}
+          TEST_SIGNING: ${{ inputs.android_test_signing }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -138,13 +145,24 @@ jobs:
           if [[ "$SIGNED" == true ]]; then
             pnpm -F @noname/mobile build:android
             APK="apps/mobile/native/android/app/build/outputs/apk/release/app-release.apk"
-            "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
             cp "$APK" "installers/noname.${VER}.android.apk"
+            MODE=existing
+          elif [[ "$TEST_SIGNING" == true ]]; then
+            pnpm -F @noname/mobile build:android
+            APK="apps/mobile/native/android/app/build/outputs/apk/release/app-release.apk"
+            cp "$APK" "installers/noname.${VER}.android.test.apk"
+            MODE=test
           else
             pnpm -F @noname/mobile build:android --unsigned
             cp apps/mobile/native/android/app/build/outputs/apk/release/app-release-unsigned.apk "installers/noname.${VER}.android.unsigned.apk"
+            MODE=unsigned
           fi
-          printf '{"signed":%s,"installable":%s}\n' "$SIGNED" "$SIGNED" > installers/android-signing-status.json
+          INSTALLABLE=false
+          if [[ "$MODE" != unsigned ]]; then
+            "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
+            INSTALLABLE=true
+          fi
+          printf '{"signature":"%s","installable":%s}\n' "$MODE" "$INSTALLABLE" > installers/android-signing-status.json
           cd installers
           sha256sum *.apk > android.sha256
           ls -lh *.apk
@@ -156,7 +174,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
       - name: Require existing release signature
-        if: ${{ inputs.require_signing && steps.signing.outputs.configured != 'true' }}
+        if: ${{ inputs.require_signing && steps.signing.outputs.configured != 'true' && !inputs.android_test_signing }}
         run: |
           echo "::error::Existing Android signing materials were not supplied. The compiled unsigned APK cannot be installed."
           exit 1
