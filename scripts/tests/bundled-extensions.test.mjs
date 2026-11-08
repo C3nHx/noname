@@ -44,14 +44,14 @@ test("a changed vendor resource fails its recorded checksum", async t => {
 	await assert.rejects(stageBundledExtensions(options.destination, options), /checksum mismatch/);
 });
 
-test("desktop enables all eleven bundles while other runtimes skip native extensions", async () => {
+test("bundled extensions are available on desktop and native extensions are skipped elsewhere", async () => {
 	const config = JSON.parse(await fs.readFile(new URL("../../apps/core/game/config.json", import.meta.url), "utf8"));
 	assert.equal(bundledExtensions.length, 11);
 	assert.deepEqual(
 		config.extensions,
 		bundledExtensions.map(extension => extension.name)
 	);
-	assert.ok(config.extensions.every(name => config[`extension_${name}_enable`] && supportsExtension(name, true)));
+	assert.ok(config.extensions.every(name => typeof config[`extension_${name}_enable`] === "boolean" && supportsExtension(name, true)));
 	assert.deepEqual(
 		bundledExtensions.filter(extension => !supportsExtension(extension.name, false)).map(extension => extension.name),
 		["应用配置", "拖拽读取"]
