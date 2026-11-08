@@ -1,0 +1,1 @@
+图片复制到以下两个位置：1.游戏本体的image/card文件夹里。2.EngEX扩展里的images/ass文件夹里(若没安装EngEX扩展就不用了)。

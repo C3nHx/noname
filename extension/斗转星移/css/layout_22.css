@@ -1,0 +1,161 @@
+/*2v2*/
+#window>#arena[data-number='4'][data-layout-twotwo='previous']>.player[data-position='1'] {
+  left: auto;
+  right: calc(36% - 64px);
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='previous']>.player[data-position='2'] {
+  left: auto;
+  right: calc(50% - 64px);
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='previous']>.player[data-position='3'] {
+  left: calc(11.5% - 64px);
+  right: auto;
+  top: auto;
+  bottom: calc(61% - 85px);
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next']>.player[data-position='1'] {
+  left: auto;
+  /* right: 25px; */
+  top: auto;
+  bottom: calc(61% - 85px);
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next']>.player[data-position='2'] {
+  left: calc(36% - 64px);
+  right: auto;
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next']>.player[data-position='3'] {
+  left: calc(22% - 64px);
+  right: auto;
+  top: calc(4% + 40px);
+  bottom: auto;
+}
+
+/* 欢杀处理 */
+#window>#arena[data-number='4'][data-layout-twotwo='previous'][data-new-decade-style='babysha']>.player[data-position='1'] {
+  left: auto;
+  right: calc(30% - 64px);
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next'][data-new-decade-style='babysha']>.player[data-position='2'] {
+  left: calc(41% - 64px);
+  right: auto;
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next']>.player[data-position='1'] .card_tips_bg {
+  left: -60px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next']>.player[data-position='2'] .card_tips_bg {
+  left: 112px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='next']>.player[data-position='3'] .card_tips_bg {
+  left: 112px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='previous']>.player[data-position='1'] .card_tips_bg {
+  left: 112px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='previous']>.player[data-position='2'] .card_tips_bg {
+  left: -60px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='previous']>.player[data-position='3'] .card_tips_bg {
+  left: 112px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='opposite']>.player[data-position='1'] .card_tips_bg {
+  left: -60px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='opposite']>.player[data-position='2'] .card_tips_bg {
+  left: 112px;
+}
+
+#window>#arena[data-number='4'][data-layout-twotwo='opposite']>.player[data-position='3'] .card_tips_bg {
+  left: 112px;
+}
+
+/* 斗地主 */
+/* 地主1 */
+#window>#arena[data-number="3"][data-layout-doudizhu='zhu1']>.player[data-position="1"] {
+  left: auto;
+  right: calc(37% - 85px);
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number="3"][data-layout-doudizhu='zhu1']>.player[data-position="2"] {
+  left: calc(37% - 85px);
+  right: auto;
+  top: 4%;
+  bottom: auto;
+}
+
+/* 农民2 */
+#window>#arena[data-number="3"][data-layout-doudizhu='nong2']>.player[data-position="1"] {
+  left: auto;
+  right: 25px;
+  top: auto;
+  bottom: calc(55% - 64px);
+}
+
+#window>#arena[data-number="3"][data-layout-doudizhu='nong2']>.player[data-position="2"] {
+  left: calc(38% - 85px);
+  right: auto;
+  top: 4%;
+  bottom: auto;
+}
+
+/* 农民3 */
+#window>#arena[data-number="3"][data-layout-doudizhu='nong3']>.player[data-position="1"] {
+  left: auto;
+  right: calc(38% - 85px);
+  top: 4%;
+  bottom: auto;
+}
+
+#window>#arena[data-number="3"][data-layout-doudizhu='nong3']>.player[data-position="2"] {
+  left: calc(14% - 85px);
+  right: auto;
+  top: auto;
+  bottom: calc(55% - 64px);
+}
+
+/* OL处理 */
+#window>#arena[data-number="3"][data-layout-doudizhu='nong2'][data-new-decade-style='onlineUI']>.player[data-position="1"] {
+  right: 60px;
+}
+
+/* 一将 */
+#window>#arena[data-number="3"][data-layout-doudizhu='nong2'][data-new-decade-style='othersOff']>.player[data-position="1"] {
+  right: 60px;
+}
+
+/* 欢杀 */
+#window>#arena[data-number="3"][data-layout-doudizhu='nong3'][data-new-decade-style='babysha']>.player[data-position="2"] {
+  left: calc(14% - 85px);
+  right: auto;
+  top: auto;
+  bottom: calc(55% - 64px);
+}
+
+#window>#arena[data-number="3"][data-layout-doudizhu='nong2'][data-new-decade-style='babysha']>.player[data-position="1"] {
+  right: 60px;
+}

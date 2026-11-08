@@ -1,0 +1,209 @@
+
+shenglix.png
+size: 2044, 456
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+sl/lizijiesuanliz_00000
+  rotate: false
+  xy: 799, 67
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+sl/ring_231_00000
+  rotate: true
+  xy: 848, 197
+  size: 255, 254
+  orig: 256, 256
+  offset: 0, 2
+  index: -1
+sl/shenglizhejinpaipai
+  rotate: false
+  xy: 2, 197
+  size: 435, 255
+  orig: 442, 257
+  offset: 4, 1
+  index: -1
+sl/shenglizhepai 2_00000
+  rotate: false
+  xy: 439, 227
+  size: 407, 225
+  orig: 442, 257
+  offset: 18, 22
+  index: -1
+sl/shenglizhepdai1_00000
+  rotate: false
+  xy: 1487, 6
+  size: 88, 82
+  orig: 380, 140
+  offset: 0, 5
+  index: -1
+sl/shenglizhepdai1_00001
+  rotate: false
+  xy: 439, 107
+  size: 182, 118
+  orig: 380, 140
+  offset: 0, 4
+  index: -1
+sl/shenglizhepdai1_00002
+  rotate: true
+  xy: 1856, 185
+  size: 267, 134
+  orig: 380, 140
+  offset: 0, 4
+  index: -1
+sl/shenglizhepdai1_00003
+  rotate: false
+  xy: 1479, 176
+  size: 342, 137
+  orig: 380, 140
+  offset: 0, 3
+  index: -1
+sl/shenglizhepdai1_00004
+  rotate: false
+  xy: 1482, 315
+  size: 372, 137
+  orig: 380, 140
+  offset: 0, 3
+  index: -1
+sl/shenglizhepdai1_00006
+  rotate: false
+  xy: 1104, 316
+  size: 376, 136
+  orig: 380, 140
+  offset: 0, 3
+  index: -1
+sl/shenglizhepdai1_00008
+  rotate: false
+  xy: 1104, 181
+  size: 373, 133
+  orig: 380, 140
+  offset: 0, 3
+  index: -1
+sl/shenglizijinse01
+  rotate: false
+  xy: 929, 67
+  size: 119, 128
+  orig: 236, 130
+  offset: 115, 1
+  index: -1
+sl/shenglizijinse01_00000
+  rotate: false
+  xy: 1992, 337
+  size: 50, 115
+  orig: 128, 200
+  offset: 5, 49
+  index: -1
+sl/shenglizijinse01_00001
+  rotate: true
+  xy: 1487, 90
+  size: 84, 171
+  orig: 128, 200
+  offset: 5, 21
+  index: -1
+sl/shenglizijinse01_00002
+  rotate: true
+  xy: 623, 123
+  size: 102, 174
+  orig: 128, 200
+  offset: 11, 18
+  index: -1
+sl/shenglizijinse01_00003
+  rotate: true
+  xy: 168, 90
+  size: 105, 158
+  orig: 128, 200
+  offset: 14, 28
+  index: -1
+sl/shenglizijinse01_00004
+  rotate: true
+  xy: 1050, 76
+  size: 103, 147
+  orig: 128, 200
+  offset: 14, 35
+  index: -1
+sl/shenglizijinse01_00005
+  rotate: true
+  xy: 623, 26
+  size: 95, 137
+  orig: 128, 200
+  offset: 24, 38
+  index: -1
+sl/shenglizijinse01_00006
+  rotate: true
+  xy: 2, 2
+  size: 87, 134
+  orig: 128, 200
+  offset: 36, 37
+  index: -1
+sl/shenglizijinse01_00007
+  rotate: true
+  xy: 1782, 16
+  size: 73, 141
+  orig: 128, 200
+  offset: 49, 39
+  index: -1
+sljt/shenglizijinse02
+  rotate: false
+  xy: 1660, 56
+  size: 120, 118
+  orig: 236, 130
+  offset: 1, 7
+  index: -1
+sljt/shenglizijinse02_00000
+  rotate: true
+  xy: 426, 37
+  size: 68, 186
+  orig: 128, 200
+  offset: 60, 10
+  index: -1
+sljt/shenglizijinse02_00001
+  rotate: true
+  xy: 1823, 91
+  size: 92, 178
+  orig: 128, 200
+  offset: 36, 18
+  index: -1
+sljt/shenglizijinse02_00002
+  rotate: true
+  xy: 2, 91
+  size: 104, 164
+  orig: 128, 200
+  offset: 18, 28
+  index: -1
+sljt/shenglizijinse02_00003
+  rotate: true
+  xy: 1341, 71
+  size: 103, 144
+  orig: 128, 200
+  offset: 6, 40
+  index: -1
+sljt/shenglizijinse02_00004
+  rotate: true
+  xy: 1199, 71
+  size: 108, 140
+  orig: 128, 200
+  offset: 0, 44
+  index: -1
+sljt/shenglizijinse02_00005
+  rotate: false
+  xy: 328, 58
+  size: 96, 137
+  orig: 128, 200
+  offset: 0, 47
+  index: -1
+sljt/shenglizijinse02_00006
+  rotate: true
+  xy: 1925, 5
+  size: 84, 117
+  orig: 128, 200
+  offset: 0, 51
+  index: -1
+sljt/shenglizijinse02_00007
+  rotate: true
+  xy: 138, 16
+  size: 72, 112
+  orig: 128, 200
+  offset: 0, 54
+  index: -1

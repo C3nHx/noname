@@ -1,0 +1,160 @@
+
+SSXF_paiweisai_eff_shengxingkuang.png
+size: 721,721
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01_00
+  rotate: false
+  xy: 657, 678
+  size: 50, 41
+  orig: 290, 140
+  offset: 20, 32
+  index: -1
+01_01
+  rotate: true
+  xy: 231, 5
+  size: 92, 67
+  orig: 290, 140
+  offset: 14, 21
+  index: -1
+01_02
+  rotate: false
+  xy: 526, 641
+  size: 129, 78
+  orig: 290, 140
+  offset: 13, 19
+  index: -1
+01_03
+  rotate: false
+  xy: 2, 639
+  size: 266, 80
+  orig: 290, 140
+  offset: 17, 19
+  index: -1
+01_04
+  rotate: false
+  xy: 255, 345
+  size: 251, 82
+  orig: 290, 140
+  offset: 32, 17
+  index: -1
+01_05
+  rotate: false
+  xy: 2, 450
+  size: 252, 80
+  orig: 290, 140
+  offset: 34, 19
+  index: -1
+01_06
+  rotate: false
+  xy: 254, 263
+  size: 250, 80
+  orig: 290, 140
+  offset: 33, 19
+  index: -1
+01_07
+  rotate: false
+  xy: 2, 280
+  size: 250, 83
+  orig: 290, 140
+  offset: 34, 19
+  index: -1
+01_08
+  rotate: false
+  xy: 256, 429
+  size: 251, 92
+  orig: 290, 140
+  offset: 35, 19
+  index: -1
+01_09
+  rotate: true
+  xy: 630, 387
+  size: 252, 89
+  orig: 290, 140
+  offset: 35, 24
+  index: -1
+01_10
+  rotate: false
+  xy: 2, 365
+  size: 251, 83
+  orig: 290, 140
+  offset: 35, 34
+  index: -1
+01_11
+  rotate: true
+  xy: 630, 139
+  size: 246, 86
+  orig: 290, 140
+  offset: 35, 34
+  index: -1
+01_12
+  rotate: false
+  xy: 2, 196
+  size: 248, 82
+  orig: 290, 140
+  offset: 35, 34
+  index: -1
+01_13
+  rotate: false
+  xy: 252, 170
+  size: 242, 91
+  orig: 290, 140
+  offset: 35, 34
+  index: -1
+01_14
+  rotate: false
+  xy: 2, 99
+  size: 238, 95
+  orig: 290, 140
+  offset: 39, 34
+  index: -1
+01_15
+  rotate: false
+  xy: 2, 3
+  size: 227, 94
+  orig: 290, 140
+  offset: 49, 34
+  index: -1
+01_16
+  rotate: false
+  xy: 300, 40
+  size: 226, 97
+  orig: 290, 140
+  offset: 49, 35
+  index: -1
+01_17
+  rotate: true
+  xy: 508, 146
+  size: 238, 102
+  orig: 290, 140
+  offset: 37, 35
+  index: -1
+01_18
+  rotate: false
+  xy: 270, 619
+  size: 254, 100
+  orig: 290, 140
+  offset: 36, 35
+  index: -1
+01_19
+  rotate: false
+  xy: 257, 523
+  size: 253, 94
+  orig: 290, 140
+  offset: 37, 34
+  index: -1
+01_20
+  rotate: false
+  xy: 2, 532
+  size: 253, 105
+  orig: 290, 140
+  offset: 37, 34
+  index: -1
+01_21
+  rotate: true
+  xy: 526, 386
+  size: 253, 102
+  orig: 290, 140
+  offset: 37, 34
+  index: -1

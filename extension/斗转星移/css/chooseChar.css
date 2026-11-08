@@ -1,0 +1,898 @@
+/* 隐藏dialog */
+.dialog-hide {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+}
+
+.dz-bigBg noname-poptip {
+  text-decoration: underline;
+  font-weight: bolder;
+  white-space: nowrap;
+}
+
+/*武将框宽高比为176/234*/
+.wujiang-char-base-back {
+  width: 120px;
+  height: calc(120px * 234 / 176);
+  /* background-color: #c7d2d084; */
+}
+
+/* 补一层 */
+.wujiang-char-base-back .wujiang-char-base-back2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+/* 隐匿 */
+.wujiang-char-base-back2.char-unknow::after {
+  position: absolute;
+  content: '';
+  right: 3%;
+  bottom: 2.5%;
+  width: 78.5%;
+  height: 108%;
+  border-radius: 8px;
+  background-size: cover;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+  z-index: 2;
+  background-image: url('../image/chooseCharacter/0.png');
+}
+
+.wujiang-char-base-back2.char-unknow .wujiang-char-group,
+.wujiang-char-base-back2.char-unknow .wujiang-char-name,
+.wujiang-char-base-back2.char-unknow .wujiang-char-hpArea {
+  display: none !important;
+}
+
+.wujiang-char-base-back2.char-unknow .wujiang-char-frame {
+  background-image: url('../image/char_small_border/chara_face_frame_unknow.png') !important;
+}
+
+.wujiang-char-base-back2.char-unknow .wujiang-char-img {
+  display: none !important;
+}
+
+/* 武将闪白光 */
+.wujiang-char-base-back .white-mask {
+  position: absolute;
+  width: 94%;
+  height: 98%;
+  left: 3%;
+  top: 1%;
+  background-color: #ffffff;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.wujiang-char-base-back .white-mask.anim {
+  animation: white-mask-anim 0.4s both linear;
+}
+
+@keyframes white-mask-anim {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 选中 */
+.wujiang-char-base-back.dz_selected>.wujiang-char-base-back2::before {
+  position: absolute;
+  content: '';
+  width: 124%;
+  z-index: 2;
+  height: 118%;
+  left: -12%;
+  top: -9.5%;
+  background: url('../image/chooseCharacter/xuanjiang.png') no-repeat center/contain;
+}
+
+.wujiang-char-base-back.dz_selected>.wujiang-char-base-back2::after {
+  position: absolute;
+  content: '';
+  width: 100%;
+  z-index: 2;
+  height: 42%;
+  left: 2%;
+  top: 52%;
+  background: url('../image/chooseCharacter/xuanjiang1.png') no-repeat center/contain;
+}
+
+/*武将框*/
+.wujiang-char-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/char_small_border_back/chara_face_frame_gz_unknow.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/*势力*/
+.wujiang-char-group {
+  display: flex;
+  position: absolute;
+  width: 14%;
+  height: auto;
+  left: 3%;
+  top: 3%;
+  font-family: shousha;
+  color: #6dc4b0;
+  line-height: 1em;
+  font-size: 18px;
+  text-align: center;
+  justify-content: center;
+  text-shadow: none;
+  flex-direction: column;
+}
+
+/*武将框x*/
+.wujiang-char-framex {
+  position: absolute;
+  width: 134%;
+  height: 134%;
+  left: -16.5%;
+  top: -19%;
+  background-image: url('../image/chooseCharacter/game_chr_bg_selectable.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 斗地主武将背景 */
+.wujiang-char-framey {
+  position: absolute;
+  width: 162%;
+  height: 120%;
+  left: -31%;
+  top: -6%;
+  background-image: url('../image/chooseCharacter/game_chr_bg_onlyshow.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/*武将图*/
+.wujiang-char-img {
+  position: absolute;
+  right: 3%;
+  bottom: 2.5%;
+  width: 78.5%;
+  height: 95.5%;
+  border-radius: 8px;
+  background-size: 100%;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+  transition-duration: 0s !important;
+}
+
+.wujiang-char-img[data-loutou='shizhounian'] {
+  height: 101%;
+  clip-path: url(#solo-clip);
+}
+
+.wujiang-char-img[data-loutou='shousha'] {
+  height: 108%;
+}
+
+/*武将名*/
+.wujiang-char-name {
+  display: flex;
+  position: absolute;
+  width: 14%;
+  height: 83%;
+  left: 3.5%;
+  top: 15%;
+  font-family: shousha;
+  color: #e4e9e2;
+  line-height: 1em;
+  font-size: 16px;
+  text-align: center;
+  justify-content: center;
+  --text-shadow: #798f71;
+  text-shadow: 0px 0px 0.2px var(--text-shadow),
+    0px 0px 0.2px var(--text-shadow);
+}
+
+/* 换将 */
+.dz_change_chr_free {
+  width: 45px;
+  height: 45px;
+  right: -15%;
+  top: -11%;
+  z-index: 3;
+  background: url('../image/chooseCharacter/change_chr_free.png') no-repeat center/100% 100%;
+}
+
+/* 武将血量 */
+.wujiang-char-hpArea {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 14%;
+  height: 60%;
+  left: 3.5%;
+  bottom: 2%;
+  align-items: center;
+  font-family: 'shousha';
+  font-size: 18px;
+}
+
+.wujiang-char-hpImg {
+  position: relative;
+  padding: 50%;
+  background: url('../image/chooseCharacter/game_blood_gray.png') no-repeat center/contain;
+}
+
+.wujiang-char-hpImg::after {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  left: 0.3px;
+  top: 0px;
+}
+
+.wujiang-char-hpImg[data-color='green']::after {
+  background: url('../image/chooseCharacter/game_blood_green.png') no-repeat center/85%;
+}
+
+.wujiang-char-hpImg[data-color='yellow']::after {
+  background: url('../image/chooseCharacter/game_blood_yellow.png') no-repeat center/85%;
+}
+
+.wujiang-char-hpImg[data-color='red']::after {
+  background: url('../image/chooseCharacter/game_blood_red.png') no-repeat center/85%;
+}
+
+.wujiang-char-hpText {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: auto;
+  line-height: 1em;
+  text-align: center;
+  justify-content: center;
+  flex-direction: column-reverse;
+  color: #b0d8a7;
+}
+
+.wujiang-char-hpHujia {
+  position: relative;
+  width: 1.2em;
+  height: 1.2em;
+  text-align: center;
+  background: url('../image/chooseCharacter/game_shield.png') no-repeat center/contain;
+  color: #d2c9ba;
+  --text-color: #433218;
+  text-shadow: 0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color);
+}
+
+/* 自己 */
+.wujiang-char-table_self {
+  position: absolute;
+  left: -14%;
+  top: -3%;
+  width: 33px;
+  height: 130px;
+  background-size: 100% 100%;
+  background-image: url('../image/chooseCharacter/table_self_mark_bg.png');
+}
+
+.wujiang-char-recommend {
+  position: absolute;
+  left: 0;
+  bottom: -19%;
+  width: 100%;
+  height: 46px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url('../image/chooseCharacter/game_recommend_btn_not.png');
+}
+
+.wujiang-char-recommend.active {
+  background-image: url('../image/chooseCharacter/game_recommend_btn.png');
+}
+
+/* 2v2上面的两个武将位置 */
+.tt-show-char-area {
+  position: absolute;
+  width: 435px;
+  height: 190px;
+  left: 50%;
+  top: 3%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+
+/* 主公背景 */
+.dz_game_chr_info_bg {
+  position: absolute;
+  width: 435px;
+  height: 136px;
+  left: 50%;
+  top: calc(16% - 68px);
+  transform: translateX(-53%);
+  border-top: 30px solid;
+  border-right: 65px solid;
+  border-bottom: 30px solid;
+  border-left: 65px solid;
+  border-image-source: url('../image/chooseCharacter/game_chr_info_bg.png');
+  border-image-slice: 44 98 fill;
+  font-family: shousha;
+  font-size: 20px;
+  color: #c7d2d0;
+  --text-color: #312323;
+  text-shadow: 0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color);
+}
+
+/* 武将 */
+.dz_game_chr_bk_adj {
+  position: relative;
+  width: 120px;
+  height: 100%;
+}
+
+/* 未知 */
+.dz_game_chr_bk {
+  width: 106px;
+  height: 40px;
+  background: url('../image/chooseCharacter/game_chr_bk.png') no-repeat center/contain;
+  /* background-size: 100% 100%; */
+}
+
+/* 技能 */
+.dz_game_chr_skill_info {
+  width: calc(100% - 120px);
+  height: 100%;
+  overflow: auto;
+  right: -10px;
+}
+
+.dz_game_chr_skill_info p {
+  display: block;
+  margin-block-start: 2px;
+  margin-block-end: 2px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+/* 选将框 */
+.dz_game_sel_chr_listx {
+  width: 92%;
+  height: 223px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #00000059;
+  overflow: visible;
+}
+
+.dz_game_sel_chr_list {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.dz_game_sel_chr_list>.sle_content {
+  width: 100%;
+  width: auto;
+  min-width: 100.1%;
+  height: 100%;
+  display: flex;
+  /* overflow-x: auto;
+  overflow-y: hidden; */
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.dz-text-shadow-ss {
+  font-family: shousha;
+  font-size: 20px;
+  color: #c7d2d0;
+  --text-color: #000000;
+  text-shadow: 0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color);
+}
+
+.dz-text-shadow-ss2 {
+  font-family: shousha;
+  font-size: 20px;
+  color: #c7d2d0;
+  --text-color: #000000;
+  text-shadow: 0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color);
+}
+
+.dz_game_sel_chr_listx .list_header {
+  text-indent: 13px;
+  width: 150px;
+  height: 25px;
+  left: 0;
+  top: -25px;
+  background: url('../image/chooseCharacter/game_sel_chr_list_header.png') no-repeat center/100% 100%;
+  line-height: 30px;
+  font-size: 18px;
+}
+
+/* 武将 */
+.dz_game_sel_chr_listx .wujiang-char-base-back {
+  flex: none;
+  margin: 8px 30px 0;
+  position: relative;
+  transform: scale(1.1);
+}
+
+/* 自由选将 */
+.dz_game_chr_bg_sg {
+  position: relative;
+  width: 138%;
+  height: 138%;
+  left: -19%;
+  top: -21%;
+  background-image: url('../image/chooseCharacter/game_chr_bg_sg.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.wujiang-char-base-back.jj-char-base-back {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 5px;
+}
+
+.wujiang-char-base-back.jj-char-base-back .dz_game_chr_bg_sg {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-size: 100% 100%;
+  background-image: url('../image/chooseCharacter/game_arena_selectchar_bg.png');
+}
+
+/* 确定 */
+.dz_game_btn_ok {
+  width: 70px;
+  height: 70px;
+  right: 15%;
+  bottom: calc(16% - 73px);
+  background: url('../image/chooseCharacter/game_btn_ok.png') no-repeat center/100% 100%;
+}
+
+/* 身份 */
+.dz_sel_identity_tip {
+  width: 65%;
+  white-space: nowrap;
+  bottom: 2%;
+  text-align: center;
+}
+
+.dz_sel_identitys {
+  position: relative;
+}
+
+.dz_sel_identitys.active .dz_sel_identity.hd {
+  margin: 0 5px;
+  display: inline-block;
+}
+
+.dz_sel_identity.hd {
+  display: none;
+}
+
+.dz_sel_identity {
+  position: relative;
+  font-size: 28px;
+  --text-color: #312323;
+  text-align: center;
+  text-shadow: 0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color),
+    0px 0px 2px var(--text-color);
+}
+
+.dz_sel_identity[data-identity='zhu'] {
+  color: #7ecc78;
+  --text-color: #25a149;
+}
+
+.dz_sel_identity[data-identity='zhong'] {
+  color: #55b65d;
+  --text-color: #adc320;
+}
+
+.dz_sel_identity[data-identity='fan'] {
+  --text-color: #93a27a;
+}
+
+.dz_sel_identity[data-identity='nei'] {
+  color: #b4cbc5;
+  --text-color: #8a4cd0;
+}
+
+.dz_timebar_area {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  /* background-color: #0000007f; */
+  bottom: 6%;
+}
+
+.dz_timebar_text {
+  display: block;
+  position: relative;
+  text-align: center;
+}
+
+/* 进度条 */
+.dz_sel_timebar_bg2 {
+  display: block;
+  position: relative;
+  width: 530px;
+  height: 18px;
+  top: 114%;
+  left: calc(50% - 265px);
+  background: url('../image/chooseCharacter/timebar_bg2.png') no-repeat center/100% 100%;
+}
+
+/* 进度条 */
+.dz_sel_timebar_bg2>.timebar_bg {
+  width: 100%;
+  height: 100%;
+  background: url('../image/chooseCharacter/timebar_bg.png') no-repeat center/100% 100%;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  animation: anim_timebar 50s both linear 5s;
+}
+
+@keyframes anim_timebar {
+  0% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  100% {
+    clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);
+  }
+}
+
+/* 右上角布局 */
+.dz_little_map_bg {
+  width: 205px;
+  height: 120px;
+  right: 3%;
+  top: 0;
+  background-color: #00000059;
+  font-family: shousha;
+}
+
+.dz_little_map_ID_cont {
+  width: 60%;
+  height: 30px;
+  white-space: nowrap;
+  bottom: 0;
+  /* text-align: center; */
+  font-size: 24px;
+  /* background-color: #00000059; */
+}
+
+.dz_little_map_ID_cont>.dz_sel_identity {
+  width: 100%;
+}
+
+.dz_little_map_figs {
+  width: 14%;
+  height: 33%;
+  right: 3%;
+  bottom: 2%;
+}
+
+/* 其它座位 */
+.dz_little_map_figs_other {
+  width: 100%;
+  height: 60%;
+  left: 0;
+  top: 4%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.dz_little_map_figs_other>.dz_little_map_figs {
+  position: relative;
+  width: 28px;
+  height: 43px;
+  right: auto;
+  bottom: auto;
+}
+
+.dz_little_map_figs>.map_fig {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/chooseCharacter/little_map_fig1.png');/*●*/
+  background-size: 100% 100%;
+}
+
+.dz_little_map_figs>.map_fig.hd {
+  display: none;
+}
+
+.dz_little_map_figs.active>.map_fig.hd {
+  display: block;
+  filter: grayscale(1);  /*●弹出座位号变灰*/
+}
+
+.map_fig[data-identity='zhu'] {
+  background-image: url('../image/chooseCharacter/little_map_fig1.png');
+}
+
+.map_fig[data-identity='zhong'] {
+  background-image: url('../image/chooseCharacter/little_map_fig2.png');
+}
+
+.map_fig[data-identity='fan'] {
+  background-image: url('../image/chooseCharacter/little_map_fig3.png');
+}
+
+.map_fig[data-identity='nei'] {
+  background-image: url('../image/chooseCharacter/little_map_fig4.png');
+}
+
+.dz_little_map_figs .dz_text {
+  text-align: center;
+  margin-top: 10px;
+  width: 100%;
+  height: auto;
+}
+
+/*龙队*/
+.game_dragon_frame {
+  display: block;
+  position: absolute;
+  background-image: url('../image/chooseCharacter/game_dragon_frame.png') !important;
+  background-size: 100% 100%;
+  top: -10px;
+  left: -1.5px;
+  height: 189px;
+  width: 140px;
+  z-index: 62 !important;
+  pointer-events: none;
+}
+
+/*虎队*/
+.game_tiger_frame {
+  display: block;
+  position: absolute;
+  background-image: url('../image/chooseCharacter/game_tiger_frame.png') !important;
+  background-size: 100% 100%;
+  top: -10px;
+  left: -1.5px;
+  height: 188px;
+  width: 140px;
+  z-index: 62 !important;
+  pointer-events: none;
+}
+
+/*右手队友手牌*/
+.card_tips_bg {
+  background-color: none;
+  background-repeat: no-repeat;
+  background-image: url('../image/chooseCharacter/card_tips_bg.png') !important;
+  background-size: 100% 100%;
+  opacity: 0.6;
+  width: 70px;
+  height: 110px;
+  /* left: 112px; */
+  bottom: -30px;
+  padding: 17px 2px 2px 2px;
+  text-align: center;
+  color: #FFFFCC;
+  text-shadow: -1.3px 0px 2.2px #000, 0px -1.3px 2.2px #000, 1.3px 0px 2.2px #000, 0px 1.3px 2.2px #000;
+  font-family: shousha;
+  font-size: 15px;
+  font-weight: 900;
+  z-index: 8 !important;
+}
+
+/* 弹幕 */
+.dz-danmu-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  z-index: 18;
+  /* background-color: #28debd77; */
+  pointer-events: none;
+}
+
+.dz-danmu {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 22px;
+  height: 30px;
+  color: white;
+  left: 100%;
+  width: 100%;
+  animation: danmu-scroll 10s linear forwards;
+  /* background-color: #c7d2d077; */
+}
+
+@keyframes danmu-scroll {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-200%);
+  }
+}
+
+/* 倍率 */
+.dz-sel-multiple-cont {
+  position: absolute;
+  top: calc(50% + 60px);
+  left: 0;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dz-sel-multiple-cont>.ddz-multiple:first-child {
+  width: 96px;
+  height: 96px;
+  top: -7px;
+  left: -10px;
+}
+
+.ddz-multiple {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background-image: url('../image/chooseCharacter/happy_fight_time1.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.ddz-multiple:hover {
+  transform: scale(0.9);
+}
+
+/* 地主专属 */
+.happy1v2_empselbg {
+  position: absolute;
+  width: 110%;
+  height: 100%;
+  left: -5%;
+  background-image: url('../image/chooseCharacter/happy1v2_empselbg.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.show-char .dz_game_sel_chr_list>.sle_content .wujiang-char-base-back {
+  margin: 0 20px;
+}
+
+/* 剩余换将卡 */
+.remain_huanjiangka {
+  width: 220px;
+  height: auto;
+  right: 4%;
+  bottom: 0;
+  font-family: 'shousha';
+  font-size: 20px;
+  line-height: 30px;
+  text-align: right;
+  padding-right: 10px;
+  padding-top: 10px;
+  color: #b8c2cb;
+}
+
+.remain_huanjiangka p {
+  margin: -10px 0 0;
+}
+
+.remain_huanjiangka::after {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/chooseCharacter/game_txt_bg_rt.png');
+  background-size: 100% 100%;
+}

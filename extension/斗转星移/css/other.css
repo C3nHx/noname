@@ -1,0 +1,301 @@
+/* 隐匿状态下 */
+#window>#arena[data-hdloutou="none"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="none"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 100% !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image.jpg") !important;
+	clip-path: none !important;
+	-webkit-clip-path: none !important;
+}
+/* 十周年 */
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="on"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="on"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 192px !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image2.jpg") !important;
+	clip-path: url(#solo-clip) !important;
+	-webkit-clip-path: url(#solo-clip) !important;
+}
+/* 新手杀 */
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="off"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="off"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 183px !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image2.jpg") !important;
+	clip-path: url(#solo-clip) !important;
+	-webkit-clip-path: url(#solo-clip) !important;
+}
+/* 旧手杀 */
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="othersOn"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="othersOn"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 183px !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image2.jpg") !important;
+	clip-path: url(#solo-clip) !important;
+	-webkit-clip-path: url(#solo-clip) !important;
+}
+/* 一将成名 */
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="othersOff"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="othersOff"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 192px !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image2.jpg") !important;
+	clip-path: url(#solo-clip) !important;
+	-webkit-clip-path: url(#solo-clip) !important;
+}
+/* OL */
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="onlineUI"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="onlineUI"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 180px !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image2.jpg") !important;
+	clip-path: url(#solo-clip) !important;
+	-webkit-clip-path: url(#solo-clip) !important;
+}
+/* 欢杀 */
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="babysha"]:not(.observe) .player:not([data-position="0"]).unseen_show>.primary-avatar,
+#window>#arena[data-hdloutou="shizhounian"][data-new-decade-style="babysha"]:not(.observe) .player:not([data-position="0"]).unseen2_show>.deputy-avatar {
+	height: 192px !important;
+	opacity: 1 !important;
+	background-image: url("../image/chooseCharacter/hidden_image2.jpg") !important;
+	clip-path: url(#solo-clip) !important;
+	-webkit-clip-path: url(#solo-clip) !important;
+}
+
+
+
+/* 十周年 */
+#window>#arena[data-new-decade-style="on"]>.player>.primary-avatar[data-loutou="shizhounian"] {
+	height: 192px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="on"]>.player>.primary-avatar[data-loutou="shousha"] {
+	height: 207px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="on"]>.player>.deputy-avatar[data-loutou="shizhounian"] {
+	height: 192px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="on"]>.player>.deputy-avatar[data-loutou="shousha"] {
+	height: 207px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="on"]>.player>.primary-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+#window>#arena[data-new-decade-style="on"]>.player>.deputy-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+
+
+
+/* 新手杀 */
+#window>#arena[data-new-decade-style="off"]>.player>.primary-avatar[data-loutou="shizhounian"] {
+	height: 183px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="off"]>.player>.primary-avatar[data-loutou="shousha"] {
+	height: 195px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="off"]>.player>.deputy-avatar[data-loutou="shizhounian"] {
+	height: 183px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="off"]>.player>.deputy-avatar[data-loutou="shousha"] {
+	height: 195px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="off"]>.player>.primary-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+#window>#arena[data-new-decade-style="off"]>.player>.deputy-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+
+/* 旧手杀 */
+#window>#arena[data-new-decade-style="othersOn"]>.player>.primary-avatar[data-loutou="shizhounian"] {
+	height: 183px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="othersOn"]>.player>.primary-avatar[data-loutou="shousha"] {
+	height: 195px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="othersOn"]>.player>.deputy-avatar[data-loutou="shizhounian"] {
+	height: 183px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="othersOn"]>.player>.deputy-avatar[data-loutou="shousha"] {
+	height: 195px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="othersOn"]>.player>.primary-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+#window>#arena[data-new-decade-style="othersOn"]>.player>.deputy-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+
+
+
+/* OL */
+#window>#arena[data-new-decade-style="onlineUI"]>.player>.primary-avatar[data-loutou="shizhounian"] {
+	height: 180px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="onlineUI"]>.player>.primary-avatar[data-loutou="shousha"] {
+	height: 197px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="onlineUI"]>.player>.deputy-avatar[data-loutou="shizhounian"] {
+	height: 180px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="onlineUI"]>.player>.deputy-avatar[data-loutou="shousha"] {
+	height: 197px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="onlineUI"]>.player>.primary-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+#window>#arena[data-new-decade-style="onlineUI"]>.player>.deputy-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+
+
+
+/* 一将成名 */
+#window>#arena[data-new-decade-style="othersOff"]>.player>.primary-avatar[data-loutou="shizhounian"] {
+	height: 192px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="othersOff"]>.player>.primary-avatar[data-loutou="shousha"] {
+	height: 207px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="othersOff"]>.player>.deputy-avatar[data-loutou="shizhounian"] {
+	height: 192px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="othersOff"]>.player>.deputy-avatar[data-loutou="shousha"] {
+	height: 207px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="othersOff"]>.player>.primary-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+#window>#arena[data-new-decade-style="othersOff"]>.player>.deputy-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+
+
+
+/* 欢杀 */
+#window>#arena[data-new-decade-style="babysha"]>.player>.primary-avatar[data-loutou="shizhounian"] {
+	height: 192px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="babysha"]>.player>.primary-avatar[data-loutou="shousha"] {
+	height: 207px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#solo-clip);
+}
+#window>#arena[data-new-decade-style="babysha"]>.player>.deputy-avatar[data-loutou="shizhounian"] {
+	height: 192px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="babysha"]>.player>.deputy-avatar[data-loutou="shousha"] {
+	height: 207px;
+	clip-path: url(#solo-clip);
+	/*新增*/
+	-webkit-clip-path: url(#duor-clip);
+}
+#window>#arena[data-new-decade-style="babysha"]>.player>.primary-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
+#window>#arena[data-new-decade-style="babysha"]>.player>.deputy-avatar[data-loutou="none"] {
+	height: 100%;
+	clip-path: none;
+	/*新增*/
+	-webkit-clip-path: none;
+}
