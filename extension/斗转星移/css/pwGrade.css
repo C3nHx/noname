@@ -1,0 +1,181 @@
+/*底图*/
+/*let duanweiDitu=ui.create.div('.duanwei-ditu',parentNode);*/
+.duanwei-ditu {
+  left: 50%;
+  top: 50%;
+  width: 430px;
+  height: 430px;
+  transform: translate(-50%, -47%) scale(0.7);
+  font-family: shousha;
+}
+
+/*彩带*/
+/*let jjGradeBg3=ui.create.div('.jj_grade_bg3',parentNode);*/
+.jj_grade_bg3 {
+  background-image: url("../image/paiwei/jj_grade_bg3.png");
+  background-size: contain;
+  background-position-x: center;
+  background-position-y: center;
+  left: 2%;
+  top: 62%;
+  width: 96%;
+  height: 100px
+}
+
+/*框背景*/
+/*let jjGradeBg1=ui.create.div('.jj_grade_bg1',parentNode);*/
+.jj_grade_bg1 {
+  background-image: url("../image/paiwei/jj_grade_bg1.png");
+  background-size: contain;
+  background-position-x: center;
+  background-position-y: center;
+  left: 14%;
+  top: 26%;
+  width: 72%;
+  height: 223px;
+}
+
+/*框*/
+/*let jjGradeBg2=ui.create.div('.jj_grade_bg2',parentNode);*/
+.jj_grade_bg2 {
+  background-image: url("../image/paiwei/jj_grade_bg2.png");
+  background-size: contain;
+  background-position-x: center;
+  background-position-y: center;
+  background-repeat: no-repeat;
+  left: 6%;
+  top: -31%;
+  width: 88%;
+  height: 134%;
+}
+
+/*段位图*/
+/*let jjGradeChuanshuo=ui.create.div('.jj_grade_chuanshuo',parentNode);*/
+.jj_grade_chuanshuo {
+  background-image: url("../image/paiwei/jj_grade_qingtong.png");
+  background-size: contain;
+  background-position-x: center;
+  background-position-y: center;
+  left: 0%;
+  top: -10%;
+  width: 100%;
+  height: 93%;
+}
+
+/* 段位文字 */
+.jj_grade_text {
+  left: 0%;
+  bottom: 4%;
+  width: 100%;
+  font-size: 38px;
+  text-align: center;
+  color: #d2bd4c;
+}
+
+/*星s*/
+/*let jjStars=ui.create.div('.jj-stars',parentNode);*/
+.jj-stars {
+  left: 0%;
+  top: 62%;
+  width: 100%;
+  height: 50px;
+  text-align: center;
+}
+
+/*星暗*/
+/*let jjStarOff=ui.create.div('.jj_star_off',parentNode);*/
+.jj_star_off {
+  background-image: url("../image/paiwei/jj_star_off.png");
+  background-size: contain;
+  background-position-x: center;
+  background-position-y: center;
+  top: 10px;
+  width: 50px;
+  height: 100%;
+  position: relative;
+}
+
+.jj_star_off.star_on {
+  background-image: url("../image/paiwei/jj_star_on.png");
+}
+
+/*底图*/
+/*let jjMoraleDitu=ui.create.div('.jj_morale_ditu',parentNode);*/
+.jj_morale_ditu {
+  display: flex;
+  text-align: center;
+  left: 0;
+  bottom: 12%;
+  width: 100%;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  transform: translate(0, 10px) scale(1.5);
+}
+
+.jj_morale {
+  position: relative;
+  font-size: 22px;
+  margin-left: -30px;
+  color: #b4bfbe;
+}
+
+.jj_morale::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  color: transparent;
+  -webkit-text-stroke: 17px #c6baaf;
+  z-index: -1;
+}
+
+/*进度条背景*/
+/*let public-progressbar-bg=ui.create.div('.public-progressbar-bg',parentNode);*/
+.public-progressbar-bg {
+  position: relative;
+  border-top: 9px dashed;
+  border-right: 20px dashed;
+  border-bottom: 9px dashed;
+  border-left: 20px dashed;
+  border-image-source: url("../image/paiwei/public-progressbar-bg.png");
+  border-image-slice: 15 27 fill;
+  top: 1%;
+  width: 43%;
+  height: 18px;
+}
+
+/*文字*/
+/*let .jjMoraleText=ui.create.div('.jj_morale_text',parentNode);*/
+.jj_morale_text {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  text-align: center;
+  line-height: 20px;
+  color: #10e476;
+}
+
+/*进度条*/
+/*let jjMoraleBar=ui.create.div('.jj_morale_bar',parentNode);*/
+.jj_morale_bar {
+  background-image: url("../image/paiwei/jj_morale_bar.png");
+  background-size: 100% 100%;
+  background-position-x: center;
+  background-position-y: center;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  left: -3.3%;
+  top: -23%;
+  width: 106%;
+  height: 146%;
+}
+
+.jj_morale_protect_mark {
+  background-image: url("../image/paiwei/jj_morale_protect_mark.png");
+  background-size: 100% 100%;
+  width: 20px;
+  height: 42px;
+  left: 0%;
+  top: -83%;
+}

@@ -1,0 +1,14 @@
+.card[data-suit="spade"] > .suit-num > .suit,
+.card[data-tempsn="spade"] > .tempsuitnum > .suit,
+.card[data-suit="club"] > .suit-num > .suit,
+.card[data-tempsn="club"] > .tempsuitnum > .suit {
+	font-size: 15px;
+}
+.card[data-suit="heart"] > .suit-num > .suit,
+.card[data-tempsn="heart"] > .tempsuitnum > .suit{
+	font-size: 14px;
+}
+.card[data-suit="diamond"] > .suit-num > .suit,
+.card[data-tempsn="diamond"] > .tempsuitnum > .suit{
+	font-size: 16px;
+}

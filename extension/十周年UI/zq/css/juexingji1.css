@@ -1,0 +1,87 @@
+/*一将*/
+.wmmh-skill-common-jinengming {
+	display: block;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	/*color: rgb(190, 56, 134);*/
+	font-size: 90px;
+	font-family: xingkai;
+	font-weight: 300;
+	text-shadow: none;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(1px 1px 1px black) drop-shadow(1px 1px 2px black) drop-shadow(1px 1px 3px black) drop-shadow(1px 1px 4px black) drop-shadow(1px 1px 5px black);
+	transform: translate(calc(-50% + 200px), calc(-50%));
+	white-space: break-spaces;
+	visibility: hidden;
+	z-index: 203 !important; /*●修复: 技能名最高*/
+	animation: avatarming 2.6s linear;
+	-webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
+}
+/* 觉醒技 */
+/*觉醒武将图*/
+.juexingwujiangtu {
+	background-size: cover;
+	background-position-x: 50%;
+	width: 200px;
+	height: 300px;
+	top: 50%;
+	left: 50%;
+	transform: translate(calc(-50% - 6px), calc(-50% + 9px)) rotate(-8.5deg);
+	z-index: 202 !important; /*●修复: 武将图高于骨骼201*/
+	visibility: hidden;
+	animation: avatartu 2.6s linear;
+}
+@keyframes avatartu {
+	0% {
+		visibility: visible;
+		scale: 1.5;
+		opacity: 0;
+	}
+	10% {
+		scale: 1.5;
+		opacity: 1;
+	}
+	20% {
+		scale: 1;
+		opacity: 1;
+	}
+	100% {
+		scale: 1;
+		opacity: 1;
+	}
+}
+
+@keyframes avatarming {
+	0% {
+		visibility: visible;
+		translate: scale(0);
+		opacity: 0;
+	}
+	20% {
+		translate: scale(0);
+		opacity: 0;
+	}
+	35% {
+		translate: scale(1);
+		opacity: 1;
+	}
+	100% {
+		translate: scale(1);
+		opacity: 1;
+	}
+}
+/*觉醒技能名*/
+.juexingjinengming {
+	background-image: linear-gradient(180deg, #f1e7f9 30%, #7251ac 68%, #73add1 85%);
+}
+/* 限定技 */
+.xiandingwujiangtu {
+	background-image: linear-gradient(180deg, #fcfc70 30%, #ad6e22 68%, #f5f1ce 91%);
+}
+
+/* 使命技 */
+.shimingwujiangtu {
+	background-image: linear-gradient(180deg, #ffff9a 19%, #d9532e 73%, #f5f1ce 96%);
+}

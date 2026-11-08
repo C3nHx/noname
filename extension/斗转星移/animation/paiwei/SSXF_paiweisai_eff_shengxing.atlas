@@ -1,0 +1,118 @@
+
+SSXF_paiweisai_eff_shengxing.png
+size: 631,631
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+02_00
+  rotate: true
+  xy: 520, 353
+  size: 115, 109
+  orig: 190, 190
+  offset: 32, 38
+  index: -1
+02_01
+  rotate: true
+  xy: 477, 152
+  size: 152, 151
+  orig: 190, 190
+  offset: 16, 19
+  index: -1
+02_02
+  rotate: true
+  xy: 374, 306
+  size: 159, 144
+  orig: 190, 190
+  offset: 15, 19
+  index: -1
+02_03
+  rotate: true
+  xy: 164, 121
+  size: 176, 153
+  orig: 190, 190
+  offset: 8, 11
+  index: -1
+02_04
+  rotate: false
+  xy: 188, 306
+  size: 184, 159
+  orig: 190, 190
+  offset: 4, 9
+  index: -1
+02_05
+  rotate: false
+  xy: 2, 465
+  size: 184, 164
+  orig: 190, 190
+  offset: 4, 6
+  index: -1
+02_06
+  rotate: false
+  xy: 2, 299
+  size: 184, 164
+  orig: 190, 190
+  offset: 6, 6
+  index: -1
+02_07
+  rotate: false
+  xy: 188, 467
+  size: 186, 162
+  orig: 190, 190
+  offset: 4, 7
+  index: -1
+02_08
+  rotate: true
+  xy: 2, 110
+  size: 187, 160
+  orig: 190, 190
+  offset: 3, 9
+  index: -1
+02_09
+  rotate: false
+  xy: 376, 470
+  size: 184, 159
+  orig: 190, 190
+  offset: 6, 10
+  index: -1
+02_10
+  rotate: true
+  xy: 319, 130
+  size: 174, 156
+  orig: 190, 190
+  offset: 16, 7
+  index: -1
+02_11
+  rotate: true
+  xy: 477, 7
+  size: 143, 149
+  orig: 190, 190
+  offset: 26, 9
+  index: -1
+02_12
+  rotate: false
+  xy: 2, 3
+  size: 136, 105
+  orig: 190, 190
+  offset: 33, 16
+  index: -1
+02_13
+  rotate: false
+  xy: 520, 327
+  size: 37, 24
+  orig: 190, 190
+  offset: 106, 79
+  index: -1
+xing_00
+  rotate: false
+  xy: 562, 523
+  size: 54, 52
+  orig: 55, 53
+  offset: 1, 0
+  index: -1
+xing_01
+  rotate: false
+  xy: 562, 577
+  size: 54, 52
+  orig: 55, 53
+  offset: 1, 0
+  index: -1
