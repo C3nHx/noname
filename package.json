@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "tsx scripts/dev.ts",
         "build": "tsx scripts/build.ts",
+        "build:full": "tsx scripts/build.ts --full",
         "version:sync": "node scripts/sync-release-version.mjs",
         "version:check": "node scripts/sync-release-version.mjs --check",
         "test:distribution": "node --test scripts/tests/*.test.mjs",

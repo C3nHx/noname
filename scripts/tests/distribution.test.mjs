@@ -33,5 +33,5 @@ test("native package fields preserve platform version requirements", () => {
 	assert.match(nativeVersions.marketing, /^\d+\.\d+\.\d+$/);
 	assert.match(nativeVersions.build, /^[1-9]\d*$/);
 	assert.match(nativeVersions.windows, /^\d+\.\d+\.\d+\.\d+$/);
-	assert.equal(nativeVersions.androidCode, 111070002);
+	assert.equal(nativeVersions.androidCode, 111070003);
 });

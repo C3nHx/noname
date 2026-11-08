@@ -3,6 +3,10 @@ output
 installers/
 node_modules
 package-lock.json
+.audit/
+.pnp.cjs
+deploy/
+docs/web-deployment.md
 
 # IDE
 .idea/

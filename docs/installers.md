@@ -33,7 +33,7 @@ Windows 安装程序使用正式 NSIS 构建。Android 和 iOS 使用已有签�
 
 脚本从描述文件读取 Team ID、Bundle ID、有效期、证书和分发方式。P12 必须包含与描述文件匹配的有效签名身份。通配描述文件默认匹配项目的 `com.libnoname.noname`，需要其他标识时配置仓库变量 `IOS_BUNDLE_ID`。
 
-构建在 macOS/Xcode 上导入临时 keychain，执行手动签名 archive 和 export，并验证应用签名。完整角色图片、音频和集成扩展随包保留。
+构建在 macOS/Xcode 上导入临时 keychain，执行手动签名 archive 和 export，并验证应用签名。常规构建使用轻量客户端，角色图片、音频和扩展美术由独立资源包补齐，规则与扩展脚本保留在客户端。
 
 development 与 Ad Hoc 包只能安装在描述文件允许的设备上。App Store 类型的签名包需要通过 App Store Connect、TestFlight 或 App Store 分发，不能当作普通侧载包直接安装。具体分发方式记录在 `ios-signing-status.json`。
 

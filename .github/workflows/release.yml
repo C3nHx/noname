@@ -29,6 +29,7 @@ concurrency:
 
 env:
   RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+  NONAME_RESOURCE_KEY: ${{ secrets.NONAME_RESOURCE_KEY }}
 
 permissions:
   contents: write
@@ -121,13 +122,13 @@ jobs:
           mkdir -p release
           pnpm build
 
-          cd apps/core/dist
-          7z a ../../../release/noname.core.zip *
+          cd dist
+          7z a ../release/noname.core.zip *
 
-          cd ../../../dist
-          7z a ../release/noname.full.zip *
+          cd ../output/runtime-full
+          7z a ../../release/noname.full.zip *
 
-          cd ../release
+          cd ../../release
           7z t noname.core.zip
           7z t noname.full.zip
           sha256sum noname.core.zip > noname.core.zip.sha256
@@ -144,6 +145,8 @@ jobs:
           release/noname.core.zip.sha256 \
           release/noname.full.zip \
           release/noname.full.zip.sha256 \
+          output/resource-packs/*.nrp \
+          output/resource-packs/resource-manifest.json \
           --clobber
 
       - name: Publish immutable compiled runtime

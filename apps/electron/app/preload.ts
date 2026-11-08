@@ -9,7 +9,7 @@ if (process.isMainFrame) {
 	gameRequire("@electron/remote");
 	const dragZip = "./extension/拖拽读取/jszip.js";
 	if (gameRequire("fs").existsSync(path.resolve(gameRoot, dragZip))) gameRequire(dragZip);
-	Object.assign(window, { __dirname: gameRoot, __filename: path.join(gameRoot, "index.html"), require: gameRequire, process });
+	Object.assign(window, { __dirname: gameRoot, __filename: path.join(gameRoot, "index.html"), require: gameRequire, process, nonameResourceRoot: path.join(app.getPath("userData"), "Resources") });
 	const thisWindow = getCurrentWindow();
 
 	thisWindow.setAutoHideMenuBar(false);

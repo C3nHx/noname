@@ -1,11 +1,12 @@
-import { copyFileSync, existsSync, mkdirSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, renameSync, rmSync } from "fs";
 import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { build } from "vite";
 
 const root = resolve(import.meta.dirname, "..");
 const workspaceRoot = resolve(root, "../..");
-const distDir = resolve(workspaceRoot, "dist");
+const sourceDistDir = resolve(workspaceRoot, "dist");
+const distDir = resolve(workspaceRoot, "output/mobile-runtime");
 const preloadOutDir = resolve(root, ".mobile-preload");
 const androidAssetsNodeModules = resolve(root, "native/android/app/src/main/assets/public/node_modules");
 const platform = process.argv[2];
@@ -82,6 +83,8 @@ function patchAndroidAssets() {
 	renameSync(pnpmDir, androidSafePnpmDir);
 }
 
+rmSync(distDir, { recursive: true, force: true });
+cpSync(sourceDistDir, distDir, { recursive: true });
 await buildPreload();
 capSync();
 if (platform !== "ios") patchAndroidAssets();

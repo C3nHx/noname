@@ -37,7 +37,7 @@ if (args.has("--skip-web-build")) {
 
 run("pnpm", ["sync:android"], mobileRoot, "Capacitor sync");
 
-const gradleCommand = process.platform === "win32" ? "gradlew.bat" : "bash";
+const gradleCommand = process.platform === "win32" ? ".\\gradlew.bat" : "bash";
 const gradleArgs = process.platform === "win32" ? [task, "--no-daemon", "--stacktrace"] : ["gradlew", task, "--no-daemon", "--stacktrace"];
 if (args.has("--unsigned")) gradleArgs.push("-PnonameUnsigned=true");
 run(gradleCommand, gradleArgs, androidRoot, `Android ${task}`);

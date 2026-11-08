@@ -2,6 +2,7 @@ import { lib, game, get, _status, ui, ai } from "noname";
 import { boot } from "@/init/index.js";
 import { userAgentLowerCase, device } from "@/util/index.js";
 import { loadBuildInfo } from "@/util/meta.js";
+import { prepareResourcePacks } from "./resources/index.js";
 import "core-js-bundle";
 // 保证打包时存在(importmap)
 import "vue/dist/vue.esm-browser.js";
@@ -9,6 +10,7 @@ import "vue/dist/vue.esm-browser.js";
 (async () => {
 	try {
 		lib.device = device;
+		const resources = await prepareResourcePacks({ lib, game });
 
 		// 预加载脚本
 		const path = "/preload.js";
@@ -29,6 +31,7 @@ import "vue/dist/vue.esm-browser.js";
 			}
 		});
 		await preload({ lib, game, get, _status, ui, ai });
+		await resources?.attach();
 		lib.buildInfo = await loadBuildInfo(url => lib.init.promises.json(url));
 
 		// GPL确认

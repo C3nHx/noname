@@ -237,7 +237,7 @@
 	"connect_characters": ["old", "diy", "key", "collab", "offline", "standard"],
 	"connect_cards": ["huodong", "guozhan", "sp", "zhulu", "yingbian", "yongjian", "xianxia"],
 	"plays": [],
-	"extensions": ["十周年UI", "天庭", "全能搜索", "斗转星移", "千幻聆音", "皮肤切换", "奇妙工具", "自用美化", "懒人包"],
+	"extensions": ["十周年UI", "全能搜索", "斗转星移", "千幻聆音", "皮肤切换", "自用美化", "懒人包"],
 
 	"banned": [],
 	"bannedcards": [],

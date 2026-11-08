@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 (async function () {
+	if (document.documentElement.dataset.resourceProfile === "lite") return;
 	const scope = new URL("./", location.href).toString();
 	// if (import.meta.env.DEV) {
 	// 	if ("serviceWorker" in navigator) {

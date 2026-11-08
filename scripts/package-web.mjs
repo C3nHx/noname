@@ -1,11 +1,9 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { constants } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { stageBundledExtensions } from "./bundle-extensions.mjs";
 import { checkExtensionImports } from "./check-extension-imports.mjs";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -14,15 +12,6 @@ const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repository, enc
 await fs.mkdir(destination, { recursive: false });
 const web = path.join(destination, "web");
 await fs.cp(path.join(repository, "dist"), web, { recursive: true, dereference: true });
-await stageBundledExtensions(web);
-// The extension normally writes these icons at runtime, but the web server is read-only.
-for (const name of ["zq_wucaishi.png", "zq_huangjinsheng.png", "zq_jingangzhuo.png", "zq_jingubang.png", "zq_qixingjian.png"]) {
-	try {
-		await fs.copyFile(path.join(web, "extension/天庭/image/equip", name), path.join(web, "image/card", name), constants.COPYFILE_EXCL);
-	} catch (error) {
-		if (error.code !== "EEXIST") throw error;
-	}
-}
 const configPath = path.join(web, "game/config.json");
 const config = JSON.parse(await fs.readFile(configPath, "utf8"));
 await checkExtensionImports(web, config.extensions);

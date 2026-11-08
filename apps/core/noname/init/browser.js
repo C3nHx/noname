@@ -10,7 +10,7 @@ import { FileSystem, FileSystemError, FileSystemErrorCode, installLegacyFileSyst
 
 export default async function browserReady({ lib, game }) {
 	lib.path = (await import("path-browserify-esm")).default;
-	const adpt = new BrowserAdapter();
+	const adpt = new BrowserAdapter(lib.resourcePacks);
 	const fs = new FileSystem(adpt);
 
 	try {
@@ -51,6 +51,9 @@ export default async function browserReady({ lib, game }) {
  * @implements { FileSystemAdapter }
  */
 class BrowserAdapter {
+	constructor(resources) {
+		this.resources = resources;
+	}
 	/**
 	 * @param {string} path
 	 * @param {OpenOptions} [options]
@@ -95,6 +98,7 @@ class BrowserAdapter {
 	 */
 	async read(path) {
 		assertValidPath(path);
+		if (this.resources?.isManaged(path)) return this.resources.read(path);
 		const data = await requestBackend("/readFile", path, { fileName: path });
 
 		try {
@@ -138,6 +142,7 @@ class BrowserAdapter {
 	 */
 	async stat(path) {
 		assertValidPath(path);
+		if (this.resources) return this.resources.index.stat(path);
 		const type = await requestBackend("/checkFile", path, { fileName: path });
 
 		if (type === "file" || type === "directory") {
@@ -152,6 +157,7 @@ class BrowserAdapter {
 	 */
 	async list(path) {
 		assertValidPath(path);
+		if (this.resources) return this.resources.index.list(path);
 		const data = await requestBackend("/getFileList", path, { dir: path });
 		if (!isStringArray(data?.folders) || !isStringArray(data?.files)) {
 			throw createFileSystemError(FileSystemErrorCode.IoError, path, "Invalid getFileList response data");

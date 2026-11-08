@@ -165,7 +165,7 @@ function createMainWindow() {
 }
 
 app.whenReady().then(() => {
-	if (!import.meta.env.DEV) registerLocalProtocol(dirname);
+	if (!import.meta.env.DEV) registerLocalProtocol(dirname, path.join(app.getPath("userData"), "Resources"));
 	createWindow();
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) {

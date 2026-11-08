@@ -167,8 +167,8 @@ window.zqjc = {
 	    }, 
         precontent: function () {
 		    if(lib.config.extensions.includes('斗转星移') && lib.config.extensions.includes('假装无敌') && lib.config.extension_假装无敌_enable) {
-		        game.saveConfig("extension_假装无敌_enable",false); //已被斗转星移和奇妙工具扩展取代
-			    alert("懒人包的假装无敌已被【斗转星移】和【奇妙工具】扩展取代，您可以删除假装无敌扩展！");
+		        game.saveConfig("extension_假装无敌_enable",false);
+			    alert("懒人包的假装无敌已被【斗转星移】扩展取代，您可以删除假装无敌扩展！");
 		    }
 		    if (lib.config.extension_懒人包_zq_mark_identity) {
 		    	game.saveConfig('qhly_funcLoadInPrecontent', true); game.saveConfig('extension_千幻聆音_qhly_funcLoadInPrecontent', true); //千幻-联机动皮
@@ -476,7 +476,6 @@ lib.skill._swReplaceHandCards = {
 			    name:`<a href="javascript:void(0)" onclick="${copyHandler}" style="color: #FFFACD;">点击复制无名杀懒人包频道地址</a>`,
 				clear: true
 			},
-			//tutorial_title: createCollapseTitle("tutorial_title", "奇妙工具", "gold"),
 			//tutorial_title_end: createCollapseEnd("tutorial_title"),
 			swReplaceHandcards: {
 			    name: '<b><font color=\"#80FFFF\">联机手气卡',

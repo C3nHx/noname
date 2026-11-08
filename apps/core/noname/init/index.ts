@@ -693,7 +693,11 @@ async function getExtensionList() {
 		await game.promises.saveConfig("extensions", extensions);
 	}
 
-	return toLoad.filter(name => supportsExtension(name, typeof window.process === "object" && typeof window.process.versions?.electron === "string"));
+	return toLoad.filter(name => {
+		const available = supportsExtension(name, typeof window.process === "object" && typeof window.process.versions?.electron === "string") && (!lib.resourcePacks || lib.resourcePacks.allowsExtension(name));
+		if (!available) config.set(`extension_${name}_enable`, false);
+		return available;
+	});
 }
 
 function initSheet() {

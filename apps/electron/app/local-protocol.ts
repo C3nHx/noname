@@ -26,20 +26,20 @@ export const LOCAL_HOST = "localhost:8089";
 /**
  * 接管默认 session 的 http 协议：`LOCAL_HOST` 下的请求以 `root` 为根目录提供静态文件，其余请求原样转发
  */
-export function registerLocalProtocol(root: string) {
+export function registerLocalProtocol(root: string, resourceRoot: string) {
 	const resolvedRoot = path.resolve(root);
 	protocol.handle("http", request => {
 		if (new URL(request.url).host === LOCAL_HOST) {
 			if (request.method !== "GET" && request.method !== "HEAD") {
 				return new Response("Method Not Allowed", { status: 405 });
 			}
-			return handleLocalRequest(request, resolvedRoot);
+			return handleLocalRequest(request, resolvedRoot, path.resolve(resourceRoot));
 		}
 		return net.fetch(request, { bypassCustomProtocolHandlers: true });
 	});
 }
 
-async function handleLocalRequest(request: Request, root: string) {
+async function handleLocalRequest(request: Request, root: string, resourceRoot: string) {
 	let pathname: string;
 	try {
 		pathname = decodeURIComponent(new URL(request.url).pathname);
@@ -52,6 +52,8 @@ async function handleLocalRequest(request: Request, root: string) {
 	}
 	let stat: fs.Stats;
 	try {
+		const resource = path.resolve(resourceRoot, "." + pathname);
+		if (resource.startsWith(resourceRoot + path.sep) && /\.(png|jpe?g|webp|gif|svg|avif|ico|mp3|ogg|wav|m4a|mp4|webm|woff2?|ttf|otf|atlas|skel)$/i.test(pathname) && fs.existsSync(resource)) full = resource;
 		stat = await fs.promises.stat(full);
 		if (stat.isDirectory()) {
 			full = path.join(full, "index.html");

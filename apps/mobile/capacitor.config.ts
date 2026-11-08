@@ -3,7 +3,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
 	appId: "com.libnoname.noname",
 	appName: "noname",
-	webDir: "../../dist",
+	webDir: "../../output/mobile-runtime",
 	android: {
 		path: "native/android",
 	},

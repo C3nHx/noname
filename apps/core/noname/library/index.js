@@ -37,6 +37,8 @@ export class Library {
 	mirrorURL = updateURLs.coding;
 	hallURL = "";
 	assetURL = assetURL;
+	/** @type {Awaited<ReturnType<typeof import("../resources/index.js").prepareResourcePacks>>} */
+	resourcePacks = null;
 	userAgent = userAgentLowerCase;
 	characterDefaultPicturePath = characterDefaultPicturePath;
 	changeLog = [];

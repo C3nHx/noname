@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { bundledExtensions, supportsExtension } from "../../apps/core/noname/util/bundled-extensions.js";
+import { bundledExtensions, supportsExtension, hasBundledResources } from "../../apps/core/noname/util/bundled-extensions.js";
 import { stageBundledExtensions } from "../bundle-extensions.mjs";
 
 async function fixture(t) {
@@ -46,7 +46,14 @@ test("a changed vendor resource fails its recorded checksum", async t => {
 
 test("bundled extensions are available on desktop and native extensions are skipped elsewhere", async () => {
 	const config = JSON.parse(await fs.readFile(new URL("../../apps/core/game/config.json", import.meta.url), "utf8"));
-	assert.equal(bundledExtensions.length, 11);
+	assert.equal(bundledExtensions.length, 9);
+	for (const name of ["天庭", "奇妙工具"]) {
+		assert.equal(supportsExtension(name, true), false);
+		assert.equal(supportsExtension(name, false), false);
+		assert.equal(Object.keys(config).some(key => key.startsWith(`extension_${name}_`)), false);
+		await assert.rejects(fs.access(new URL(`../../vendor/ziqi/runtime/extension/${name}/`, import.meta.url)));
+		await assert.rejects(fs.access(new URL(`../../apps/core/extension/${name}/`, import.meta.url)));
+	}
 	assert.deepEqual(
 		config.extensions,
 		bundledExtensions.map(extension => extension.name)
@@ -57,4 +64,11 @@ test("bundled extensions are available on desktop and native extensions are skip
 		["应用配置", "拖拽读取"]
 	);
 	assert.equal(supportsExtension("user-installed-extension", false), true);
+});
+
+test("a downloaded skin switch cannot load before its required extension is ready", () => {
+	assert.equal(hasBundledResources("皮肤切换", name => name === "皮肤切换"), false);
+	assert.equal(hasBundledResources("皮肤切换", name => ["皮肤切换", "千幻聆音"].includes(name)), true);
+	assert.equal(hasBundledResources("十周年UI", name => name === "十周年UI"), true);
+	assert.equal(hasBundledResources("user-installed-extension", () => false), true);
 });
