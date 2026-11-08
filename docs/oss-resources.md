@@ -8,7 +8,7 @@ OSS 保存正式加密资源，并直接向客户端下载提供 HTTPS 服务。
 
 - Bucket 上的 `oss:GetBucketLocation` 用于核对地域。
 - 资源目录上的 `oss:GetObject`、`oss:PutObject` 和 `oss:PutObjectAcl` 用于读取、上传及设置所发布对象的公开读权限。
-- 使用 `--configure-cors` 时，需要 Bucket 上的 `oss:GetBucketCORS` 和 `oss:PutBucketCORS`。也可以先由管理员配置 CORS，日常发布不传此开关。
+- 使用 `--configure-cors` 时，需要 Bucket 上的 `oss:GetBucketCors` 和 `oss:PutBucketCors`。也可以先由管理员配置 CORS，日常发布不传此开关。
 
 发布器不设置整个 Bucket 的 ACL，只将上传的资源对象设为 `public-read`。不要配置公共写权限。若账号或 Bucket 的阻止公共访问策略禁止对象公开读，需要由管理员确认此资源目录的访问方案。
 
@@ -63,5 +63,7 @@ node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-s
 工作流继续使用 `NONAME_RESOURCE_KEY` secret 保持解密材料一致。当前工作流不自动上传 OSS，也没有收到 OSS 访问凭证。发布新版本时，先构建、上传并验证对应版本的资源，再分发客户端。以后接入自动发布时，另外配置所需的 RAM 或 OIDC 授权。
 
 网页打包会将 `deployment.js` 纳入核心缓存，并为修改后的启动文件生成新的核心构建标识。网页部署只上传轻量客户端，不将 `.nrp` 放回网页服务器。
+
+已缓存素材可离线读取，但网页完全退出后在无网络环境启动，仍存在沙盒模块的启动依赖问题，见 [完整离线启动遗留](./resource-delivery-follow-up.md#网页完整离线启动的独立遗留)。不要将素材缓存验收写成完整离线启动验收。
 
 对象存储直出产生存储、请求和公网下载流量费用。CDN 可在需要更广地域加速或比较计费后再接入。
