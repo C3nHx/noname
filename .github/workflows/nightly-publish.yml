@@ -10,6 +10,7 @@ permissions:
 
 env:
   NONAME_RESOURCE_KEY: ${{ secrets.NONAME_RESOURCE_KEY }}
+  NONAME_RESOURCE_ROOT_URL: ${{ vars.NONAME_RESOURCE_ROOT_URL }}
 
 jobs:
   publish:

@@ -3,7 +3,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { forkVersion, repositoryURL } from "../apps/core/noname/util/distribution.js";
-import { parseResourceManifest, resourceGroup } from "../apps/core/noname/resources/manifest.js";
+import { parseResourceManifest, resourceGroup, resourceURL } from "../apps/core/noname/resources/manifest.js";
 import { createResourceDecryptor } from "../apps/core/noname/resources/crypto.js";
 import { encryptResourcePart, resourceKeyConfig } from "./resource-key.mjs";
 
@@ -22,7 +22,7 @@ async function inventory(directory, prefix = "") {
 	return files;
 }
 
-export async function splitRuntimeResources({ directory, resourceDirectory, fullDirectory, key, profile = "lite", baseURL = `${repositoryURL}/releases/download/v${forkVersion}/`, deliveryURL = "", partBytes = 24 * 1024 * 1024 }) {
+export async function splitRuntimeResources({ directory, resourceDirectory, fullDirectory, key, profile = "lite", rootURL, baseURL = rootURL ? resourceURL(rootURL, `v${forkVersion}`) + "/" : `${repositoryURL}/releases/download/v${forkVersion}/`, deliveryURL = "", partBytes = 24 * 1024 * 1024 }) {
 	const keyConfig = resourceKeyConfig(key);
 	const decrypt = await createResourceDecryptor(keyConfig, keyConfig.keyId);
 	const root = path.resolve(directory);
