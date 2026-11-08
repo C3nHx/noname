@@ -27,7 +27,7 @@ git push origin fork
 
 Build 在推送 `fork` 时执行。Nightly 显式检出 `fork`。Release 从 `fork` 上的版本标签构建，仍以 GitHub Releases 为正式分发渠道。扩展来源和构建细节见 [扩展集成说明](./bundled-extensions.md)。
 
-上述命令处理源码集成，不会自动将资源发布到 CNB。需要同时更新轻量客户端和加密资源时，使用仓库内的 [noname-upstream-release skill](../.agents/skills/noname-upstream-release/SKILL.md)，依次审查资源边界、复用密钥、验证构建并发布 CNB。Web 下载方式和部署的未完成事项见 [Web 资源分发遗留](./resource-delivery-follow-up.md)。
+上述命令处理源码集成，不会自动上传资源。需要同时更新轻量客户端和加密资源时，使用仓库内的 [noname-upstream-release skill](../.agents/skills/noname-upstream-release/SKILL.md)，依次审查资源边界、复用密钥、验证构建并发布到 OSS。资源上传步骤见 [OSS 资源发布](./oss-resources.md)，当前交付状态见 [资源分发记录](./resource-delivery-follow-up.md)。
 
 ## 维护版本
 

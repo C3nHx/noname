@@ -1,6 +1,6 @@
 ---
 name: noname-upstream-release
-description: 维护本仓库的上游同步、轻量客户端与素材拆分、加密资源构建和 CNB Release 发布。用于同步 libnoname 改动、更新资源包或发布分支版本。
+description: 维护本仓库的上游同步、轻量客户端与素材拆分、加密资源构建和 OSS 发布。用于同步 libnoname 改动、更新资源包或发布分支版本，保留 CNB 历史归档的恢复入口。
 ---
 
 # 同步上游并发布加密资源
@@ -11,7 +11,8 @@ description: 维护本仓库的上游同步、轻量客户端与素材拆分、�
 
 - [分支与版本维护](../../../docs/fork-release.md)规定上游基线和发行版本。
 - [资源边界与缓存](../../../docs/resource-packs.md)规定产物、密钥和各端保存方式。
-- [CNB 发布](../../../docs/cnb-resources.md)规定上传协议和分阶段发布。
+- [OSS 发布](../../../docs/oss-resources.md)规定正式下载源、发布命令和所需权限。
+- [CNB 发布](../../../docs/cnb-resources.md)保留历史归档的可选流程，不是正式发布的必经步骤。
 - [扩展集成](../../../docs/bundled-extensions.md)规定 vendor 清单和默认扩展配置。
 - [Web 分发遗留](../../../docs/resource-delivery-follow-up.md)记录未决方案和恢复条件。它是历史状态，执行前核对现场。
 
@@ -36,14 +37,13 @@ description: 维护本仓库的上游同步、轻量客户端与素材拆分、�
 
 使用根 `package.json` 要求的 Node 22 和锁定依赖。正式发布复用现有 32 字节资源密钥，通过 `NONAME_RESOURCE_KEY_FILE` 或 `NONAME_RESOURCE_KEY` 提供。缺少现有发布密钥时先恢复它，不依赖本地自动生成的新密钥发布。所有平台使用同一密钥版本，日志只记录 `keyId`。
 
-从同步后的核心版本生成 CNB 地址，例如在 PowerShell 中执行：
+从公开资源根目录生成当前版本地址，例如在 PowerShell 中执行：
 
 ```powershell
-$releaseVersion = node -p "require('./apps/core/package.json').version"
-$env:NONAME_RESOURCE_BASE_URL = "https://cnb.cool/c4nhx/noname-resources/-/releases/download/v$releaseVersion/"
+$env:NONAME_RESOURCE_ROOT_URL = 'https://example-assets.oss-cn-shanghai.aliyuncs.com/noname/'
 ```
 
-已选定并验证实际下载站时，将版本目录配置为 `NONAME_RESOURCE_DELIVERY_URL`。检查当前环境，避免继承上一版本的地址。未选 Web 分发方式时可以只发布 CNB 分卷，不宣称网页自动下载可用。
+构建自动追加 `v<当前发行版本>/`。`NONAME_RESOURCE_BASE_URL` 可覆盖完整版本目录，`NONAME_RESOURCE_DELIVERY_URL` 可覆盖实际下载站。检查当前环境，避免继承旧地址。四个 GitHub 工作流读取仓库变量 `NONAME_RESOURCE_ROOT_URL`；本地环境变量不会自动同步到 GitHub。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -58,39 +58,34 @@ node scripts/verify-resource-build.mjs
 
 本地明文缓存按文件哈希复用。随机 IV 会让不同构建的密文不同，同名分卷绑定相同密钥版本和明文 ZIP 哈希，不能将密文字节完全一致作为跨构建兼容的条件。镜像同一次发布时直接复制已发布的密文文件。
 
-## 发布到 CNB
+## 发布到 OSS
 
-检查 CNB CLI、目标仓库和 `repo-release:rw` 权限。CLI 登录不保证具备 Release 写权限。通过当前环境的安全凭证入口取得令牌，按需传入 `CNB_TOKEN`，不写入源码或日志。
+按 OSS 发布文档核对 Bucket、地域、资源前缀和 RAM 权限。通过安全凭证入口取得访问材料，只传给本地发布进程，不写入源码或日志。资源密钥与 OSS 凭证分别处理，不把后者提供给客户端。
 
-`scripts/publish-resources-cnb.mjs` 不由当前 GitHub 工作流自动调用。`pnpm build` 也不会上传资源。GitHub Actions 的 `NONAME_RESOURCE_KEY` secret 解决各端密钥一致性，不代表已配置 CNB 发布凭证。
+读取 Bucket 地域或 CORS 失败时，区分账号归属与缺少相应权限，不推断对象上传已获授权。需要补权限时报告实际操作、状态码与错误，不在未确认的 Bucket 中试写探针。
 
-最终核心构建和下载配置已经确定时，执行完整发布：
-
-```sh
-node scripts/publish-resources-cnb.mjs --repo c4nhx/noname-resources
-```
-
-需要先传大文件、后确定核心清单时，分两次执行。第二条命令必须等最终构建验证完成后再运行：
+使用实际 Bucket、地域、版本目录和网页 Origin 执行，例如：
 
 ```sh
-node scripts/publish-resources-cnb.mjs --repo c4nhx/noname-resources --parts-only
-node scripts/publish-resources-cnb.mjs --repo c4nhx/noname-resources --catalog-only
+node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-shanghai --prefix noname/v1.11.7-c3nhx.3/ --configure-cors --verify-origin https://game.example.com
 ```
 
-默认目录为 `output/resource-packs`，默认客户端解密配置为 `dist/resource-key.json`。发布 tag 默认取清单版本的 `v` 前缀，清单 `baseURL` 必须与目标 CNB Release 完全一致。
+首次需要时才传 `--configure-cors`，脚本备份并保留原规则。Bucket ACL 保持原配置，脚本只公开所上传的加密分卷和无密钥清单。日常发布可以不具备 CORS 修改权限，由管理员预先配置。
 
-默认收据是 `.audit/cnb-resource-publication.json`。保留未完成发布的收据与原密钥。开始其他版本前备份旧收据，或为两阶段命令传入同一个独立的 `--receipt` 路径。`catalog-only` 核对收据中的分卷名称、长度和明文哈希，并检查远端附件存在，但不会重新下载、解密全部分卷。若两阶段之间附件有变动或无法确认其状态，先重跑 `--parts-only` 匿名回读并验证，再发布清单。不能手改收据跳过检查。
+脚本本地校验后上传分卷，匿名回读并认证解密，全部验证后才上传、回读最终清单。已有对象不覆盖。重跑时核对远端实际内容，不能只相信文件大小或上一轮完成标记。失败时保留现场，在同一未完成版本下重跑；清单冲突时使用新修订号。
 
-发布器跳过同名、同大小的附件，并在分卷阶段匿名下载、解密核验。大小冲突或清单回读不一致时停止，检查是否复用了旧版本，不删除重建或覆盖已发布附件。中断后可以重跑同一阶段，已有分卷会复用，未完成的单个文件重新上传。
+默认输入为 `output/resource-packs`，客户端解密配置为 `dist/resource-key.json`。后者仅用于本地校验，不上传。收据默认保存在 `.audit/oss-resource-publication.json`，不同发布可传独立 `--receipt` 路径。
 
-收据 `phase: parts` 仅表示分卷完成。只有最终清单回读验证成功、收据为 `complete`，才报告完整 CNB 发布。公开内容只包括 `.nrp` 和不含密钥的 `resource-manifest.json`。`dist`、完整离线包和解密配置属于客户端产物，不上传到资源仓库。
+GitHub Actions 的资源根地址变量解决各平台默认下载源，`NONAME_RESOURCE_KEY` secret 解决密钥一致性。当前工作流不自动上传 OSS，也不因这两个设置获得 OSS 访问凭证。需要给 CI 提供云凭证时，按实际授权另行配置。
+
+仅在用户要求操作 CNB 历史归档时读取 CNB 发布文档。已有 `.audit/cnb-resource-publication.json` 的 `phase: parts` 只表示当时分卷完成；这不阻止新的 OSS 独立发布，也不要求为迁移补发 CNB 清单。不删除已有归档。
 
 ## 验证使用端并交付
 
-CNB 的匿名 Node 下载成功不能证明外站浏览器能读取。已实测 CNB Release 入口与最终文件域拒绝外站 Origin，单纯解析重定向无法解决。Web 分发方式未定时，保留该遗留，不部署一个默认自动下载失败的新客户端。
+匿名 Node 下载成功和带 Origin 的响应头检查均不能代替真实浏览器验收。已实测 CNB Release 入口与最终文件域拒绝外站 Origin，不能作为网页默认自动下载源。OSS 权限或 CORS 尚未就绪时，先完成本地准备，保留线上回滚版本，不切换到资源下载失败的新客户端。
 
 分发方式确定后，从实际网页 Origin 验证下载、AES-GCM 解密和缓存，再重启浏览器验证无重复下载及离线读取。检查核心版本更新能复用未变化的素材。网页认证和大厅认证沿用现有边界，资源请求不携带网页凭证。原生安装包与真机行为另行验证，不能由浏览器结果代替。
 
 提交前审查暂存内容，排除真实部署目录、环境凭证、`.audit`、`dist`、`output` 和实际密钥。保留上游 localhost 证书逻辑。按用户要求提交并推送，发布说明中的贡献者不用 GitHub 提及。
 
-交付时分别报告源码提交、构建验证、CNB 分卷与清单、实际下载站、线上 Web 和原生安装包状态。留下未完成阶段的恢复入口，不把其中一项完成写成全链路完成。
+交付时分别报告源码提交、构建验证、OSS 分卷与清单、真实浏览器下载、线上 Web 和原生安装包状态。留下未完成阶段的恢复入口，不把其中一项完成写成全链路完成。

@@ -1,5 +1,7 @@
 # 将加密资源发布到 CNB
 
+当前正式资源分发采用 [OSS 直接下载](./oss-resources.md)。本文保留 CNB 历史归档和可选发布流程，日常构建不依赖它。
+
 资源仓库为 <https://cnb.cool/c4nhx/noname-resources>。仓库主分支保存用途说明，资源放在按客户端版本区分的 Release 中。客户端核心包和解密配置不上传到此仓库。
 
 从上游同步开始的完整维护流程见 [noname-upstream-release skill](../.agents/skills/noname-upstream-release/SKILL.md)。当前 GitHub 工作流不会自动执行此 CNB 发布脚本，构建和上传需要分别完成。本次发布与 Web 部署状态见 [Web 资源分发遗留](./resource-delivery-follow-up.md)。
