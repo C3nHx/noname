@@ -473,3 +473,37 @@ test("browser storage notices cache eviction during the same session", async t =
 	assert.equal(await storage.has(file), false);
 	assert.equal(storage.hasCached(file), false);
 });
+
+test("browser restart reconciles saved resources without enumerating a large Cache", async t => {
+	const files = Array.from({ length: 512 }, (_, index) => ({ path: `image/${index}.png`, bytes: 1, sha256: index.toString(16).padStart(64, "0") }));
+	const stored = new Set(files.slice(1).map(file => file.sha256));
+	const originalCaches = globalThis.caches;
+	let active = 0,
+		peak = 0;
+	globalThis.caches = {
+		async open() {
+			return {
+				async keys() {
+					throw new DOMException("Failed to execute 'keys' on 'Cache': Operation too large.", "AbortError");
+				},
+				async match(url) {
+					peak = Math.max(peak, ++active);
+					await new Promise(resolve => setImmediate(resolve));
+					active--;
+					return stored.has(url.split("/").at(-1)) ? new Response("x") : undefined;
+				},
+			};
+		},
+	};
+	t.after(() => {
+		globalThis.caches = originalCaches;
+	});
+	const state = { files: Object.fromEntries(files.map(file => [file.path, file.sha256])) };
+	const storage = await browserResourceStorage("https://game.example/");
+	assert.equal(await reconcileResourceState({ packs: [{ files }] }, state, storage), true);
+	assert.equal(state.files[files[0].path], undefined);
+	assert.equal(storage.hasCached(files[0]), false);
+	assert(files.slice(1).every(file => storage.hasCached(file)));
+	assert.equal(Object.keys(state.files).length, files.length - 1);
+	assert(peak <= 32);
+});

@@ -19,14 +19,16 @@ export async function reconcileResourceState(manifest, state, storage) {
 
 export async function browserResourceStorage(root) {
 	const cache = await caches.open(RESOURCE_CACHE);
-	const keys = new Set((await cache.keys()).map(request => request.url));
+	const keys = new Set();
 	return {
 		hasCached(file) {
 			return keys.has(cacheKey(root, file.sha256));
 		},
 		async has(file) {
 			const key = cacheKey(root, file.sha256);
-			const exists = !!(await cache.match(key));
+			const response = await cache.match(key);
+			const exists = !!response;
+			response?.body?.cancel().catch(() => {});
 			if (exists) keys.add(key);
 			else keys.delete(key);
 			return exists;

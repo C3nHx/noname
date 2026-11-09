@@ -46,7 +46,10 @@ export async function prepareResourcePacks({ lib, game }) {
 	let storage;
 	if (isDesktop) storage = desktopResourceStorage(window.nonameResourceRoot);
 	else if (isNative) storage = nativeResourceStorage(game);
-	else if ("caches" in window) storage = await browserResourceStorage(root);
+	else if ("caches" in window) {
+		storage = await browserResourceStorage(root);
+		if (await reconcileResourceState(manifest, state, storage)) await save();
+	}
 	const available = file => !!file && state.files[file.path] === file.sha256 && (!storage?.hasCached || storage.hasCached(file));
 	const cards = manifest.packs.find(pack => pack.id === "cards");
 	let mode = state.artwork && cards?.files.every(available) ? "art" : "text";
