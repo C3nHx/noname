@@ -5,11 +5,11 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import test from "node:test";
 import { splitRuntimeResources } from "../resource-packs.mjs";
-import { createResourceIndex, parseResourceManifest, resourceGroup, resourceURL } from "../../apps/core/noname/resources/manifest.js";
+import { cacheKey, createResourceIndex, parseResourceManifest, RESOURCE_CACHE, resourceGroup, resourceURL } from "../../apps/core/noname/resources/manifest.js";
 import { downloadResourcePacks, installResourcePack } from "../../apps/core/noname/resources/download.js";
 import { createResourceDecryptor, sha256 } from "../../apps/core/noname/resources/crypto.js";
 import { encryptResourcePart, resourceKeyConfig } from "../resource-key.mjs";
-import { rangeResponse } from "../../apps/core/noname/resources/worker.js";
+import { installResourceWorker, rangeResponse } from "../../apps/core/noname/resources/worker.js";
 import { browserResourceStorage, desktopResourceStorage, nativeResourceStorage, reconcileResourceState } from "../../apps/core/noname/resources/storage.js";
 
 const JSZip = createRequire(new URL("../../apps/core/package.json", import.meta.url))("jszip");
@@ -378,6 +378,42 @@ test("cached audio supports browser range requests", async () => {
 	assert.equal(await response.text(), "345");
 	assert.equal(response.headers.get("Content-Range"), "bytes 3-5/10");
 	assert.equal((await rangeResponse(new Response(bytes), "bytes=15-")).status, 416);
+});
+
+test("cached extension images resolve repeated URL slashes without a network request", async t => {
+	const bytes = new TextEncoder().encode("cached equipment artwork");
+	const files = await Promise.all(["cixiong", "bagua", "zhangba", "weizhi"].map(async name => ({ path: `extension/十周年UI/zq/image/ass/${name}.png`, bytes: bytes.length, sha256: await sha256(bytes) })));
+	const manifest = {
+		schemaVersion: 2, profile: "lite", version: "1", buildId: "a".repeat(64), baseURL: "https://assets.example/", core: ["noname.js"],
+		encryption: { algorithm: "AES-256-GCM", keyId: "b".repeat(32) },
+		packs: [{ id: "extension-十周年UI", label: "十周年UI美术", files, parts: [{ path: "resources.nrp", bytes: 33, sha256: "c".repeat(64), files: files.map(file => file.path) }] }],
+	};
+	const previousCaches = globalThis.caches;
+	t.after(() => { if (previousCaches === undefined) delete globalThis.caches; else globalThis.caches = previousCaches; });
+	const network = [];
+	t.mock.method(globalThis, "fetch", async request => { network.push(request.url); return new Response(null, { status: 404 }); });
+	for (const root of ["https://game.example/", "https://game.example/play/"]) {
+		const cached = new Map([[new URL("resource-manifest.json", root).href, new Response(JSON.stringify(manifest))], [cacheKey(root, files[0].sha256), new Response(bytes, { headers: { "Content-Type": "image/png" } })]]);
+		globalThis.caches = { async open(name) { assert.equal(name, RESOURCE_CACHE); return { async match(key) { return cached.get(key)?.clone(); } }; } };
+		const handlers = new Map();
+		installResourceWorker({ registration: { scope: root }, addEventListener(name, handler) { handlers.set(name, handler); } });
+		const request = url => {
+			let response;
+			handlers.get("fetch")({ request: new Request(url), respondWith(value) { response = value; } });
+			return response;
+		};
+		for (const file of files) {
+			for (const filename of [file.path, file.path.replace("/zq/", "//zq/"), "/" + file.path.replaceAll("/", "///")]) {
+				const url = root + filename.split("/").map(encodeURIComponent).join("/") + "?v=1";
+				const response = await request(url);
+				assert.equal(response.status, 200, url);
+				assert.deepEqual(new Uint8Array(await response.arrayBuffer()), bytes);
+			}
+		}
+		assert.equal((await request(root + "%E0%A4")).status, 400);
+		assert.equal(request("https://other.example/" + files[0].path), undefined);
+	}
+	assert.deepEqual(network, []);
 });
 
 test("native resource writes preserve root paths and detect incomplete or corrupted files", async () => {
