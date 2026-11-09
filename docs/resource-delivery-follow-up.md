@@ -57,7 +57,9 @@ OSS 权限问题已解决。`.3` 和 `.4` 的加密分卷与公开清单均已�
 
 实际 `.4` CI APK 在隔离模拟器中使用原生存储，与网页缓存枚举错误不同。保留 21,527 个真实素材及其下载状态后，跟踪到 `resources.attach()` 等待逐文件核验，期间界面为空白。私有目录使用 `DocumentFile.findFile()` 逐段查找，每次重新枚举同级文件，音频大目录会产生重复扫描。
 
-已将 file URI 的私有目录查询改为直接构造文件路径并检查存在性。SAF 的 content URI 继续使用原查询。测试包保留 CI APK 的游戏核心文件与原素材，覆盖安装到隔离实例后，全量核验完成、美术与扩展启用、8 人对局推进和卡牌响应哈希均通过，原文件系统 3 项仪器测试通过。证据保存在 `.audit/native-fixed-restart-result.json`、`.audit/native-full-art-result.json` 和 `.audit/native-filesystem-fixed.log`。这证明修复覆盖了复现的原生阻塞，尚未连接用户手机验证，也未交付可覆盖现有测试签名的更新 APK。
+已将 file URI 的私有目录查询改为直接构造文件路径并检查存在性。SAF 的 content URI 继续使用原查询。测试包保留 CI APK 的游戏核心文件与原素材，覆盖安装到隔离实例后，全量核验完成、美术与扩展启用、8 人对局推进和卡牌响应哈希均通过，原文件系统 3 项仪器测试通过。证据保存在 `.audit/native-fixed-restart-result.json`、`.audit/native-full-art-result.json` 和 `.audit/native-filesystem-fixed.log`。这证明修复覆盖了复现的原生阻塞，尚未连接用户手机验证。
+
+修复提交 `724e5048` 已推送；[更新 APK 构建](https://github.com/C3nHx/noname/actions/runs/42627732468)成功，产物仍是测试签名，Actions 保留 3 天。实测旧 `.4` APK 证书 SHA-256 以 `cbb153d7b8b2` 开头，新包以 `a16ecad26b8f` 开头，不能保留数据覆盖安装。当前仓库未配置 Android 发布签名 secret，不把测试构建视为稳定升级链路。保留用户当前安装和素材；后续需要恢复原签名材料，或在用户确认的数据迁移方案下建立固定签名版本，不能要求用户通过卸载解决本次启动问题。
 
 ## 网页完整离线启动的独立遗留
 
