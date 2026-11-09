@@ -74,8 +74,14 @@ class SafOverlayStore(private val context: Context) {
     private fun findOverlayExact(path: String): DocumentFile? {
         val parts = segments(path)
         return try {
-            parts.fold(root() as DocumentFile?) { current, name ->
-                current?.findFile(name)
+            val directory = root()
+            if (directory.uri.scheme == "file") {
+                val target = parts.fold(File(requireNotNull(directory.uri.path))) { current, name -> File(current, name) }
+                target.takeIf { it.exists() }?.let(DocumentFile::fromFile)
+            } else {
+                parts.fold(directory as DocumentFile?) { current, name ->
+                    current?.findFile(name)
+                }
             }
         } catch (_: Exception) {
             null
