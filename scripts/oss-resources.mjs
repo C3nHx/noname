@@ -38,7 +38,7 @@ export async function configureOssResourceCORS({ client, target, backupDirectory
 	return true;
 }
 
-export async function publishResourcesToOSS({ client, target, directory = "output/resource-packs", keyConfig, concurrency = 3, receipt = ".audit/oss-resource-publication.json", verifyOrigin, reusePrefix, fetcher = fetch, onProgress = () => {} }) {
+export async function publishResourcesToOSS({ client, target, directory = "output/resource-packs", keyConfig, concurrency = 3, receipt = ".audit/oss-resource-publication.json", verifyOrigin, reusePrefix, partsOnly = false, fetcher = fetch, onProgress = () => {} }) {
 	if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 8) throw new ResourcePublicationError("Concurrency must be between 1 and 8");
 	if (verifyOrigin && new URL(verifyOrigin).origin !== verifyOrigin) throw new ResourcePublicationError("Provide a complete verification Origin without a path");
 	const sourcePrefix = reusePrefix?.replace(/\/$/, "");
@@ -56,6 +56,16 @@ export async function publishResourcesToOSS({ client, target, directory = "outpu
 		}
 		return response;
 	};
+	let expectedCatalog = catalog;
+	if (partsOnly) {
+		const response = await request(resourceURL(target.baseURL, "resource-manifest.json"), { credentials: "omit", cache: "no-store" });
+		if (!response.ok) throw new ResourcePublicationError("Parts-only publication requires an existing public catalog");
+		expectedCatalog = new Uint8Array(await response.arrayBuffer());
+		const published = parseResourceManifest(JSON.parse(new TextDecoder().decode(expectedCatalog)));
+		const files = new Map(published.packs.flatMap(pack => pack.files.map(file => [file.path, file])));
+		const clientFiles = manifest.packs.flatMap(pack => pack.files);
+		if (published.version !== manifest.version || published.encryption.keyId !== manifest.encryption.keyId || files.size !== clientFiles.length || clientFiles.some(file => files.get(file.path)?.sha256 !== file.sha256 || files.get(file.path)?.bytes !== file.bytes)) throw new ResourcePublicationError("Parts-only publication must use the same files, version and key as the public catalog");
+	}
 	async function putIfAbsent(filename, bytes, mime) {
 		const object = target.prefix + filename;
 		try {
@@ -110,10 +120,10 @@ export async function publishResourcesToOSS({ client, target, directory = "outpu
 		})
 	);
 	if (failure) throw failure;
-	await putIfAbsent("resource-manifest.json", catalog, "application/json");
+	if (!partsOnly) await putIfAbsent("resource-manifest.json", catalog, "application/json");
 	const publicCatalog = await request(resourceURL(target.baseURL, "resource-manifest.json"), { credentials: "omit", cache: "no-store" });
-	if (!publicCatalog.ok || digest(new Uint8Array(await publicCatalog.arrayBuffer())) !== digest(catalog)) throw new ResourcePublicationError("The public OSS catalog does not match this build; use a new version instead of replacing it");
-	const result = { phase: "complete", provider: "oss", ...target, algorithm: manifest.encryption.algorithm, keyId: manifest.encryption.keyId, version: manifest.version, buildId: manifest.buildId, assets: published.sort((left, right) => left.path.localeCompare(right.path)), ...(verifyOrigin ? { verifyOrigin } : {}), ...(sourcePrefix ? { reusePrefix: sourcePrefix + "/" } : {}), verifiedAt: new Date().toISOString() };
+	if (!publicCatalog.ok || digest(new Uint8Array(await publicCatalog.arrayBuffer())) !== digest(expectedCatalog)) throw new ResourcePublicationError("The public OSS catalog does not match this build; use a new version instead of replacing it");
+	const result = { phase: partsOnly ? "parts" : "complete", provider: "oss", ...target, algorithm: manifest.encryption.algorithm, keyId: manifest.encryption.keyId, version: manifest.version, buildId: manifest.buildId, assets: published.sort((left, right) => left.path.localeCompare(right.path)), ...(verifyOrigin ? { verifyOrigin } : {}), ...(sourcePrefix ? { reusePrefix: sourcePrefix + "/" } : {}), ...(partsOnly ? { catalogSha256: digest(expectedCatalog), clientCatalogSha256: digest(catalog) } : {}), verifiedAt: new Date().toISOString() };
 	await fs.mkdir(path.dirname(path.resolve(receipt)), { recursive: true });
 	await fs.writeFile(receipt, JSON.stringify(result, null, 2) + "\n");
 	return result;

@@ -99,6 +99,37 @@ test("OSS reuses authenticated remote ciphertext from a different random IV", as
 	assert.deepEqual(server.objects.get(data.target.prefix + part.path), original);
 });
 
+test("parts-only publication repairs missing client objects and preserves the published catalog", async t => {
+	const data = await fixture(t),
+		server = remote();
+	await publishResourcesToOSS(options(data, server));
+	const catalogKey = data.target.prefix + "resource-manifest.json";
+	const original = Buffer.from(server.objects.get(catalogKey));
+	const part = data.manifest.packs[0].parts[0];
+	server.objects.delete(data.target.prefix + part.path);
+	const clientManifest = { ...data.manifest, buildId: "f".repeat(64) };
+	await fs.writeFile(path.join(data.resources, "resource-manifest.json"), JSON.stringify(clientManifest));
+	const before = server.writes.length;
+	const result = await publishResourcesToOSS({ ...options(data, server), partsOnly: true });
+	assert.equal(result.phase, "parts");
+	assert.deepEqual(server.writes.slice(before), [data.target.prefix + part.path]);
+	assert.deepEqual(server.objects.get(catalogKey), original);
+	await publishResourcesToOSS({ ...options(data, server), partsOnly: true });
+	assert.equal(server.writes.length, before + 1);
+});
+
+test("parts-only publication rejects a client whose files differ from the published resources", async t => {
+	const data = await fixture(t),
+		server = remote();
+	await publishResourcesToOSS(options(data, server));
+	const clientManifest = structuredClone(data.manifest);
+	clientManifest.packs[0].files[0].sha256 = "0".repeat(64);
+	await fs.writeFile(path.join(data.resources, "resource-manifest.json"), JSON.stringify(clientManifest));
+	const before = server.writes.length;
+	await assert.rejects(publishResourcesToOSS({ ...options(data, server), partsOnly: true }), /same files/);
+	assert.equal(server.writes.length, before);
+});
+
 test("OSS copies authenticated resources from a prior release and only uploads the new catalog", async t => {
 	const data = await fixture(t),
 		server = remote();

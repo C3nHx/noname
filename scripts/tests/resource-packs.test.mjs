@@ -293,6 +293,48 @@ test("independent encrypted builds use compatible resource names without reusing
 	assert.notEqual(rotated.manifest.packs[0].parts[0].path, left.path);
 });
 
+test("resource part names remain identical across build timezones", async t => {
+	const original = process.env.TZ;
+	t.after(() => {
+		if (original === undefined) delete process.env.TZ;
+		else process.env.TZ = original;
+	});
+	let expected;
+	for (const timezone of ["UTC", "Asia/Shanghai", "America/Los_Angeles"]) {
+		process.env.TZ = timezone;
+		const { manifest } = await fixture(t);
+		const parts = manifest.packs.map(pack => ({ id: pack.id, files: pack.files, parts: pack.parts }));
+		if (expected) assert.deepEqual(parts, expected, timezone);
+		else expected = parts;
+	}
+});
+
+test("a rebuild replaces valid legacy archives whose timestamps depend on the build timezone", async t => {
+	const original = process.env.TZ;
+	process.env.TZ = "Asia/Shanghai";
+	t.after(() => {
+		if (original === undefined) delete process.env.TZ;
+		else process.env.TZ = original;
+	});
+	const { directory, full, resources, manifest, key, decrypt } = await fixture(t);
+	const legacy = structuredClone(manifest);
+	delete legacy.archiveVersion;
+	for (const pack of legacy.packs)
+		for (const part of pack.parts) {
+			const zip = new JSZip(await decrypt(await fs.readFile(path.join(resources, part.path)), part));
+			for (const entry of Object.values(zip.files)) entry.options.date = new Date("2000-01-01T00:00:00Z");
+			const encrypted = encryptResourcePart(zip.generate({ type: "nodebuffer", compression: "DEFLATE", compressionOptions: { level: 1 } }), key);
+			part.sha256 = encrypted.sha256;
+			part.bytes = encrypted.bytes.length;
+			part.path = `resources-${legacy.encryption.keyId}-${part.sha256.slice(0, 24)}.nrp`;
+			await fs.writeFile(path.join(resources, part.path), encrypted.bytes);
+		}
+	await fs.writeFile(path.join(resources, "resource-manifest.json"), JSON.stringify(legacy));
+	await splitRuntimeResources({ directory: full, resourceDirectory: resources, fullDirectory: path.join(directory, "rebuilt-full"), key, partBytes: 20 });
+	const rebuilt = JSON.parse(await fs.readFile(path.join(resources, "resource-manifest.json"), "utf8"));
+	assert.deepEqual(rebuilt.packs, manifest.packs);
+});
+
 test("rebuilding a full runtime keeps its core version and encrypted resource catalog stable", async t => {
 	const { directory, full, resources, manifest, key } = await fixture(t);
 	await splitRuntimeResources({ directory: full, resourceDirectory: resources, fullDirectory: path.join(directory, "full-copy"), profile: "full", partBytes: 20, key });

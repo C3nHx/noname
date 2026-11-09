@@ -10,6 +10,7 @@ import { encryptResourcePart, resourceKeyConfig } from "./resource-key.mjs";
 const requireCore = createRequire(new URL("../apps/core/package.json", import.meta.url));
 const JSZip = requireCore("jszip");
 const hash = bytes => createHash("sha256").update(bytes).digest("hex");
+const archiveVersion = 1;
 
 async function inventory(directory, prefix = "") {
 	const files = [];
@@ -36,7 +37,7 @@ export async function splitRuntimeResources({ directory, resourceDirectory, full
 	} catch {}
 	const priorParts = new Map();
 	const signature = files => hash(JSON.stringify(files.map(file => [file.path, file.bytes, file.sha256])));
-	for (const pack of previous?.encryption.keyId === keyConfig.keyId ? previous.packs : []) {
+	for (const pack of previous?.archiveVersion === archiveVersion && previous.encryption.keyId === keyConfig.keyId ? previous.packs : []) {
 		const files = new Map(pack.files.map(file => [file.path, file]));
 		for (const part of pack.parts) priorParts.set(signature(part.files.map(filename => files.get(filename))), part);
 	}
@@ -75,7 +76,8 @@ export async function splitRuntimeResources({ directory, resourceDirectory, full
 				} catch {}
 			}
 			const zip = new JSZip();
-			for (const file of pending) zip.file(file.path, await fs.readFile(path.join(root, file.path)), { date: new Date("2000-01-01T00:00:00Z"), createFolders: false });
+			// JSZip writes local DOS fields, so pin those fields instead of a UTC instant.
+			for (const file of pending) zip.file(file.path, await fs.readFile(path.join(root, file.path)), { date: new Date(2000, 0, 1), createFolders: false });
 			const plaintext = zip.generate({ type: "nodebuffer", compression: "DEFLATE", compressionOptions: { level: 1 } });
 			const { bytes: data, sha256 } = encryptResourcePart(plaintext, key);
 			const name = `resources-${keyConfig.keyId}-${sha256.slice(0, 24)}.nrp`;
@@ -99,7 +101,7 @@ export async function splitRuntimeResources({ directory, resourceDirectory, full
 	core.push("resource-version.json");
 	await fs.writeFile(path.join(root, "resource-version.json"), version);
 	await fs.writeFile(path.join(fullDirectory, "resource-version.json"), version);
-	const manifest = parseResourceManifest({ schemaVersion: 2, encryption: { algorithm: "AES-256-GCM", keyId: keyConfig.keyId }, version: forkVersion, buildId, profile, baseURL, ...(deliveryURL ? { deliveryURL } : {}), core, packs: [...groups.values()] });
+	const manifest = parseResourceManifest({ schemaVersion: 2, archiveVersion, encryption: { algorithm: "AES-256-GCM", keyId: keyConfig.keyId }, version: forkVersion, buildId, profile, baseURL, ...(deliveryURL ? { deliveryURL } : {}), core, packs: [...groups.values()] });
 	const serialized = JSON.stringify(manifest) + "\n";
 	await fs.writeFile(path.join(root, "resource-manifest.json"), serialized);
 	await fs.writeFile(path.join(resourceDirectory, "resource-manifest.json"), serialized);

@@ -58,6 +58,8 @@ node scripts/verify-resource-build.mjs
 
 本地明文缓存按文件哈希复用。随机 IV 会让不同构建的密文不同，同名分卷绑定相同密钥版本和明文 ZIP 哈希，不能将密文字节完全一致作为跨构建兼容的条件。镜像同一次发布时直接复制已发布的密文文件。
 
+ZIP DOS 时间固定为本地字段 `2000-01-01 00:00:00`，不能用固定 UTC 瞬间替代；JSZip 按本地时区写入 DOS 字段。`archiveVersion: 1` 阻止复用旧时间戳缓存。交付前读取实际 APK 或 ZIP 的清单，核对每个分卷 URL 与长度，再使用客户端解密配置验证下载，不能只比较根地址和素材文件哈希。
+
 ## 发布到 OSS
 
 按 OSS 发布文档核对 Bucket、地域、资源前缀和 RAM 权限。通过安全凭证入口取得访问材料，只传给本地发布进程，不写入源码或日志。资源密钥与 OSS 凭证分别处理，不把后者提供给客户端。
@@ -77,6 +79,8 @@ node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-s
 默认输入为 `output/resource-packs`，客户端解密配置为 `dist/resource-key.json`。后者仅用于本地校验，不上传。收据默认保存在 `.audit/oss-resource-publication.json`，不同发布可传独立 `--receipt` 路径。
 
 新版本可通过 `--reuse-prefix <同一 Bucket 的旧版本目录>/` 在 OSS 内复制同名加密分卷，缺少时才上传。仍需完整回读验证，不能凭复制成功发布清单。按版本保存收据和旧目录，保持旧客户端可用。
+
+已分发客户端引用另一套 ZIP 元数据生成的分卷时，先确认全部素材、版本和密钥相同，再按 OSS 文档使用 `--parts-only` 补发它引用的分卷。保留原公开清单和旧分卷，按实际客户端清单复测下载，避免要求用户为服务端缺文件而重装。
 
 GitHub Actions 的资源根地址变量解决各平台默认下载源，`NONAME_RESOURCE_KEY` secret 解决密钥一致性。当前工作流不自动上传 OSS，也不因这两个设置获得 OSS 访问凭证。需要给 CI 提供云凭证时，按实际授权另行配置。
 
