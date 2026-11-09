@@ -59,7 +59,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           node scripts/sync-release-version.mjs --check
-          node --test scripts/tests/*.test.mjs
           node scripts/release-metadata.mjs "$RELEASE_TAG"
 
       - name: Create draft release
@@ -120,6 +119,7 @@ jobs:
       - name: Build core and full packages
         shell: bash
         run: |
+          pnpm test:distribution
           mkdir -p release
           pnpm build
 
