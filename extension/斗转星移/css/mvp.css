@@ -1,0 +1,368 @@
+/* 武将白光 */
+.mvp-char-light {
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  left: 23.5%;
+  top: 20%;
+  opacity: 0;
+  background-image: url('../image/mvp/wujiang_baise.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: rotate(11deg);
+  z-index: 3;
+  animation: mvp-char-light-anim 0.1s forwards linear 0.1s;
+}
+
+@keyframes mvp-char-light-anim {
+  0% {
+    transform: scale(0.9) rotate(11deg);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1) rotate(11deg);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1.1) rotate(11deg);
+    opacity: 0;
+  }
+}
+
+.mvp-design-bg {
+  position: absolute;
+  width: 1243px;
+  height: 546px;
+}
+
+/*武将底图*/
+.mvp-char-base {
+  position: absolute;
+  width: 333px;
+  height: 450px;
+}
+
+.page-mvp .mvp-char-base {
+  top: 51%;
+  left: 23.3%;
+  transform: translate(0%, -50%) scale(2) rotate(11deg);
+  transition: all 0s;
+  animation: mvp-char-base-anim 0.2s both linear;
+}
+
+/* 武将牌动画 */
+@keyframes mvp-char-base-anim {
+  0% {
+    transform: translate(0%, -50%) scale(2) rotate(11deg);
+  }
+
+  33.3% {
+    transform: translate(0%, -50%) scale(0.6) rotate(11deg);
+  }
+
+  50% {
+    transform: translate(0%, -50%) scale(0.6) rotate(11deg);
+  }
+
+  66.6% {
+    transform: translate(0%, -50%) scale(0.74) rotate(11deg);
+  }
+
+  100% {
+    transform: translate(0%, -50%) scale(0.74) rotate(11deg);
+  }
+}
+
+/* 部分元素渐变 */
+.page-mvp.pre-show>.mvp-design-bg>:not(.mvp-char-base):not(.mvp-quanchangzuijia):not(.mvp-back-light):not(.mvp-char-light) {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.page-mvp>.mvp-design-bg>:not(.mvp-char-base):not(.mvp-quanchangzuijia):not(.mvp-back-light):not(.mvp-char-light) {
+  opacity: 1;
+  transition: all 0.5s;
+}
+
+.page-mvp.pre-show .mvp-player-info-guanjie {
+  opacity: 0;
+  transition: all 1.2s;
+}
+
+.page-mvp .mvp-player-info-guanjie {
+  opacity: 1;
+  transition: all 1.2s;
+}
+
+.page-mvp.pre-show .mvp-player-info-text>p:nth-child(2),
+.page-mvp.pre-show .mvp-player-info-text>p:nth-child(3) {
+  opacity: 0;
+  transition: all 1.2s;
+}
+
+.page-mvp .mvp-player-info-text>p:nth-child(2),
+.page-mvp .mvp-player-info-text>p:nth-child(3) {
+  opacity: 1;
+  transition: all 1.2s;
+}
+
+/* 框 */
+.mvp-char-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: url('../image/char_big_border/qun.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 框顶 */
+.mvp-char-frameTop {
+  position: absolute;
+  width: 333px;
+  height: 450px;
+  top: -4%;
+  left: 0%;
+  background-image: url('../image/char_big_border/qun_top.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mvp-char-img {
+  position: absolute;
+  width: 82%;
+  height: 89.3%;
+  bottom: 6.5%;
+  right: 5%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: top;
+}
+
+.mvp-char-img[data-loutou='shizhounian'] {
+  height: 95%;
+}
+
+.mvp-char-img[data-loutou='shousha'] {
+  height: 103%;
+}
+
+.mvp-char-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  width: 9%;
+  height: 40%;
+  left: 4.7%;
+  top: 18%;
+  font-family: shousha;
+  color: white;
+  line-height: 1em;
+  font-size: 30px;
+  text-align: center;
+  text-shadow: 0px 0px 2px black,
+    0px 0px 2px black,
+    0px 0px 2px black,
+    0px 0px 2px black;
+}
+
+/*星*/
+.mvp-char-star-area {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 9%;
+  height: 60%;
+  left: 3.5%;
+  bottom: 7%;
+}
+
+.mvp-char-star {
+  position: relative;
+  width: 130%;
+  padding-top: 130%;
+  left: 0%;
+  bottom: 0%;
+  margin-top: -30%;
+  background-image: url('../image/char_skin/chr_star_off.png');
+  background-size: 100% 100%;
+}
+
+/* 武将牌后面背景光 */
+.mvp-back-light {
+  position: absolute;
+  width: 570px;
+  height: 570px;
+  left: 13.7%;
+  top: -2%;
+  background-image: url('../image/mvp/light.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: mvp-back-light-anim 0.1s forwards linear 0.15s;
+}
+
+@keyframes mvp-back-light-anim {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 傲视群雄 */
+.mvp-quanchangzuijia {
+  position: absolute;
+  width: 345px;
+  height: 124px;
+  left: 51.3%;
+  top: 20%;
+  background-image: url('../image/mvp/quanchangzuijia.png');
+  background-size: contain;
+  opacity: 0;
+  background-repeat: no-repeat;
+  transform: scale(2.5);
+  z-index: 5;
+  animation: mvp-quanchangzuijia-anim 0.16s forwards linear 0.3s;
+}
+
+@keyframes mvp-quanchangzuijia-anim {
+  0% {
+    transform: scale(2.5);
+    opacity: 1;
+  }
+
+  60% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  80% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mvp-piaodai1 {
+  position: absolute;
+  width: 195px;
+  height: 133px;
+  left: 13.3%;
+  top: 33%;
+  background-image: url('../image/mvp/piaodai1_00000.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.mvp-piaodai2 {
+  position: absolute;
+  width: 535px;
+  height: 175px;
+  left: 44.3%;
+  top: 36%;
+  background-image: url('../image/mvp/piaodai2.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* 个人信息 */
+.mvp-player-info-area {
+  position: absolute;
+  width: 400px;
+  height: 128px;
+  left: 51%;
+  top: 38%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.mvp-player-info-guanjie {
+  position: relative;
+  width: 30%;
+  height: 100%;
+  background-image: url('../image/mvp/offical_icon_xiaowei.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.mvp-player-info-text {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  font-size: 26px;
+  font-family: 'shousha';
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.mvp-player-info-text>p {
+  position: relative;
+  margin: 0;
+  margin-left: 9px;
+}
+
+.mvp-player-info-text>p:nth-child(1) {
+  color: #edebea;
+  top: 8px;
+  --text-color: #433218;
+}
+
+.mvp-player-info-text>p:nth-child(2) {
+  color: #e8b453;
+  font-size: 37px;
+  top: 4px;
+}
+
+.mvp-player-info-text>p:nth-child(3) {
+  color: #ffd226;
+}
+
+.mvp-player-info-benren {
+  position: relative;
+  width: 20%;
+  height: 100%;
+  background-image: url('../image/mvp/mvp_me_tag.png');
+  background-size: 90%;
+  background-repeat: no-repeat;
+  background-position: 10% 60%;
+}
+
+/* 得分 */
+.mvp-score-area {
+  position: absolute;
+  width: 350px;
+  height: 138px;
+  left: 53%;
+  top: 61%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  font-family: 'shousha';
+  color: #d6d2c7;
+  font-size: 20px;
+}
+
+.mvp-score-area>p {
+  position: relative;
+  margin: 0;
+  margin-left: 10px;
+}

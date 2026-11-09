@@ -1,0 +1,198 @@
+#resource-packs-button {
+	position: fixed;
+	right: 12px;
+	top: 48px;
+	z-index: 100000;
+	padding: 7px 15px;
+	border: 1px solid #777;
+	border-radius: 7px;
+	background: #f6f1e5;
+	color: #222;
+	font: 15px system-ui;
+	cursor: pointer;
+	width: auto;
+	height: auto;
+}
+#resource-packs-panel {
+	position: fixed;
+	inset: 86px 12px auto auto;
+	z-index: 100001;
+	box-sizing: border-box;
+	width: min(560px, calc(100vw - 24px));
+	max-height: calc(100vh - 110px);
+	overflow: auto;
+	padding: 20px;
+	background: #fbf8f0;
+	color: #222;
+	border: 1px solid #aaa;
+	border-radius: 10px;
+	box-shadow: 0 8px 32px #0008;
+	text-align: left;
+	font: 15px/1.6 system-ui;
+	user-select: text;
+}
+#resource-packs-panel * {
+	box-sizing: border-box;
+	text-shadow: none;
+	float: none;
+	transform: none;
+}
+#resource-packs-panel div {
+	position: static;
+	display: block;
+	width: 100%;
+	height: auto;
+}
+#resource-packs-panel[hidden] {
+	display: none !important;
+}
+#resource-packs-panel h2 {
+	position: static;
+	margin: 0 0 8px;
+	font: 600 20px system-ui;
+	color: #222;
+}
+#resource-packs-panel p,
+#resource-packs-panel label {
+	position: static;
+	display: block;
+	margin: 10px 0;
+	color: #222;
+	font: 15px/1.6 system-ui;
+}
+#resource-packs-panel button {
+	position: static;
+	display: inline-block;
+	width: auto;
+	height: auto;
+	padding: 6px 10px;
+	margin: 4px;
+	border: 1px solid #999;
+	border-radius: 5px;
+	background: #fff;
+	color: #222;
+	font: 14px system-ui;
+	cursor: pointer;
+}
+#resource-packs-panel input[type="url"] {
+	position: static;
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 7px;
+	border: 1px solid #999;
+	border-radius: 4px;
+	color: #222;
+	background: #fff;
+	font: 13px system-ui;
+}
+#resource-packs-panel input[type="checkbox"] {
+	position: static;
+	width: auto;
+	height: auto;
+	appearance: auto;
+	margin-right: 5px;
+}
+#resource-packs-panel .resource-pack-row {
+	position: static;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	border-bottom: 1px solid #ddd;
+	padding: 7px 0;
+}
+#resource-packs-panel .resource-pack-row span {
+	position: static;
+	font: 14px/1.5 system-ui;
+}
+#resource-packs-panel .resource-pack-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+#resource-packs-panel button:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+#resource-packs-progress {
+	position: static;
+	display: block;
+	width: 100%;
+	height: 14px;
+	margin: 10px 0;
+}
+#resource-packs-progress[hidden] {
+	display: none;
+}
+html[data-resource-mode="text"] * {
+	background-image: none !important;
+	font-family: system-ui, "Microsoft YaHei", sans-serif !important;
+}
+html[data-resource-mode="text"] body {
+	background: #2d3935 !important;
+}
+html[data-resource-mode="text"] .card {
+	background: #f6edda !important;
+	border: 1px solid #baa888 !important;
+	box-sizing: border-box;
+}
+html[data-resource-mode="text"] .card:not(.infohidden):not(.infohiddenflip) > .name {
+	display: block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	color: #30271f !important;
+	text-shadow: none !important;
+	position: absolute !important;
+	top: 32px !important;
+	left: 6px !important;
+	right: 6px !important;
+	width: auto !important;
+	height: auto !important;
+	writing-mode: horizontal-tb !important;
+	white-space: normal !important;
+	font-size: 20px !important;
+	line-height: 1.3 !important;
+	text-align: center !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+html[data-resource-mode="text"] .card > .name span {
+	display: inline !important;
+}
+html[data-resource-mode="text"] .card > .name2 {
+	display: none !important;
+}
+html[data-resource-mode="text"] .card.infohidden {
+	background: repeating-linear-gradient(45deg, #475e65, #475e65 6px, #35494f 6px, #35494f 12px) !important;
+}
+html[data-resource-mode="text"] .card.infohidden > div {
+	visibility: hidden !important;
+}
+html[data-resource-mode="text"] .player,
+html[data-resource-mode="text"] .button.character {
+	background: #485950 !important;
+	border: 1px solid #a8bbaa;
+}
+html[data-resource-mode="text"] .player > .avatar,
+html[data-resource-mode="text"] .player > .avatar2 {
+	background: transparent !important;
+}
+html[data-resource-mode="text"] .player > .hp > div {
+	background: #8ace9b !important;
+	border: 1px solid #bedcc6 !important;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+html[data-resource-mode="text"] .player > .hp > div.lost {
+	background: #35433c !important;
+	border-color: #809388 !important;
+}
+html[data-resource-mode="text"] .player:not(.unseen) > .name,
+html[data-resource-mode="text"] .player:not(.unseen2) > .name2,
+html[data-resource-mode="text"] .button.character > .name {
+	opacity: 1 !important;
+	visibility: visible !important;
+	color: #fff !important;
+	text-shadow: 0 1px 2px #000 !important;
+}

@@ -1,0 +1,642 @@
+.dz-big-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  animation: maskFadeOut 0.1s forwards;
+}
+
+@keyframes maskFadeOut {
+  0% {}
+
+  100% {
+    visibility: hidden;
+  }
+}
+
+#dzxy-pixi-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: transparent;
+  display: block;
+  /* transform: translate(-50%, -50%); */
+  pointer-events: none;
+  z-index: 16;
+}
+
+/* 启动页 */
+#dzxy-splash {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 11;
+}
+
+#dzxy-splash>.dz-mode-cont {
+  position: absolute;
+  height: 400px;
+  width: 230px;
+  top: calc(50% - 200px);
+  left: 4%;
+  z-index: 5;
+}
+
+/* 模式按钮 */
+#dzxy-splash>.dz-mode-cont>.dz-mode-btns {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  overflow: auto;
+  align-items: center;
+  flex-direction: column;
+  align-content: center;
+  justify-content: flex-start;
+}
+
+/* 按钮底图 */
+.dz-mode-btns>.mode-btn-ditu {
+  position: relative;
+  height: 80px;
+  width: 180px;
+  flex: none;
+}
+
+.mode-btn-ditu.active {
+  transform: scale(1.1);
+  transform-origin: left;
+}
+
+/* 按钮图片 */
+.mode-btn-bg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-image: url('../image/splash/task_btn_bg_unsel.png');
+  background-size: 100% 100%;
+}
+
+.mode-btn-ditu.active .mode-btn-bg {
+  background-image: url('../image/splash/task_btn_bg_sel.png');
+}
+
+/* 模式文字 */
+.dz-mode-btn-text {
+  position: absolute;
+  /* right: 16%; */
+  height: 100%;
+  width: 100%;
+  line-height: 80px;
+  white-space: nowrap;
+  font-size: 35px;
+  color: #ccd8d8;
+  z-index: 2;
+  font-family: shousha;
+  text-align: center;
+}
+
+.dz-mode-btn-text::before {
+  content: attr(data-text);
+  position: absolute;
+  z-index: -1;
+  -webkit-text-stroke: 5px #6e6e6e;
+  color: transparent;
+}
+
+/* 模式背景底图 */
+.dz-mode-bigBg-ditu {
+  position: absolute;
+  height: 100%;
+  width: calc(100% - 120px);
+  top: 0;
+  left: 120px;
+}
+
+/* 模式图 */
+.dz-mode-bigBg-ditu>.mode-bigBg {
+  opacity: 0.4;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-size: 100% 100%;
+  background-size: cover;
+  background-position: center;
+  mask-image: linear-gradient(to right, #ffffff00 0%, #e3c4c4 26%);
+}
+
+/* 黑色框背景 */
+.dz-blackBg {
+  padding: 10px 25px;
+  position: relative;
+  width: 50%;
+  height: 70%;
+  top: 13%;
+  left: 27%;
+  background-color: #0000006b;
+  animation: dz-blackBg-anim 300ms ease-out backwards;
+}
+
+@keyframes dz-blackBg-anim {
+  0% {
+    transform: translateY(-480px);
+  }
+
+  21.4% {
+    transform: translateY(356px);
+  }
+
+  42.8% {
+    transform: translateY(-139px);
+  }
+
+  57.1% {
+    transform: translateY(122px);
+  }
+
+  71.4% {
+    transform: translateY(-41px);
+  }
+
+  85.7% {
+    transform: translateY(40px);
+  }
+
+  100% {
+    transform: translate(0px);
+  }
+}
+
+/* 段位 */
+#dzxy-splash .duanwei-ditu {
+  left: 50%;
+  top: 50%;
+  width: 430px;
+  height: 430px;
+  transform: translate(-50%, -65%) scale(0.5);
+  font-family: shousha;
+  animation: duanwei-ditu-anim 300ms ease-out both 400ms;
+  opacity: 1;
+}
+
+@keyframes duanwei-ditu-anim {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/*排位按钮区域*/
+#dzxy-splash .jj-pw-enter-btns {
+  position: absolute;
+  left: 0;
+  bottom: 15px;
+  width: 100%;
+  height: 90px;
+}
+
+/*按钮背景*/
+.jj_match_btn_bg {
+  background-image: url("../image/splash/jj_match_btn_bg.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
+
+.jj_match_btn_bg:active {
+  filter: brightness(180%);
+}
+
+/*按钮文字*/
+.jj_txt_match {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  left: 0;
+  top: 8%;
+  width: 100%;
+  height: 80%;
+}
+
+.jj_txt_match.one {
+  background-image: url("../image/splash/jj_txt_solo_match.png");
+  animation: jj_txt_solo_match_anim 200ms ease-out both 700ms;
+}
+
+.jj_txt_match.two {
+  background-image: url("../image/splash/jj_txt_team_match.png");
+  animation: jj_txt_solo_match_anim 200ms ease-out both 800ms;
+}
+
+@keyframes jj_txt_solo_match_anim {
+  0% {
+    transform: scale(5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 勾选按钮 */
+.dz-checkbtn {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  background-image: url('../image/splash/checkbtn_unselected.png');
+  background-size: 100% 100%;
+}
+
+.dz-checkbtn.active {
+  background-image: url('../image/splash/checkbtn_selected.png');
+}
+
+/* 右上角按钮 */
+#dzxy-splash>.left-top-btns {
+  position: absolute;
+  width: 380px;
+  height: 60px;
+  top: 20px;
+  right: 30px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+#dzxy-splash:not(.inSplash)>.left-top-btns {
+  right: 125px;
+}
+
+#dzxy-splash.inSplash>.dz-backBtn {
+  display: none;
+}
+
+#dzxy-splash.inSplash>.left-top-btns>.gn-btn-ditu.char,
+#dzxy-splash.inSplash>.left-top-btns>.gn-btn-ditu.skin {
+  display: none;
+}
+
+#dzxy-splash>.left-top-btns>.gn-btn-ditu {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-right: 12px;
+}
+
+#dzxy-splash>.left-top-btns>.gn-btn-ditu>.btn-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../image/splash/lobbyui_btn_bg.png') no-repeat center/contain;
+}
+
+#dzxy-splash>.left-top-btns>.gn-btn-ditu>.btn-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: 125%;
+  background-repeat: no-repeat;
+}
+
+#dzxy-splash>.left-top-btns>.gn-btn-ditu.tip>.btn-img {
+  background-size: 95%;
+  top: 2%;
+}
+
+.dz-kaizhan {
+  right: 15%;
+  bottom: 15%;
+  width: 150px;
+  height: 150px;
+  background: url('../image/splash/kaizhan.png') no-repeat center/contain;
+  opacity: 0;
+
+}
+
+@keyframes kaizhanAnim {
+  0% {
+    transform: scale(1.5);
+    opacity: 0.3;
+  }
+
+  30% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+
+  80% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.dz-kaizhan.dz-show {
+  opacity: 1;
+  animation: kaizhanAnim 0.2s linear;
+}
+
+/* 身份 */
+/*主菜单中间*/
+.dz-menu-center {
+  left: 50%;
+  top: 50%;
+  width: 730px;
+  height: 318px;
+  transform: translate(-45%, -48%);
+}
+
+@keyframes menu-center-move {
+  0% {
+    transform: translate(500px);
+  }
+
+  100% {
+    transform: translate(0px);
+  }
+}
+
+.dz-menu-center>div::after,
+.dz-menu-center>div::before {
+  pointer-events: none;
+}
+
+.dz-menu-center>div:active {
+  transform: scale(0.92);
+}
+
+/*经典*/
+.dz-jingdian-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 318px;
+  animation: menu-center-move 300ms ease-out backwards;
+}
+
+.dz-jingdian-box>.dimg {
+  border-radius: 10px;
+  position: absolute;
+  width: 92%;
+  left: 4%;
+  top: 3%;
+  height: 91%;
+  background-size: cover;
+  background-position: center;
+}
+
+.dz-jingdian-box>.dframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_jindian_02.png') no-repeat center/contain;
+}
+
+.dz-jingdian-box>.dtext {
+  position: absolute;
+  /* width: 95%;
+  height: 56px;
+  left: 2.5%;
+  bottom: 3%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_jindian_03.png') center/contain; */
+  width: 95%;
+  height: 34px;
+  left: 2.5%;
+  bottom: 6.5%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_back.png') center/100% 100%;
+}
+
+/*排位*/
+.dz-paiwei-box {
+  position: absolute;
+  /* top: 0;
+  left: 265px; */
+  width: 200px;
+  height: 318px;
+  animation: menu-center-move 330ms ease-out backwards;
+}
+
+.dz-paiwei-box>.dimg {
+  border-radius: 10px;
+  position: absolute;
+  width: 92%;
+  left: 4%;
+  top: 3%;
+  height: 91%;
+  background-size: cover;
+  background-position: center;
+}
+
+.dz-paiwei-box>.dframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_paiwei_02.png') center/contain;
+}
+
+.dz-paiwei-box>.dtext {
+  position: absolute;
+  /* width: 92%;
+  height: 56px;
+  left: 4%;
+  bottom: 2.5%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_paiwei_03_1.png') center/contain; */
+  width: 95%;
+  height: 35px;
+  left: 2.5%;
+  bottom: 6.3%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_back1.png') center/100% 100%;
+}
+
+/*斗地主*/
+.dz-doudizhu-box {
+  position: absolute;
+  /* left: 473px;
+  bottom: 50%; */
+  width: 255px;
+  height: 159px;
+  animation: menu-center-move 360ms ease-out backwards;
+}
+
+.dz-doudizhu-box>.dimg {
+  border-radius: 10px;
+  position: absolute;
+  width: 92%;
+  left: 4%;
+  top: 3%;
+  height: 87%;
+  background-size: cover;
+  background-position: center;
+}
+
+.dz-doudizhu-box>.dframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_doudizhu_02.png') no-repeat center/contain;
+}
+
+.dz-doudizhu-box>.dtext {
+  position: absolute;
+  /* width: 100%;
+  height: 33%;
+  left: 0%;
+  bottom: 5%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_doudizhu_03.png') center/contain; */
+  width: 90%;
+  height: 35px;
+  left: 5%;
+  bottom: 13.5%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_back.png') center/100% 100%;
+}
+
+/* 活动场 */
+.dz-huodong-box {
+  position: absolute;
+  /* left: 473px;
+  top: 50%; */
+  width: 94px;
+  height: 159px;
+  animation: menu-center-move 360ms ease-out backwards;
+}
+
+.dz-huodong-box>.dimg {
+  border-radius: 10px;
+  position: absolute;
+  width: 86%;
+  left: 8%;
+  top: 4%;
+  height: 85%;
+  background-size: cover;
+  background-position: center;
+}
+
+.dz-huodong-box>.dframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_huodong_02.png') no-repeat center/contain;
+}
+
+.dz-huodong-box>.dtext {
+  position: absolute;
+  /* width: 100%;
+  height: 34%;
+  left: 0%;
+  bottom: 5%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_huodong_03.png') center/contain; */
+  width: 80%;
+  height: 35px;
+  left: 10%;
+  bottom: 12%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_back.png') center/100% 100%;
+}
+
+/* 征战 */
+.dz-zhengzhan-box {
+  /* top: 50%;
+  left: 567px; */
+  width: 161px;
+  height: 159px;
+  animation: menu-center-move 360ms ease-out backwards;
+}
+
+.dz-zhengzhan-box>.dimg {
+  border-radius: 10px;
+  position: absolute;
+  width: 90%;
+  left: 5%;
+  top: 4%;
+  height: 85%;
+  background-size: cover;
+  background-position: center;
+}
+
+.dz-zhengzhan-box>.dframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_legend_02.png') no-repeat center/contain;
+}
+
+.dz-zhengzhan-box>.dtext {
+  position: absolute;
+  /* width: 103%;
+  height: 56px;
+  left: -1.5%;
+  bottom: 6%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_legend_03.png') center/contain; */
+  width: 90%;
+  height: 32px;
+  left: 5%;
+  bottom: 13.5%;
+  z-index: 2;
+  background: url('../image/splash/lobby_mode_back1.png') center/100% 100%;
+}
+
+.dtext {
+  font-family: shousha;
+  text-align: center;
+  line-height: 38px;
+  font-size: 28px;
+  color: #f7e6c4;
+  /* font-weight: bold; */
+}
+
+.dtext::before {
+  content: attr(data-text);
+  position: absolute;
+  z-index: -1;
+  -webkit-text-stroke: 5px #382705;
+  color: transparent;
+}

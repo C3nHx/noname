@@ -1,0 +1,67 @@
+{
+  "version": "1.11.7-c3nhx.1",
+  "electron": "39.5.2",
+  "extensions": [
+    "十周年UI",
+    "天庭",
+    "全能搜索",
+    "斗转星移",
+    "千幻聆音",
+    "皮肤切换",
+    "奇妙工具",
+    "懒人包",
+    "自用美化",
+    "应用配置",
+    "拖拽读取"
+  ],
+  "animationPool": {
+    "players": 4,
+    "ready": true
+  },
+  "gameplay": {
+    "phases": 2,
+    "characters": [
+      "caocao",
+      "zhangliao",
+      "lvmeng",
+      "liubei",
+      "sunshangxiang",
+      "re_yuanshu",
+      "xuzhu",
+      "sunquan"
+    ],
+    "handCounts": [
+      4,
+      6,
+      3,
+      4,
+      4,
+      5,
+      3,
+      4
+    ]
+  },
+  "skinPersistedAfterReload": true,
+  "lobby": {
+    "wrongKeyRejected": true,
+    "correctKeyAccepted": true,
+    "refreshReconnect": true
+  },
+  "vendorFilesVerified": 7839,
+  "baseMediaPreserved": 13833,
+  "omittedPlaceholders": [
+    "extension/十周年UI/assets/dynamic/.gitkeep",
+    "extension/十周年UI/image/character/dcloutou/.gitkeep",
+    "extension/十周年UI/image/character/lihui/.gitkeep",
+    "extension/十周年UI/image/character/ssloutou/.gitkeep"
+  ],
+  "secretScanPassed": true,
+  "nativeInstallerTested": false,
+  "limits": [
+    "Not all skills or modes exercised",
+    "No file import, protocol registration, or external link actions",
+    "Original optional missing resource requests retained"
+  ],
+  "testedArtifact": "electron-builder win-unpacked",
+  "animationRegression": "Original author pool fails readiness assertion; patched pool passes"
+}

@@ -1,0 +1,441 @@
+/* ============================================================
+   手杀观星框（#ss-deckmove）
+   作用对象：lib.element.content.chooseToMove 生成的两行分牌窗口
+   （观星/辅主/问天等“牌堆顶—牌堆底”界面）
+   样式与手杀魄袭框（#ss-poxi）保持一致，仅此文件使用，勿与其他框混用
+   ============================================================ */
+
+#ss-deckmove {
+	--ss-card-zoom: 0.7;
+	position: absolute !important;
+	left: calc(50% - 651.5px) !important;
+	right: auto !important;
+	top: 65px !important;
+	bottom: auto !important;
+	width: 1303px !important;
+	height: calc(138px + 2 * (var(--ss-ch, 106px) + 4px)) !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	transform: none !important;
+	display: block !important;
+	z-index: 60 !important;
+	pointer-events: auto !important;
+	background-image: url('../image/scdialog.png') !important;
+	background-size: 100% 100% !important;
+	background-position: top center !important;
+	background-repeat: no-repeat !important;
+	background-color: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	text-align: center !important;
+	overflow: visible !important;
+	animation: none !important;
+	-webkit-animation: none !important;
+	transition: none !important;
+}
+#ss-deckmove,
+#ss-deckmove * {
+	animation: none !important;
+	-webkit-animation: none !important;
+	transition: none !important;
+}
+
+/*●卡牌统一缩放到 70%（与魄袭框、拆顺框一致）；--ss-ch 由 fit() 实测缩放后的高度*/
+#ss-deckmove .card {
+	zoom: var(--ss-card-zoom, 1) !important;
+}
+/*●未装十周年UI时花色点数用原生 .info 渲染，原生只给了 top/right 没给 position，
+   会跟着 #ss-deckmove 的 text-align:center 跑到卡牌中间；只在这种情况补 absolute 固定右上角，
+   避免装了十周年UI时覆盖卡牌自身布局、把 gaintag 等标记挤偏*/
+body.ss-no-decade #ss-deckmove .card > .info,
+body.ss-no-decade #ss-deckmove .card .info {
+	position: absolute !important;
+	top: 6px !important;
+	left: auto !important;
+	right: 7px !important;
+	font-size: 22px !important;
+	line-height: 18px !important;
+}
+/*●拖动中的卡牌副本挂在 #window 下，同样按 70% 显示，避免拖动瞬间变大*/
+body.ss-deckmove-open #window > .card {
+	zoom: var(--ss-card-zoom, 0.7) !important;
+}
+
+/*●隐藏原生弹框自带的标题、标签、提示文字与上下滚动条，内容全部由下方 .ss-* 重绘*/
+#ss-deckmove > .content-container {
+	position: absolute !important;
+	left: 0 !important;
+	top: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	overflow: visible !important;
+	pointer-events: none !important;
+}
+#ss-deckmove > .content-container > .content {
+	pointer-events: none !important;
+}
+#ss-deckmove > .bar {
+	display: none !important;
+}
+
+/*●整层容器：不拦截点击，具体元素单独放开*/
+#ss-deckmove > .ss-wrap {
+	position: absolute !important;
+	left: 50% !important;
+	top: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	transform: translateX(-50%) !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	display: block !important;
+	pointer-events: none !important;
+}
+
+/*●顶部标题：取 chooseToMove 的 prompt 中“：”前的技能名*/
+#ss-deckmove > .ss-wrap > .ss-title {
+	position: absolute !important;
+	left: 0 !important;
+	right: 0 !important;
+	top: 2px !important;
+	height: 46px !important;
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	text-align: center !important;
+	background: linear-gradient(#C8BEB4 1%, #FCF8CC 12%, #F3F0BE, #FEF5A8, #E1D275, #C9B173, #D6CB6F, #A99355, #AC9557, #A38A51, #A38A51, #B29983, #B19786, #B19786, #B19786, #9B8583),
+		linear-gradient(to right, #FCF8CC, #AC9557) !important;
+	border: none !important;
+	font-family: HYZLSJ, shousha, xinwei !important;
+	font-size: 42px !important;
+	font-weight: 500 !important;
+	line-height: 1 !important;
+	padding-left: 3px !important;
+	-webkit-text-stroke: 0 !important;
+	letter-spacing: 3px !important;
+	-webkit-background-clip: text !important;
+	background-clip: text !important;
+	-webkit-text-fill-color: transparent !important;
+	color: transparent !important;
+	text-shadow: none !important;
+	z-index: 20 !important;
+	pointer-events: auto !important;
+	cursor: pointer !important;
+}
+/*●标题右侧折叠小三角*/
+#ss-deckmove > .ss-wrap > .ss-title > img {
+	width: 30px !important;
+	height: 24px !important;
+	margin-left: 6px !important;
+	margin-bottom: 0 !important;
+	cursor: pointer !important;
+	pointer-events: auto !important;
+	transition: transform 0.35s ease !important;
+	-webkit-transition: transform 0.35s ease !important;
+}
+
+/*●左侧竖标签：上方牌堆顶、下方牌堆底（两行列表第一项/第二项的名称）
+   标签内最多显示 4 个字，超出部分在标签内上下滑动查看，滚动条隐藏*/
+#ss-deckmove > .ss-wrap > .ss-name {
+	position: absolute !important;
+	z-index: 5 !important;
+	background-image: url('../image/cebian.png') !important;
+	background-size: 100% 100% !important;
+	background-repeat: no-repeat !important;
+	/*●标签高度跟随卡槽高度（实测卡牌高度 + 6px），卡牌变小/变大时标签同步，不再写死 110px*/
+	height: calc(var(--ss-ch, 106px) + 6px) !important;
+	width: 38px !important;
+	/*●旧内核不支持 clamp() 时用上一行的 20px 兜底，避免字号声明整条失效*/
+	font-size: 20px !important;
+	font-size: clamp(12px, calc(var(--ss-ch, 106px) * 0.19), 20px) !important;
+	left: 13% !important;
+	color: #eddac3 !important;
+	text-shadow: 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325,
+		0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325 !important;
+	font-family: shousha, xinwei !important;
+	justify-content: center !important;
+	align-items: center !important;
+	display: flex !important;
+	pointer-events: none !important;
+	overflow: visible !important;
+}
+#ss-deckmove > .ss-wrap > .ss-name > .ss-name-text {
+	writing-mode: horizontal-tb !important;
+	width: auto !important;
+	max-width: 100% !important;
+	white-space: pre !important;
+	word-break: normal !important;
+	overflow-wrap: normal !important;
+	display: block !important;
+	/*●文字可滚动高度跟随标签/卡槽高度，不再写死 88px*/
+	max-height: calc(var(--ss-ch, 106px) - 16px) !important;
+	line-height: 22px !important;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+	touch-action: pan-y !important;
+	-webkit-overflow-scrolling: touch !important;
+	pointer-events: auto !important;
+	text-align: center !important;
+	flex: 0 1 auto !important;
+	min-height: 0 !important;
+}
+#ss-deckmove > .ss-wrap > .ss-name > .ss-name-text::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important;
+	display: none !important;
+}
+#ss-deckmove > .ss-wrap > .ss-name.ss-top {
+	top: 54px !important;
+}
+#ss-deckmove > .ss-wrap > .ss-name.ss-bottom {
+	top: calc(54px + var(--ss-ch, 106px) + 4px) !important;
+}
+
+/*●上下两个卡槽*/
+#ss-deckmove > .ss-wrap > .ss-area {
+	position: absolute !important;
+	z-index: 6 !important;
+	background-image: url('../image/newarena1.png') !important;
+	background-size: 100% 100% !important;
+	background-repeat: no-repeat !important;
+	left: 17% !important;
+	right: 17% !important;
+	width: auto !important;
+	height: calc(var(--ss-ch, 106px) + 4px) !important;
+	display: block !important;
+	border-radius: 5px !important;
+	overflow: visible !important;
+	pointer-events: auto !important;
+}
+#ss-deckmove > .ss-wrap > .ss-area.ss-top {
+	top: 56px !important;
+}
+#ss-deckmove > .ss-wrap > .ss-area.ss-bottom {
+	top: calc(56px + var(--ss-ch, 106px) + 4px) !important;
+}
+
+/*●卡牌容器铺满卡槽，保证点空白处也能判定为移动到该区域；
+  卡牌超出卡槽时在槽内左右滑动，卡牌本身不缩小、不换行*/
+#ss-deckmove > .ss-wrap > .ss-area > .buttons {
+	margin: 0 !important;
+	padding: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	min-height: 0 !important;
+	box-sizing: border-box !important;
+	overflow-x: auto !important;
+	overflow-y: hidden !important;
+	display: flex !important;
+	flex-wrap: nowrap !important;
+	flex-direction: row !important;
+	justify-content: flex-start !important;
+	align-items: center !important;
+	pointer-events: auto !important;
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+	-webkit-overflow-scrolling: touch !important;
+	overscroll-behavior-x: contain !important;
+	touch-action: pan-x !important;
+}
+#ss-deckmove > .ss-wrap > .ss-area > .buttons::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important;
+	display: none !important;
+}
+#ss-deckmove > .ss-wrap > .ss-area > .buttons > div.card {
+	flex: 0 0 auto !important;
+	margin: 0 !important;
+	box-shadow: none !important;
+	border: none !important;
+	background-color: transparent !important;
+}
+#ss-deckmove > .ss-wrap > .ss-area > .buttons > div:not(:first-child) {
+	margin-left: 1px !important;
+}
+#ss-deckmove > .ss-wrap > .ss-area > .buttons > div.card.selected,
+#ss-deckmove > .ss-wrap > .ss-area > .buttons > div.card.glow2 {
+	z-index: 50 !important;
+	position: relative !important;
+}
+
+/*●“全选/反选”保留功能，缩小成卡槽右上角的小按钮*/
+#ss-deckmove > .ss-wrap > .ss-area > .select-all {
+	position: absolute !important;
+	right: 6px !important;
+	top: 3px !important;
+	z-index: 20 !important;
+	margin: 0 !important;
+	padding: 2px 6px !important;
+	line-height: 1 !important;
+	font-size: 16px !important;
+	font-family: shousha, xinwei !important;
+	color: #f0e6d2 !important;
+	text-shadow: 0 0 3px #000, 0 1px 0 #000 !important;
+	background: rgba(0, 0, 0, 0.35) !important;
+	border-radius: 4px !important;
+	pointer-events: auto !important;
+}
+
+/*●底部按钮栏：确定 / 取消沿用魄袭框图片*/
+#ss-deckmove > .ss-wrap > .ss-bar {
+	position: absolute !important;
+	left: 0 !important;
+	right: 0 !important;
+	top: calc(56px + 2 * (var(--ss-ch, 106px) + 4px)) !important;
+	bottom: auto !important;
+	height: 50px !important;
+	display: block !important;
+	background: none !important;
+	z-index: 30 !important;
+	pointer-events: none !important;
+}
+#ss-deckmove > .ss-wrap > .ss-bar > .ss-ok {
+	position: absolute !important;
+	left: 50% !important;
+	top: 50% !important;
+	width: 122px !important;
+	height: 47px !important;
+	margin-left: -154px !important;
+	margin-top: -24px !important;
+	font-size: 0 !important;
+	line-height: 0 !important;
+	background-image: url('../image/confirmButton.png') !important;
+	background-size: 100% 100% !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+	cursor: pointer !important;
+	pointer-events: auto !important;
+	z-index: 31 !important;
+}
+#ss-deckmove > .ss-wrap > .ss-bar > .ss-no {
+	position: absolute !important;
+	left: 50% !important;
+	top: 50% !important;
+	width: 115px !important;
+	height: 40px !important;
+	margin-left: 40px !important;
+	margin-top: -20px !important;
+	font-size: 0 !important;
+	line-height: 0 !important;
+	background-image: url('../image/cancel.png') !important;
+	background-size: 100% 100% !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+	cursor: pointer !important;
+	pointer-events: auto !important;
+	z-index: 31 !important;
+}
+#ss-deckmove > .ss-wrap > .ss-bar > .ss-ok.ss-disabled {
+	pointer-events: none !important;
+	filter: grayscale(1) brightness(0.85) !important;
+	-webkit-filter: grayscale(1) brightness(0.85) !important;
+	cursor: default !important;
+}
+#ss-deckmove > .ss-wrap > .ss-bar > .ss-ok:active,
+#ss-deckmove > .ss-wrap > .ss-bar > .ss-no:active {
+	filter: brightness(1.8) !important;
+	-webkit-filter: brightness(1.8) !important;
+}
+
+/*●进度条（有选择时限时走时间，否则显示满条）*/
+#ss-deckmove > .ss-wrap > .ss-timer {
+	position: absolute !important;
+	left: 31% !important;
+	right: 31% !important;
+	width: auto !important;
+	height: 8px !important;
+	top: calc(56px + 2 * (var(--ss-ch, 106px) + 4px) + 49px) !important;
+	border-radius: 1000px !important;
+	background: rgba(0, 0, 0, 0.45) !important;
+	box-shadow: 0 0 9px #2e2b27 inset, 0 0 2.1px #FFFFD5 !important;
+	border: 1.2px solid #000 !important;
+	overflow: hidden !important;
+	z-index: 33 !important;
+	pointer-events: none !important;
+}
+#ss-deckmove > .ss-wrap > .ss-timer > .ss-fill {
+	position: absolute !important;
+	left: 0 !important;
+	top: 0 !important;
+	bottom: 0 !important;
+	height: auto !important;
+	width: 100% !important;
+	background-image: linear-gradient(#fccc54 15%, #d01424 30%, #cc6953 90%) !important;
+}
+
+/*●底部说明文字*/
+#ss-deckmove > .ss-wrap > .ss-desc {
+	position: absolute !important;
+	left: 17% !important;
+	right: 17% !important;
+	top: calc(56px + 2 * (var(--ss-ch, 106px) + 4px) + 59px) !important;
+	height: 22px !important;
+	line-height: 22px !important;
+	white-space: nowrap !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	text-align: center !important;
+	font-size: 15px !important;
+	color: #f0e6d2 !important;
+	font-family: shousha, xinwei !important;
+	text-shadow: 0 0 3px #000, 0 1px 0 #000 !important;
+	pointer-events: none !important;
+	z-index: 40 !important;
+}
+
+/*●折叠状态：只保留标题栏和底部进度条（样式参考拆顺框、魄袭框）*/
+#ss-deckmove.ss-folded {
+	height: 78px !important;
+	min-height: 78px !important;
+	max-height: 78px !important;
+	background-size: 100% auto !important;
+	background-position: top center !important;
+	background-repeat: no-repeat !important;
+}
+#ss-deckmove.ss-folded > .ss-wrap > .ss-name,
+#ss-deckmove.ss-folded > .ss-wrap > .ss-area,
+#ss-deckmove.ss-folded > .ss-wrap > .ss-bar,
+#ss-deckmove.ss-folded > .ss-wrap > .ss-desc {
+	display: none !important;
+}
+#ss-deckmove.ss-folded > .ss-wrap > .ss-title > img {
+	transform: scaleY(-1) !important;
+	-webkit-transform: scaleY(-1) !important;
+}
+#ss-deckmove.ss-folded > .ss-wrap > .ss-timer {
+	display: block !important;
+	top: auto !important;
+	bottom: 6px !important;
+}
+
+/*●窗口打开时隐藏原生确认栏与底部进度条，避免与自绘按钮重复*/
+body.ss-deckmove-open #ui-confirm,
+body.ss-deckmove-open .newconfirm1,
+#ss-deckmove .dialog-confirm {
+	display: none !important;
+}
+body.ss-deckmove-open #jindutiaopl,
+body.ss-deckmove-open #progresspl,
+body.ss-deckmove-open #dui-progress,
+body.ss-deckmove-open .jindutiaopl {
+	display: none !important;
+}
+
+/*●层级修正：窗口打开时牌序/记录等按钮仍需可点*//*
+body.ss-deckmove-open .lbtn-controls,
+body.ss-deckmove-open .lbtn-control,
+body.ss-deckmove-open .lbtn-paixu,
+body.ss-deckmove-open .lbtn-paixu1,
+body.ss-deckmove-open .latn-jilu,
+body.ss-deckmove-open .latn-jilu1,
+body.ss-deckmove-open .jiluButton,
+body.ss-deckmove-open .jiluButton_new,
+body.ss-deckmove-open .jiluButton_new1,
+body.ss-deckmove-open .settingButton,
+body.ss-deckmove-open .buttonyjcm,
+body.ss-deckmove-open .tuoguanButton {
+	z-index: 9999 !important;
+}*/

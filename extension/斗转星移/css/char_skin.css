@@ -1,0 +1,420 @@
+/*武将包整体区域*/
+.wujiang-pack-area {
+  width: 171px;
+  top: 50px;
+  bottom: 0;
+  left: 13px;
+  z-index: -1;
+}
+
+/*武将包按钮组*/
+.wujiang-pack-btns {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+/* 包按钮 */
+.wujiang-pack-btn {
+  position: relative;
+  width: 100%;
+  height: 86px;
+  margin: -13px 0;
+  background-size: 100% 100%;
+}
+
+.wujiang-pack-btn-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: url('../image/btn/btn1.png');
+  background-size: 100% 100%;
+}
+
+.wujiang-pack-btn.active>.wujiang-pack-btn-img {
+  background-image: url('../image/btn/btn2.png');
+}
+
+.wujiang-pack-btn-name {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  color: #a09883;
+  text-align: center;
+  font-family: shousha;
+  line-height: 86px;
+  font-size: 22px;
+}
+
+/*势力按钮组*/
+.wujiang-group-btns {
+  width: 130px;
+  height: 60%;
+  top: 22%;
+  right: 50px;
+  overflow-y: auto;
+}
+
+.wujiang-group-btn-back {
+  position: relative;
+  width: 130px;
+  height: 90px;
+  /* background-color: #e5d9d921; */
+  margin: -10px 0;
+  /* left: -35px; */
+  /* top: 7px; */
+}
+
+.wujiang-group-btn-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: url('../image/btn/clt_lvl3_btn_off.png');
+  background-size: 100% 100%;
+}
+
+.wujiang-group-btn-back.active .wujiang-group-btn-img {
+  background-image: url('../image/btn/clt_lvl3_btn_fg.png');
+}
+
+.wujiang-group-btn-name {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: #a09883;
+  text-shadow: 0 0 1px #ab9f81;
+  text-align: center;
+  font-family: shousha;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*全部武将整体位置*/
+.wujiang-chars-area {
+  position: absolute;
+  width: calc(100% - 370px);
+  left: 188px;
+  top: 50px;
+  bottom: 20px;
+  overflow-y: auto;
+}
+
+.wujiang-chars {
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(5, 20%);
+  justify-items: center;
+}
+
+.wujiang-chars .wujiang-char-base-back {
+  position: relative;
+  margin-top: 25px;
+}
+
+/*搜索*/
+.wujiang-search-btn {
+  top: -2px;
+  right: 131px;
+  width: 130px;
+  height: 48px;
+  background-image: url('../image/btn/warr_search_btn.png');
+  background-size: 100% 100%;
+}
+
+.wujiang-view-btn {
+  font-size: 18px;
+  top: -7px;
+  right: 256px;
+  width: 145px;
+  height: 59px;
+  text-align: center;
+  color: #9b9274;
+  font-weight: bolder;
+  font-family: 'shousha';
+  line-height: 59px;
+  background-size: 100% 100%;
+  background-image: url(../image/btn/btn8.png);
+}
+
+.wujiang-view-btn.active {
+  background-image: url(../image/btn/btn7.png);
+}
+
+/*皮肤容器*/
+.pifu-skins {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.pifu-skins-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin: 8px 0px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-image: linear-gradient(90deg, rgba(80, 47, 47, 0), rgb(37 37 37 / 80%) 15%, rgb(0 0 0 / 42%) 56%, rgba(0, 0, 0, 0));
+  /* background-color: #e6d7d76b; */
+}
+
+.pifu-skins-content {
+  position: relative;
+  width: calc(100% - 40px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pifu-skins-content .pifu-skin-back {
+  margin: 0 8px;
+}
+
+/*武将名*/
+.pifu-skins-charname {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 10px;
+  /* top: 40px; */
+  /* left: -4px; */
+  height: 40%;
+  padding: 25px 10px;
+  margin: 0 5px;
+  flex: none;
+  background-image: url('../image/char_skin/11.png');
+  background-size: 100% 100%;
+  text-align: center;
+  font-size: 20px;
+  line-height: 20px;
+  font-family: shousha;
+  color: #A3DEC5;
+}
+
+/*皮肤底*/
+.pifu-skin-back {
+  position: relative;
+  width: 123px;
+  height: calc(123px * 247 / 164);
+  flex: none;
+}
+
+/* 武将框 */
+.pifu-skin-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  background-image: url('../image/char_skin/skinFrm1.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.pifu-skin-back.dz-selected .pifu-skin-frame {
+  background-image: url('../image/char_skin/skinFrm5.png');
+}
+
+.pifu-skin-back.dz-selected::after {
+  position: absolute;
+  content: '';
+  right: -6%;
+  bottom: -5%;
+  width: 40px;
+  height: 40px;
+  background: url('../image/splash/item_reawred.png') no-repeat center/contain;
+  z-index: 5;
+}
+
+/* 武将图 */
+.pifu-skin-img {
+  width: 84%;
+  height: 89%;
+  left: 8%;
+  bottom: 5.5%;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition-duration: 0s !important;
+}
+
+.pifu-skin-img[data-loutou='shizhounian'] {
+  height: 95%;
+  clip-path: url(#solo-clip);
+}
+
+.pifu-skin-img[data-loutou='shousha'] {
+  height: 102%;
+}
+
+.pifu-skins-content .pifu-skin-back {
+  margin-top: 9px;
+}
+
+/*动态*/
+.pifu-skin-dynamic {
+  right: -8%;
+  top: 25%;
+  width: 40px;
+  height: 40px;
+  background-size: 100% 100%;
+  background-image: url('../image/char_skin/dynamic.png');
+}
+
+/*共享*/
+.pifu-skin-share {
+  top: 5%;
+  left: 8%;
+  height: 45px;
+  width: 45px;
+  transform: rotate(-90deg);
+  background-size: 100% 100%;
+  background-image: url('../image/char_skin/game_new_sign_gangup.png');
+}
+
+/*皮肤名背景*/
+.pifu-skin-name-bg {
+  right: 7%;
+  bottom: 5%;
+  width: 45px;
+  height: 36px;
+  border: #8a8884 1px solid;
+  border-radius: 8px;
+  transition: none;
+  background-color: rgba(1, 1, 1, 0.5);
+}
+
+/*皮肤名*/
+.pifu-skin-name {
+  writing-mode: lr-tb;
+  color: #8a8884;
+  width: 90%;
+  height: 90%;
+  text-shadow: 0 0 5px rgb(0, 0, 0), 0 0 10px rgb(0, 0, 0), 0 0 15px rgb(0, 0, 0);
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: bold;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  margin: auto;
+  font-family: shousha;
+}
+
+.taici-skill-container {
+  display: block;
+  position: relative;
+}
+
+.taici-skillname {
+  margin-left: 20px;
+  display: block;
+  position: static;
+  color: #f6ffde;
+  font-weight: lighter;
+  letter-spacing: 5px;
+  font-size: 17px;
+  text-shadow:
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017,
+    0px 0px 2px #3F3017;
+}
+
+.taici-skill-item {
+  position: relative;
+  margin: 5px 10px 15px;
+  width: 340px;
+  height: 55px;
+  background-image: url('../image/char_skin/12.png');
+  background-size: 100% 100%;
+  line-height: 55px;
+  color: #fefff9;
+  text-shadow: none;
+}
+
+.taici-skill-trumpet {
+  width: 40px;
+  height: 40px;
+  left: 5px;
+  top: 8px;
+  background-image: url('../image/char_skin/chr_spell_voice_2.png');
+  background-size: 100% 100%;
+}
+
+/* .taici-skill-trumpet:active {
+  filter: brightness(150%);
+} */
+
+.taici-skill-text {
+  width: 270px;
+  height: 30px;
+  left: 47px;
+  top: 0px;
+  position: relative;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/*删除皮肤*/
+.pifu-skin-delete-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-476px, -160px);
+  background-color: #06a860;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.pifu-view-charname {
+  position: relative;
+  display: block;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.pifu-view-skinname {
+  margin-left: 40px;
+  padding-left: 10px;
+  margin-bottom: 8px;
+  background-color: #00000059;
+  display: block;
+  position: relative;
+}

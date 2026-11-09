@@ -1,0 +1,369 @@
+/*自动节点（single-handcard 场景同样走 flex 居中，避免托管图片被引擎 table 布局拉伸）*/
+#arena.decadeUI:not(.chess) > #autonode {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	left: -2% !important;
+	right: -2% !important;
+	bottom: -2% !important;
+	width: auto !important;
+	height: calc(2% + 180px);
+	background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+}
+
+/* 神黄忠dclieqiong样式 */
+#arena.decadeUI > .dialog.dclieqiong {
+    margin-top: -1%;
+    background-size: contain !important;
+    background-color: hsla(26, 59%, 37%, 0.749) !important;
+}
+
+/** 座位号 */
+#arena[data-new-decade-style="codename"]>.player > .seat {
+	left: -2px;
+}
+#arena[data-new-decade-style="babysha"]>.player > .seat {
+	left: 0px;
+}
+
+/*托管中图片（手杀）*/
+#autonode>div:last-child {
+	margin-right: 12% !important;
+}
+
+/*拿牌提示*/
+.card.button > .cardsetion,
+.card.button > .gaintag.info {
+	position: absolute;
+	--w: 106px;
+	--h: calc(var(--w) * 63 / 212); /*高和长*/
+	width: var(--w); /*按比例调节*/
+	height: var(--h); /*同理*/
+	bottom: calc(50% - 42px);
+	left: 1px;
+	color: black;
+	font-size: 21px;
+	font-weight: bold;
+	line-height: 33px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-shadow: 0 0 2px white, 0 0 4px white;
+	background-image: url("../image/card-base/UI.png");
+	background-size: 100% 100%;
+	filter: contrast(1.2);
+	-webkit-filter: contrast(1.2);
+	z-index: 9;
+}
+
+/*●时钟按钮*/
+.roundarenabutton {
+	left: 0%;
+	top: 10%;
+	position: absolute;
+	z-index: 9;
+	transition-property: opacity;
+	overflow: hidden;
+}
+/*界面按钮样式，包括打开菜单的圆球、重来、记录、托管等*/
+.menubutton.round {
+	width: 40px;
+	height: 40px;
+
+	border-radius: 100%;
+	font-size: 15px;
+	line-height: 40px;
+}
+
+/*●卡名辅助显示及控制*/
+.card > .name,
+.card > .name.long,
+.dialog .buttons > .card > .name.long {
+	font-size: 0px !important;
+	text-shadow: none !important;
+	border: none !important;
+	z-index: 1;
+	display: none;
+	background-color: none !important;
+}
+
+/*●动皮*/
+#arena[data-new-decade-style="off"]>.player > .dynamic-wrap {
+	display: block;
+	position: absolute;
+	left: 21.4px;
+	bottom: 0.5px;
+	width: 82%;
+	height: 109%;
+	border-radius: 24px 24px 8px 8px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	pointer-events: none;
+	z-index: 60;
+}
+
+/*●副将名*/
+#arena[data-new-decade-style="off"]>.player>.name.name2,
+#arena[data-new-decade-style="off"]>.player:not(.minskin)>.name.name2 {
+	align-items: flex-start;
+	align-content: center;
+	justify-content: center;
+	left: 56% !important;
+	right: auto;
+	top: 0px !important;
+	width: 18px;
+	height: 80px;
+	font-size: 18px;
+	letter-spacing: -2px;
+	line-height: 15px; 
+	font-family: "shousha" !important; 
+	text-shadow: 0px 0px 3px #000000, 0px 0px 3px #000000;
+	background: none;
+	z-index: 63;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.player>.name.name2:empty,
+#arena>.player:not(.minskin)>.name.name2:empty {
+	display: none;
+}
+.player.fullskin.fullskin2 > .name.name2:empty::before {
+	content: "副将";
+}
+
+#arena[data-new-decade-style="off"]>.player>.camp-wrap>.avatar-name,
+#arena[data-new-decade-style="off"]>.player>.camp-wrap>.avatar-name-default,
+#arena[data-new-decade-style="off"]>.player:not(.minskin)>.name.name {
+	top: 30px;
+	left: 29px;
+	transform: translateX(-50%);
+	line-height: -3px;
+	font-family: "shousha" !important;
+	font-size: 18px; letter-spacing: -2px; /*●主将名字间距*/
+	white-space: nowrap;
+	writing-mode: vertical-rl;
+	-webkit-writing-mode: vertical-rl;
+}
+
+/*●玩家号位显示*/
+.player>.seat {
+	display: block;
+	position: absolute;
+	bottom: -22px;
+	width: 100%;
+	line-height: 16px;
+	color: rgb(5, 5, 5);
+	font-family: "shousha";
+	font-size: 22px;
+	font-weight: bold;
+	/*字体加粗*/
+	text-align: center;
+	text-shadow: 0 0 2px white, 0 0 1px white;
+	white-space: nowrap;
+	z-index: 89;
+	pointer-events: none;
+}
+.player[data-position="0"]>.seat {
+	bottom: -13px;
+}
+
+/*联机名称显示*/
+.player>.nameol {
+	top: -19px; /*●*/
+	font-size: 16px;
+	font-family: "shousha";
+	text-shadow: 0 0 2px black;
+	background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+	z-index: 89;
+	pointer-events: none;
+}
+
+/*●欢杀佛*/
+#arena[data-new-decade-style="babysha"] > .player > .camp-wrap[data-camp="zqfo"] > .avatar-name,
+#arena[data-new-decade-style="babysha"] > .player:not(.minskin) > .camp-wrap[data-camp="zqfo"] ~ .name.name {
+	color: rgb(245, 230, 115);
+}
+#arena[data-new-decade-style="babysha"] > .player > .camp-wrap[data-camp="zqfo"] > .camp-back {
+	background-image: url("../../ui/assets/character/baby/baby_zqfo.png");
+	width: 390%;
+}
+
+/*鹿鹿修改 回合外手牌黑化*/
+.handcards>.card:not(.selectable)>.card-mask {
+	opacity: 1;
+}
+
+/*卡牌甲骨文*/
+.card > .background,
+.card.button > .background {
+	font-size: 0px !important;
+}
+/*按钮调整*/
+#arena > #dui-controls > .control.combo-control > div {
+	font-size: 1.2em;
+}
+#arena.decadeUI>.dialog.prompt {
+	bottom: calc(25% + 75px) !important;
+}
+
+/*用于判定牌。这里需要重复选择器，以提高优先等级*/
+.content > .decade-card.decade-card {
+	width: 108px;
+	height: 150px;
+}
+
+/* 战法 */
+.card[data-card-type="zhanfa"] > .image {
+	background-size: 75%;
+	background-position: bottom;
+	background-repeat: no-repeat;
+}
+.card[data-card-type="zhanfa"] >.top-name {
+	left: -5%;
+	top: 10%;
+	width: 110%;
+	color: black;
+	font-size: 25px;
+	line-height: 22px;
+	font-family: "HYZLSJ" !important;
+	text-align: center;
+	text-shadow: 0.3px 0px 1.8px white, 0.3px 0px 1.8px white, 0.3px 0px 1.8px white;
+	z-index: 1;
+}
+/* 谋弈 */
+.card.fullimage > div:not(.background) {
+	font-size: 0px;
+}
+
+/*出牌响应提示*/
+#arena>.hand-tip {
+	text-shadow:
+		-1px -1px 0 #352D24,
+		 1px -1px 0 #352D24,
+		-1px  1px 0 #352D24,
+		 1px  1px 0 #352D24,
+		 0  0 2px #352D24,
+		 0  0 3px #352D24;
+	filter: blur(0.4px);
+	-webkit-filter: blur(0.4px);
+	letter-spacing: 1.5px;
+}
+
+#arena>.hand-tip::before {
+	-webkit-text-stroke: 3px rgb(65, 52, 25) !important;
+}
+
+#arena>.hand-tip>span[data-type="phase"] {
+	color: #f8f8d9 !important;
+}
+
+#arena>.hand-tip>span[data-type="player"] {
+	color: rgb(174, 239, 138) !important;
+}
+
+#arena>.hand-tip>span[data-type="card"] {
+	color: rgb(120, 250, 245) !important;
+}
+
+/*局内武将角标*/
+.skssjiaobiao {
+    background-color: none;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 16%;
+    height: 16%;
+    right: -1px;
+    bottom: -6px;
+    z-index: 114514 !important;
+}
+
+/*卡牌圆角*/
+.card,
+#window:not(*[data-radius_size=""]) .card {
+	border-radius: 6px !important;
+}
+
+/*●花色点数*/
+.card > .suit-num {
+	font-size: 21px;
+	font-weight: 500;
+	color: black;
+	text-align: center;
+	top: 12px;
+	left: 1px;
+	width: 25px;
+	height: auto;
+	line-height: 18px; /*行距*/
+	text-shadow: none;
+	letter-spacing: -2.5px;
+	transform: scale(1, 0.92);
+	transform-origin: 0 0;
+	z-index: 1;
+	-webkit-text-size-adjust: none;
+}
+
+/*●转化花色点数显示*/
+.card > .tempsuitnum {
+	font-size: 21px;
+	top: 0px;
+	left: 0.5px;
+	width: 100%;
+	height: 100%;
+	background-image: url("../image/card-base/viewsuitnum.webp");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	text-align: center;
+	line-height: 18px;
+	z-index: 2;
+	transform-origin: 0 0;
+	transform: scale(1, 0.92);
+	-webkit-text-size-adjust: none;
+}
+
+.card > .tempsuitnum > .num,
+.card > .tempsuitnum > .suit {
+	left: -41px; /*●越小越左*/
+	top: 13px;
+	font-size: 21px;
+	font-weight: 500;
+	letter-spacing: -2.5px;
+	position: relative;
+}
+.card[data-suit="heart"] > .suit-num,
+.card[data-suit="diamond"] > .suit-num,
+.card[data-tempsn="heart"] > .tempsuitnum,
+.card[data-tempsn="diamond"] > .tempsuitnum {
+	color: rgba(199, 27, 16, 1);
+}
+.card[data-suit="club"] > .suit-num,
+.card[data-suit="spade"] > .suit-num,
+.card[data-tempsn="club"] > .tempsuitnum,
+.card[data-tempsn="spade"] > .tempsuitnum {
+	color: black;
+}
+.card[data-suit="none"] > .suit-num,
+.card[data-tempsn="none"] > .tempsuitnum {
+	color: white;
+	font-weight: 200;
+	text-shadow: -1px 0px 1.5px black, 0px -1px 1.5px black, 1px 0px 1.5px black ,0px 1px 1.5px black;
+}
+.card[data-suit="heart"] > .suit-num > .suit,
+.card[data-tempsn="heart"] > .tempsuitnum > .suit,
+.card[data-suit="spade"] > .suit-num > .suit,
+.card[data-tempsn="spade"] > .tempsuitnum > .suit { /*●红桃黑桃*/
+	font-size: 21px;
+}
+.card[data-suit="diamond"] > .suit-num > .suit,
+.card[data-tempsn="diamond"] > .tempsuitnum > .suit { /*●方块*/
+	font-size: 24px;
+}
+.card[data-suit="club"] > .suit-num > .suit,
+.card[data-tempsn="club"] > .tempsuitnum > .suit { /*●梅花*/
+	font-size: 19px;
+}
+
+/*●新手向导等 only_dialog 场景：本体只排除 #control，而扩展已把容器改名为 #dui-controls*/
+#arena.only_dialog > #dui-controls#dui-controls {
+	opacity: 1 !important;
+	pointer-events: auto !important;
+}
