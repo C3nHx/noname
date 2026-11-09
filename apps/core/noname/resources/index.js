@@ -1,6 +1,6 @@
 import { createResourceIndex, parseResourceManifest, RESOURCE_CACHE, RESOURCE_STATE, resourceURL } from "./manifest.js";
 import { browserResourceStorage, desktopResourceStorage, nativeResourceStorage, reconcileResourceState } from "./storage.js";
-import { installResourcePack } from "./download.js";
+import { downloadResourcePacks, installResourcePack } from "./download.js";
 import { createResourceDecryptor } from "./crypto.js";
 import { bundledExtensions, hasBundledResources } from "../util/bundled-extensions.js";
 
@@ -171,7 +171,7 @@ function mountResourcePanel(manager, save) {
 	const heading = document.createElement("h2");
 	heading.textContent = "游戏资源";
 	const description = document.createElement("p");
-	description.textContent = "文字模式可直接游玩。下载美术和语音后保存在本机，下次启动继续使用。";
+	description.textContent = "文字模式可直接游玩。下载的资源保存在本机，下次启动继续使用。全部下载会复用已有内容，可随时暂停。";
 	const close = document.createElement("button");
 	close.textContent = "关闭";
 	close.onclick = () => {
@@ -204,6 +204,62 @@ function mountResourcePanel(manager, save) {
 	let running;
 	const order = ["cards", "portraits", "images", "fonts", "extension-十周年UI", "audio"];
 	const packs = [...manager.manifest.packs].sort((a, b) => (order.includes(a.id) ? order.indexOf(a.id) : order.length) - (order.includes(b.id) ? order.indexOf(b.id) : order.length));
+	const controls = new Map();
+	const downloadAll = document.createElement("button");
+	downloadAll.id = "resource-packs-download-all";
+	downloadAll.type = "button";
+	const totalBytes = packs.reduce((sum, pack) => sum + pack.parts.reduce((bytes, part) => bytes + part.bytes, 0), 0);
+	const totalSize = totalBytes >= 1073741824 ? `${(totalBytes / 1073741824).toFixed(2)} GiB` : `${(totalBytes / 1048576).toFixed(1)} MiB`;
+	downloadAll.textContent = `全部下载（总计 ${totalSize}）`;
+	const progressBar = document.createElement("progress");
+	progressBar.id = "resource-packs-progress";
+	progressBar.setAttribute("aria-label", "资源下载总进度");
+	progressBar.hidden = true;
+	const pause = document.createElement("button");
+	pause.id = "resource-packs-pause";
+	pause.type = "button";
+	pause.textContent = "暂停下载";
+	pause.disabled = true;
+	pause.onclick = () => running?.abort();
+	async function runDownloads(selected) {
+		if (running) return;
+		const controller = new AbortController();
+		running = controller;
+		downloadAll.disabled = true;
+		source.disabled = true;
+		pause.disabled = false;
+		for (const { button } of controls.values()) button.disabled = true;
+		progressBar.max = selected.reduce((sum, pack) => sum + pack.files.length, 0) || 1;
+		progressBar.value = 0;
+		progressBar.hidden = false;
+		status.textContent = "正在检查已保存的资源……";
+		try {
+			await downloadResourcePacks({
+				packs: selected,
+				download: (id, options) => manager.download(id, options),
+				signal: controller.signal,
+				onProgress: progress => {
+					progressBar.value = progress.completed;
+					status.textContent = `${selected.length > 1 ? `总进度 ${progress.packIndex}/${progress.packCount} 包，` : ""}${progress.pack.label}：${progress.completed}/${progress.total} 个文件${progress.partBytes ? `，当前分卷 ${Math.round((progress.received / progress.partBytes) * 100)}%` : ""}`;
+					if (progress.packCompleted === progress.pack.files.length) controls.get(progress.pack.id).update();
+				},
+			});
+			const requires = selected.length === 1 ? (bundledExtensions.find(extension => selected[0].id === `extension-${extension.name}`)?.requires ?? []) : [];
+			status.textContent = `${selected.length === packs.length ? "全部资源" : selected[0].label}已保存。${requires.length ? `此扩展还需${requires.join("、")}美术。` : ""}勾选美术选项后，重新启动即可使用。`;
+		} catch (error) {
+			status.textContent = controller.signal.aborted ? "下载已暂停，已保存的资源可继续复用。" : `下载未完成：${error.message}。已保存的资源会保留，可以重试或继续文字模式。`;
+		} finally {
+			running = null;
+			downloadAll.disabled = false;
+			source.disabled = false;
+			pause.disabled = true;
+			for (const { button, update } of controls.values()) {
+				button.disabled = false;
+				update();
+			}
+		}
+	}
+	downloadAll.onclick = () => runDownloads(packs);
 	for (const pack of packs) {
 		const row = document.createElement("div");
 		row.className = "resource-pack-row";
@@ -218,33 +274,15 @@ function mountResourcePanel(manager, save) {
 		const download = document.createElement("button");
 		download.type = "button";
 		download.textContent = "下载 / 检查";
-		download.onclick = async () => {
-			if (running) return;
-			running = new AbortController();
-			download.disabled = true;
-			try {
-				await manager.download(pack.id, {
-					signal: running.signal,
-					onProgress: progress => {
-						status.textContent = `${pack.label}：${progress.completed}/${progress.total} 个文件${progress.partBytes ? `，分卷 ${Math.round((progress.received / progress.partBytes) * 100)}%` : ""}`;
-					},
-				});
-				status.textContent = `${pack.label}已保存。${requires.length ? `此扩展还需${requires.join("、")}美术。` : ""}准备好卡牌图片并勾选美术选项后，重新启动即可使用。`;
-			} catch (error) {
-				status.textContent = running.signal.aborted ? "下载已暂停，已保存的资源可继续复用。" : `下载未完成：${error.message}。可以重试或继续文字模式。`;
-			} finally {
-				running = null;
-				download.disabled = false;
-				update();
-			}
-		};
+		download.onclick = () => runDownloads([pack]);
+		controls.set(pack.id, { button: download, update });
 		row.append(text, download);
 		rows.append(row);
 	}
-	const pause = document.createElement("button");
-	pause.textContent = "暂停下载";
-	pause.onclick = () => running?.abort();
-	panel.append(heading, description, label, rows, sourceLabel, pause, close, status);
+	const actions = document.createElement("div");
+	actions.className = "resource-pack-actions";
+	actions.append(downloadAll, pause);
+	panel.append(heading, description, label, actions, progressBar, status, rows, sourceLabel, close);
 	button.onclick = () => {
 		panel.hidden = !panel.hidden;
 	};

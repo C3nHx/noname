@@ -38,9 +38,11 @@ export async function configureOssResourceCORS({ client, target, backupDirectory
 	return true;
 }
 
-export async function publishResourcesToOSS({ client, target, directory = "output/resource-packs", keyConfig, concurrency = 3, receipt = ".audit/oss-resource-publication.json", verifyOrigin, fetcher = fetch, onProgress = () => {} }) {
+export async function publishResourcesToOSS({ client, target, directory = "output/resource-packs", keyConfig, concurrency = 3, receipt = ".audit/oss-resource-publication.json", verifyOrigin, reusePrefix, fetcher = fetch, onProgress = () => {} }) {
 	if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 8) throw new ResourcePublicationError("Concurrency must be between 1 and 8");
 	if (verifyOrigin && new URL(verifyOrigin).origin !== verifyOrigin) throw new ResourcePublicationError("Provide a complete verification Origin without a path");
+	const sourcePrefix = reusePrefix?.replace(/\/$/, "");
+	if (sourcePrefix !== undefined && !validResourcePath(sourcePrefix)) throw new ResourcePublicationError("The reusable OSS prefix must be a nonempty relative directory");
 	const catalog = await fs.readFile(path.join(directory, "resource-manifest.json"));
 	const manifest = parseResourceManifest(JSON.parse(catalog));
 	if ((manifest.deliveryURL || manifest.baseURL) !== target.baseURL) throw new ResourcePublicationError("Build the client with this OSS resource directory before publishing");
@@ -59,14 +61,29 @@ export async function publishResourcesToOSS({ client, target, directory = "outpu
 		try {
 			const head = await client.head(object);
 			if (Number(head.res.headers["content-length"]) !== bytes.length) throw new ResourcePublicationError(`An existing OSS object has a different size: ${filename}`);
-			return;
+			return "existing";
 		} catch (error) {
 			if (error.code !== "NoSuchKey") throw error;
 		}
+		const headers = { "x-oss-object-acl": "public-read", "x-oss-forbid-overwrite": "true", "Cache-Control": filename.endsWith(".nrp") ? "public, max-age=31536000, immutable" : "public, max-age=300" };
+		if (sourcePrefix && filename.endsWith(".nrp")) {
+			try {
+				const source = sourcePrefix + "/" + filename;
+				const head = await client.head(source);
+				if (Number(head.res.headers["content-length"]) !== bytes.length) throw new ResourcePublicationError(`A reusable OSS object has a different size: ${filename}`);
+				await client.copy(object, source, target.bucket, { headers: { ...headers } });
+				return "copy";
+			} catch (error) {
+				if (error.code === "FileAlreadyExists") return "existing";
+				if (error.code !== "NoSuchKey") throw error;
+			}
+		}
 		try {
-			await client.put(object, bytes, { mime, headers: { "x-oss-object-acl": "public-read", "x-oss-forbid-overwrite": "true", "Cache-Control": filename.endsWith(".nrp") ? "public, max-age=31536000, immutable" : "public, max-age=300" } });
+			await client.put(object, bytes, { mime, headers: { ...headers } });
+			return "upload";
 		} catch (error) {
 			if (error.code !== "FileAlreadyExists") throw error;
+			return "existing";
 		}
 	}
 	const parts = [...new Map(manifest.packs.flatMap(pack => pack.parts.map(part => [part.path, part]))).values()];
@@ -81,10 +98,10 @@ export async function publishResourcesToOSS({ client, target, directory = "outpu
 					const local = await fs.readFile(path.join(directory, part.path));
 					if (local.length !== part.bytes) throw new ResourcePublicationError(`A local resource has an incorrect size: ${part.path}`);
 					await decrypt(local, part);
-					await putIfAbsent(part.path, local, "application/octet-stream");
+					const transfer = await putIfAbsent(part.path, local, "application/octet-stream");
 					const bytes = await downloadResourcePart(resourceURL(target.baseURL, part.path), part, { fetcher: request });
 					await decrypt(bytes, part);
-					published.push({ path: part.path, bytes: bytes.length, ciphertextSha256: digest(bytes), plaintextSha256: part.sha256 });
+					published.push({ path: part.path, bytes: bytes.length, ciphertextSha256: digest(bytes), plaintextSha256: part.sha256, transfer });
 					onProgress({ verified: published.length, total: parts.length, path: part.path });
 				} catch (error) {
 					failure ??= error;
@@ -96,7 +113,7 @@ export async function publishResourcesToOSS({ client, target, directory = "outpu
 	await putIfAbsent("resource-manifest.json", catalog, "application/json");
 	const publicCatalog = await request(resourceURL(target.baseURL, "resource-manifest.json"), { credentials: "omit", cache: "no-store" });
 	if (!publicCatalog.ok || digest(new Uint8Array(await publicCatalog.arrayBuffer())) !== digest(catalog)) throw new ResourcePublicationError("The public OSS catalog does not match this build; use a new version instead of replacing it");
-	const result = { phase: "complete", provider: "oss", ...target, algorithm: manifest.encryption.algorithm, keyId: manifest.encryption.keyId, version: manifest.version, buildId: manifest.buildId, assets: published.sort((left, right) => left.path.localeCompare(right.path)), ...(verifyOrigin ? { verifyOrigin } : {}), verifiedAt: new Date().toISOString() };
+	const result = { phase: "complete", provider: "oss", ...target, algorithm: manifest.encryption.algorithm, keyId: manifest.encryption.keyId, version: manifest.version, buildId: manifest.buildId, assets: published.sort((left, right) => left.path.localeCompare(right.path)), ...(verifyOrigin ? { verifyOrigin } : {}), ...(sourcePrefix ? { reusePrefix: sourcePrefix + "/" } : {}), verifiedAt: new Date().toISOString() };
 	await fs.mkdir(path.dirname(path.resolve(receipt)), { recursive: true });
 	await fs.writeFile(receipt, JSON.stringify(result, null, 2) + "\n");
 	return result;

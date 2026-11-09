@@ -31,7 +31,8 @@ async function fixture(t) {
 
 function remote() {
 	const objects = new Map(),
-		writes = [];
+		writes = [],
+		copies = [];
 	const client = {
 		async head(name) {
 			if (!objects.has(name)) throw Object.assign(new Error("missing"), { code: "NoSuchKey" });
@@ -40,9 +41,19 @@ function remote() {
 		async put(name, bytes, options) {
 			assert.equal(options.headers["x-oss-forbid-overwrite"], "true");
 			assert.equal(options.headers["x-oss-object-acl"], "public-read");
+			assert.equal(options.headers["x-oss-copy-source"], undefined);
 			if (objects.has(name)) throw Object.assign(new Error("exists"), { code: "FileAlreadyExists" });
 			writes.push(name);
 			objects.set(name, Buffer.from(bytes));
+		},
+		async copy(name, source, bucket, options) {
+			assert.equal(options.headers["x-oss-forbid-overwrite"], "true");
+			assert.equal(options.headers["x-oss-object-acl"], "public-read");
+			options.headers["x-oss-copy-source"] = `/${bucket}/${source}`;
+			if (!objects.has(source)) throw Object.assign(new Error("missing"), { code: "NoSuchKey" });
+			if (objects.has(name)) throw Object.assign(new Error("exists"), { code: "FileAlreadyExists" });
+			copies.push({ name, source });
+			objects.set(name, Buffer.from(objects.get(source)));
 		},
 	};
 	const fetcher = async (url, options) => {
@@ -51,7 +62,7 @@ function remote() {
 		const bytes = objects.get(decodeURIComponent(new URL(url).pathname.slice(1)));
 		return new Response(bytes, { status: bytes ? 200 : 404, headers: { "Access-Control-Allow-Origin": "*" } });
 	};
-	return { objects, writes, client, fetcher };
+	return { objects, writes, copies, client, fetcher };
 }
 
 function options(data, server) {
@@ -86,6 +97,52 @@ test("OSS reuses authenticated remote ciphertext from a different random IV", as
 	await publishResourcesToOSS(options(data, server));
 	assert.equal(server.writes.length, count);
 	assert.deepEqual(server.objects.get(data.target.prefix + part.path), original);
+});
+
+test("OSS copies authenticated resources from a prior release and only uploads the new catalog", async t => {
+	const data = await fixture(t),
+		server = remote();
+	const reusePrefix = "noname/previous/";
+	for (const part of data.manifest.packs.flatMap(pack => pack.parts)) server.objects.set(reusePrefix + part.path, await fs.readFile(path.join(data.resources, part.path)));
+	const result = await publishResourcesToOSS({ ...options(data, server), reusePrefix });
+	assert.deepEqual(server.writes, [data.target.prefix + "resource-manifest.json"]);
+	assert.equal(server.copies.length, result.assets.length);
+	assert(result.assets.every(asset => asset.transfer === "copy"));
+	assert.equal(result.reusePrefix, reusePrefix);
+	await publishResourcesToOSS({ ...options(data, server), reusePrefix });
+	assert.equal(server.copies.length, result.assets.length);
+});
+
+test("OSS uploads missing source objects even when the copy SDK has modified its headers", async t => {
+	const data = await fixture(t),
+		server = remote();
+	const reusePrefix = "noname/previous/";
+	const part = data.manifest.packs[0].parts[0];
+	server.objects.set(reusePrefix + part.path, await fs.readFile(path.join(data.resources, part.path)));
+	const copy = server.client.copy;
+	server.client.copy = async (...args) => {
+		server.objects.delete(args[1]);
+		return copy(...args);
+	};
+	const result = await publishResourcesToOSS({ ...options(data, server), reusePrefix });
+	assert.equal(server.copies.length, 0);
+	assert.equal(server.writes.length, result.assets.length + 1);
+	assert(result.assets.every(asset => asset.transfer === "upload"));
+});
+
+test("a corrupted reusable object cannot expose a release catalog or replace existing resources", async t => {
+	const data = await fixture(t),
+		server = remote();
+	const reusePrefix = "noname/previous/";
+	const part = data.manifest.packs[0].parts[0];
+	const corrupted = await fs.readFile(path.join(data.resources, part.path));
+	corrupted[20] ^= 1;
+	server.objects.set(reusePrefix + part.path, corrupted);
+	await assert.rejects(publishResourcesToOSS({ ...options(data, server), reusePrefix }));
+	assert(!server.objects.has(data.target.prefix + "resource-manifest.json"));
+	assert.deepEqual(server.objects.get(data.target.prefix + part.path), corrupted);
+	assert.equal(server.writes.length, 0);
+	await assert.rejects(publishResourcesToOSS({ ...options(data, server), reusePrefix: "../escape/" }), /relative directory/);
 });
 
 test("corrupted remote resources and mismatched catalogs are not replaced", async t => {

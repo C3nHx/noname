@@ -28,7 +28,7 @@ pnpm build
 node scripts/verify-resource-build.mjs
 ```
 
-构建会在根地址后追加当前发行版本，例如 `v1.11.7-c3nhx.3/`。需要完整指定目录时，`NONAME_RESOURCE_BASE_URL` 优先于根地址。检查环境中是否残留旧的 `NONAME_RESOURCE_BASE_URL` 或 `NONAME_RESOURCE_DELIVERY_URL`，避免覆盖本次配置。
+构建会在根地址后追加当前发行版本，例如 `v1.11.7-c3nhx.4/`。需要完整指定目录时，`NONAME_RESOURCE_BASE_URL` 优先于根地址。检查环境中是否残留旧的 `NONAME_RESOURCE_BASE_URL` 或 `NONAME_RESOURCE_DELIVERY_URL`，避免覆盖本次配置。
 
 直接使用 OSS 时无需设置 `NONAME_RESOURCE_DELIVERY_URL`。以后增加 CDN，可用它指定 CDN 的版本目录，或调整正式根地址重新构建。资源文件按明文哈希缓存，换域名不要求重新下载未变化的本地素材。
 
@@ -37,7 +37,7 @@ node scripts/verify-resource-build.mjs
 在包含锁文件的仓库根目录安装依赖。发布器使用锁定的官方 `ali-oss` SDK，采用 V4 签名。
 
 ```sh
-node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-shanghai --prefix noname/v1.11.7-c3nhx.3/ --configure-cors --verify-origin https://game.example.com
+node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-shanghai --prefix noname/v1.11.7-c3nhx.4/ --configure-cors --verify-origin https://game.example.com
 ```
 
 将示例版本和网页 Origin 改为本次实际值。`--verify-origin` 只包含协议、域名和可选端口，不含路径。首次配置 CORS 时，脚本保留现有规则，备份到 `.audit/oss-cors-<bucket>-before.json`，再按需增加允许公开 GET、HEAD 的规则。后续发布可以省略 `--configure-cors`。
@@ -53,6 +53,8 @@ node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-s
 5. 将完成记录写入 `.audit/oss-resource-publication.json`。可通过 `--receipt` 为不同版本保存独立记录。
 
 同名对象不覆盖。同名、同长度但密文不同的已有分卷，必须能认证解密成清单指定的明文才可复用。中断后重跑同一命令，脚本重新核验远端已有内容，缺少的单个对象重新上传，不是从中断字节位置继续。清单内容冲突时使用新版本目录，不覆盖已发布版本。
+
+同一 Bucket 内发布新版本时，可加 `--reuse-prefix noname/v1.11.7-c3nhx.3/`。发布器优先通过 OSS 服务端复制旧目录中的同名分卷，缺少的分卷才本地上传。复制后的内容仍需匿名回读和认证解密，全部通过后才发布新清单。旧目录与已有目标对象均不覆盖。收据的 `transfer` 字段区分 `copy`、`upload` 和 `existing`，便于核对实际传输方式。
 
 `--verify-origin` 会检查 OSS 对指定 Origin 的响应头。该检查仍不能代替真实浏览器验证。部署前从实际网页测试下载、解密、进程重启复用和离线读取。
 

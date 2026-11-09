@@ -3,7 +3,7 @@ import { parseVersion } from "./version.js";
 export const distribution = Object.freeze({
 	upstreamVersion: "1.11.7",
 	forkId: "c3nhx",
-	revision: 3,
+	revision: 4,
 	owner: "C3nHx",
 	repository: "noname",
 });

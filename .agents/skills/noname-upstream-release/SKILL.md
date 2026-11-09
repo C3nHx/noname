@@ -67,7 +67,7 @@ node scripts/verify-resource-build.mjs
 使用实际 Bucket、地域、版本目录和网页 Origin 执行，例如：
 
 ```sh
-node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-shanghai --prefix noname/v1.11.7-c3nhx.3/ --configure-cors --verify-origin https://game.example.com
+node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-shanghai --prefix noname/v1.11.7-c3nhx.4/ --configure-cors --verify-origin https://game.example.com
 ```
 
 首次需要时才传 `--configure-cors`，脚本备份并保留原规则。Bucket ACL 保持原配置，脚本只公开所上传的加密分卷和无密钥清单。日常发布可以不具备 CORS 修改权限，由管理员预先配置。
@@ -75,6 +75,8 @@ node scripts/publish-resources-oss.mjs --bucket example-assets --region oss-cn-s
 脚本本地校验后上传分卷，匿名回读并认证解密，全部验证后才上传、回读最终清单。已有对象不覆盖。重跑时核对远端实际内容，不能只相信文件大小或上一轮完成标记。失败时保留现场，在同一未完成版本下重跑；清单冲突时使用新修订号。
 
 默认输入为 `output/resource-packs`，客户端解密配置为 `dist/resource-key.json`。后者仅用于本地校验，不上传。收据默认保存在 `.audit/oss-resource-publication.json`，不同发布可传独立 `--receipt` 路径。
+
+新版本可通过 `--reuse-prefix <同一 Bucket 的旧版本目录>/` 在 OSS 内复制同名加密分卷，缺少时才上传。仍需完整回读验证，不能凭复制成功发布清单。按版本保存收据和旧目录，保持旧客户端可用。
 
 GitHub Actions 的资源根地址变量解决各平台默认下载源，`NONAME_RESOURCE_KEY` secret 解决密钥一致性。当前工作流不自动上传 OSS，也不因这两个设置获得 OSS 访问凭证。需要给 CI 提供云凭证时，按实际授权另行配置。
 
@@ -85,6 +87,8 @@ GitHub Actions 的资源根地址变量解决各平台默认下载源，`NONAME_
 匿名 Node 下载成功和带 Origin 的响应头检查均不能代替真实浏览器验收。已实测 CNB Release 入口与最终文件域拒绝外站 Origin，不能作为网页默认自动下载源。OSS 权限或 CORS 尚未就绪时，先完成本地准备，保留线上回滚版本，不切换到资源下载失败的新客户端。
 
 分发方式确定后，从实际网页 Origin 验证下载、AES-GCM 解密和缓存，再重启浏览器验证无重复下载及离线读取。检查核心版本更新能复用未变化的素材。网页认证和大厅认证沿用现有边界，资源请求不携带网页凭证。原生安装包与真机行为另行验证，不能由浏览器结果代替。
+
+验证“全部下载”的总进度、暂停、继续和重复检查，确认已完成分卷不重复下载。HTTP Basic 站点按资源边界文档公开三个无密钥 Worker 引导脚本，实测注册和缓存图片读取；页面和解密配置继续要求认证。素材离线读取通过不等于网页完全离线冷启动通过，沙盒 iframe 的启动依赖按独立遗留处理。
 
 提交前审查暂存内容，排除真实部署目录、环境凭证、`.audit`、`dist`、`output` 和实际密钥。保留上游 localhost 证书逻辑。按用户要求提交并推送，发布说明中的贡献者不用 GitHub 提及。
 

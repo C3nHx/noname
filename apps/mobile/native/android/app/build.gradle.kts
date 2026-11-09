@@ -35,8 +35,8 @@ android {
         applicationId = "com.libnoname.noname"
         minSdk = rootProject.extra["minSdkVersion"] as Int
         targetSdk = rootProject.extra["targetSdkVersion"] as Int
-        versionCode = 111070003
-        versionName = "1.11.7-c3nhx.3"
+        versionCode = 111070004
+        versionName = "1.11.7-c3nhx.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

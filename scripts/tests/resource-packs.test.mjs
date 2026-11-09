@@ -6,7 +6,7 @@ import { createRequire } from "node:module";
 import test from "node:test";
 import { splitRuntimeResources } from "../resource-packs.mjs";
 import { createResourceIndex, parseResourceManifest, resourceGroup, resourceURL } from "../../apps/core/noname/resources/manifest.js";
-import { installResourcePack } from "../../apps/core/noname/resources/download.js";
+import { downloadResourcePacks, installResourcePack } from "../../apps/core/noname/resources/download.js";
 import { createResourceDecryptor, sha256 } from "../../apps/core/noname/resources/crypto.js";
 import { encryptResourcePart, resourceKeyConfig } from "../resource-key.mjs";
 import { rangeResponse } from "../../apps/core/noname/resources/worker.js";
@@ -83,6 +83,146 @@ test("downloaded packs survive manager recreation without another network downlo
 		manifest.packs.reduce((sum, pack) => sum + pack.parts.length, 0)
 	);
 	for (const pack of manifest.packs) for (const file of pack.files) assert.equal(new TextDecoder().decode(stored.get(file.sha256)), files[file.path]);
+});
+
+test("bulk downloads preserve pack order, report total progress and reuse saved files", async t => {
+	const { resources, manifest, decrypt } = await fixture(t);
+	const packs = [...manifest.packs].reverse();
+	const stored = new Map(),
+		requests = [],
+		order = [],
+		progress = [];
+	const state = { files: {} };
+	const storage = {
+		async has(file) {
+			return stored.has(file.sha256);
+		},
+		async write(file, bytes) {
+			stored.set(file.sha256, bytes);
+		},
+	};
+	let active = 0;
+	const download = async (id, options) => {
+		assert.equal(active, 0);
+		active++;
+		order.push(id);
+		try {
+			await installResourcePack({
+				pack: packs.find(pack => pack.id === id),
+				storage,
+				state,
+				source: "https://resources.example/",
+				resolveURL: resourceURL,
+				decrypt,
+				unzip: bytes => new JSZip(bytes),
+				fetcher: async url => {
+					requests.push(url);
+					return new Response(await fs.readFile(path.join(resources, new URL(url).pathname.slice(1))));
+				},
+				...options,
+			});
+		} finally {
+			active--;
+		}
+	};
+	await downloadResourcePacks({ packs, download, onProgress: event => progress.push(event.completed) });
+	assert.deepEqual(
+		order,
+		packs.map(pack => pack.id)
+	);
+	assert.equal(
+		progress.at(-1),
+		packs.reduce((sum, pack) => sum + pack.files.length, 0)
+	);
+	assert(progress.every((value, index) => index === 0 || value >= progress[index - 1]));
+	const downloaded = requests.length;
+	await downloadResourcePacks({ packs, download });
+	assert.equal(requests.length, downloaded);
+});
+
+test("pausing a bulk download preserves completed parts and resumes only missing resources", async t => {
+	const { resources, manifest, decrypt } = await fixture(t);
+	const stored = new Map(),
+		requests = [],
+		started = [];
+	const controller = new AbortController();
+	let state = { files: {} },
+		saved;
+	const storage = {
+		async has(file) {
+			return stored.has(file.sha256);
+		},
+		async write(file, bytes) {
+			stored.set(file.sha256, bytes);
+		},
+	};
+	const download = async (id, options) => {
+		started.push(id);
+		await installResourcePack({
+			pack: manifest.packs.find(pack => pack.id === id),
+			storage,
+			state,
+			source: "https://resources.example/",
+			resolveURL: resourceURL,
+			decrypt,
+			unzip: bytes => new JSZip(bytes),
+			fetcher: async url => {
+				requests.push(url);
+				return new Response(await fs.readFile(path.join(resources, new URL(url).pathname.slice(1))));
+			},
+			persist: async () => {
+				saved = JSON.stringify(state);
+				controller.abort();
+			},
+			...options,
+		});
+	};
+	await assert.rejects(downloadResourcePacks({ packs: manifest.packs, download, signal: controller.signal }), error => error.name === "AbortError");
+	assert.equal(started.length, 1);
+	assert(stored.size > 0);
+	state = JSON.parse(saved);
+	await downloadResourcePacks({ packs: manifest.packs, download });
+	assert.equal(
+		requests.length,
+		manifest.packs.reduce((sum, pack) => sum + pack.parts.length, 0)
+	);
+	assert.equal(
+		Object.keys(state.files).length,
+		manifest.packs.reduce((sum, pack) => sum + pack.files.length, 0)
+	);
+});
+
+test("a failed bulk download stops before later packs and retains earlier completed resources", async t => {
+	const { resources, manifest, decrypt } = await fixture(t);
+	const state = { files: {} },
+		stored = new Map(),
+		started = [];
+	const failedId = manifest.packs[1].id;
+	const download = async (id, options) => {
+		started.push(id);
+		if (id === failedId) throw new Error("resource host unavailable");
+		await installResourcePack({
+			pack: manifest.packs.find(pack => pack.id === id),
+			storage: {
+				async has(file) {
+					return stored.has(file.sha256);
+				},
+				async write(file, bytes) {
+					stored.set(file.sha256, bytes);
+				},
+			},
+			state,
+			source: "https://resources.example/",
+			resolveURL: resourceURL,
+			decrypt,
+			unzip: bytes => new JSZip(bytes),
+			fetcher: async url => new Response(await fs.readFile(path.join(resources, new URL(url).pathname.slice(1)))),
+			...options,
+		});
+	};
+	await assert.rejects(downloadResourcePacks({ packs: manifest.packs, download }), /resource host unavailable/);
+	assert.deepEqual(started, [manifest.packs[0].id, failedId]);
+	for (const file of manifest.packs[0].files) assert.equal(state.files[file.path], file.sha256);
 });
 
 test("corrupt archives and unlisted executable files are rejected before they can be installed", async t => {

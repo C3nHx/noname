@@ -62,3 +62,13 @@ export async function installResourcePack({ pack, storage, state, source, resolv
 		onProgress({ completed, total: pack.files.length, received: 0, partBytes: 0 });
 	}
 }
+
+export async function downloadResourcePacks({ packs, download, signal, onProgress = () => {} }) {
+	const total = packs.reduce((sum, pack) => sum + pack.files.length, 0);
+	let completed = 0;
+	for (const [index, pack] of packs.entries()) {
+		if (signal?.aborted) throw new DOMException("下载已暂停", "AbortError");
+		await download(pack.id, { signal, onProgress: progress => onProgress({ ...progress, pack, packIndex: index + 1, packCount: packs.length, packCompleted: progress.completed, completed: completed + progress.completed, total }) });
+		completed += pack.files.length;
+	}
+}
