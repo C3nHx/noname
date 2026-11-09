@@ -61,7 +61,7 @@ export function installResourceWorker(worker) {
 				const url = new URL(request.url);
 				let filename;
 				try {
-					filename = decodeURIComponent(url.pathname.slice(new URL(root).pathname.length)) || "index.html";
+					filename = decodeURIComponent(url.pathname.slice(new URL(root).pathname.length)).split("/").filter(Boolean).join("/") || "index.html";
 				} catch {
 					return new Response("Bad Request", { status: 400 });
 				}

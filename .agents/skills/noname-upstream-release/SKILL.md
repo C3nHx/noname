@@ -96,6 +96,8 @@ GitHub Actions 的资源根地址变量解决各平台默认下载源，`NONAME_
 
 浏览器重启验证包含全量缓存规模。`Cache.keys()` 全量枚举 21k 条资源可抛出 `AbortError: Operation too large`；通过下载状态逐键、分批核验，保留已缓存内容。仅验证一个卡牌包的重启不足以证明全部下载后的启动正常。
 
+验证扩展实际生成的素材 URL，而不只按清单路径读取。十周年 UI 会拼出 `十周年UI//zq/...`，Worker 应将重复斜杠归一后查缓存，原图和 `weizhi.png` 备用图均需验证。路径变体不应导致已下载资源回源或要求用户重新下载；原作者确实缺少的可选素材另行识别。
+
 旧核心缓存阻止升级时，验证同站点的 `resource-recovery.html`。该页独立联网加载，只删除核心缓存并注销同作用域 Worker，保留素材缓存和 IndexedDB。带 HTTP Basic 的部署单独公开此无密钥页面，不要求用户清除全部站点数据。网页恢复与原生 APK 重启分别验收。
 
 Android 全量资源重启验收要覆盖私有目录的大量同级文件。逐文件核验中的 `DocumentFile.findFile()` 会反复列目录，不能仅凭少量卡牌测试判定启动正常。file URI 私有目录直接按路径查询；SAF content URI 保留 DocumentFile 语义。检查实际交付 APK 的证书，测试签名构建之间不能默认支持保留数据覆盖安装。
