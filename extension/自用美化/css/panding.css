@@ -1,0 +1,294 @@
+/*●提高长按卡牌弹窗*/
+#window > .dialog.popped { z-index: 10000 !important; }
+#window > .poplayer { z-index: 9999 !important; }
+
+@keyframes open-dialog {
+    from {
+        opacity: 0.1;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#judgeBox.judgeBox {
+    
+    background-image: url('../image/scdialog.png');
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    width: 110%;
+    height: 210px;
+    left: -5%;
+    right: -5%;
+    top: calc(40% - 105px);
+    z-index: 6;
+    animation: 0.5s ease 0s 1 normal none running open-dialog;
+}
+
+/*●必须限定在判定框内：裸 .title 会命中十周年UI记牌器（.deckMonitor > .title）等其它界面，污染其字体/字号/渐变*/
+#judgeBox .title {
+    font-family: HYZLSJ, shousha, xinwei !important;
+    font-size: 42px !important;
+    font-weight: 500 !important;
+    -webkit-text-stroke: 0 !important;
+    background: linear-gradient(#C8BEB4 1%, #FCF8CC 12%, #F3F0BE, #FEF5A8, #E1D275, #C9B173, #D6CB6F, #A99355, #AC9557, #A38A51, #A38A51, #B29983, #B19786, #B19786, #B19786, #9B8583), linear-gradient(to right, #FCF8CC, #AC9557) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    position: absolute;
+    left: 10px;
+    top: 9px;
+    overflow: visible !important;
+    padding-top: 0;
+    width: 100%;
+    height: 36px;
+    line-height: 30px;
+    letter-spacing: 3px !important;
+    text-shadow: none;
+    text-align: center;
+}
+
+.judgeArrow {
+    width: 34px;
+    height: 28px;
+    position: relative;
+    top: 6px;
+    margin-right: -34px;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: transform .25s ease;
+}
+
+.judgeBox.folded .judgeArrow {
+    transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+}
+
+.judgeBox.folded {
+    height: 78px !important;
+    /*●折叠态统一位置：由 extension.js 的 --ss-fold-top 控制*/
+    top: var(--ss-fold-top) !important;
+    background-size: 100% auto !important;
+    background-position: top center !important;
+    background-repeat: no-repeat !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+
+.judgeBox.folded > .introduce_card,
+.judgeBox.folded > .judgeResultIntroduce,
+.judgeBox.folded > .judgeCardArea,
+.judgeBox.folded > .judgeDelayCard,
+.judgeBox.folded > .smallCharacter {
+    display: none !important;
+}
+
+.introduce {
+    width: 100px;
+    height: 50px;
+    font-size: 15px;
+    font-family: shousha;
+    color: #c9c9ab;
+}
+
+.introduce_card {
+    top: 50px;
+    left: 60%;
+    width: 280px;
+    text-align: left;
+    height: 190px;
+    font-size: 20px;
+    font-family: shousha;
+    color: #c9c9ab;
+    text-shadow: 1px 0 5px black, 1px 1px 2px black, -1px 0px 0 black, 0px -1px 0 black;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.introduce_card[data-type='card'] {
+    right: 25%;
+    left: calc(60% + 48px);
+}
+
+.introduce_card[data-type='skill'] {
+    right: 25%;
+    left: calc(60% - 15px);
+    }
+
+.introduce_card>span[data-suit-type='red'] {
+    color: red;
+    text-shadow: -1px 0 rgba(255, 255, 255, 1), 0 1px rgba(255, 255, 255, 1), 1px 0 rgba(255, 255, 255, 1), 0 -1px rgba(255, 255, 255, 1);
+}
+
+.introduce_card>span[data-suit-type='black'] {
+    color: black;
+    text-shadow: -1px 0 rgba(255, 255, 255, 1), 0 1px rgba(255, 255, 255, 1), 1px 0 rgba(255, 255, 255, 1), 0 -1px rgba(255, 255, 255, 1);
+}
+
+.judgeResultIntroduce {
+    background-image: url('../image/panding/cebian.png');
+    --w: 42px;
+    --h: calc(var(--w) * 161/51);
+    width: var(--w);
+    height: var(--h);
+    background-size: 100% 100%;
+    font-family: shousha;
+    color: #c9c9ab;
+    text-shadow: 1px 0 5px black, 1px 1px 2px black, -1px 0px 0 black, 0px -1px 0 black;
+    top: 24%;
+    font-size: 23px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+    writing-mode: tb-rl;
+    line-height: 50px;
+}
+
+.judgeResultIntroduce[data-type='skill'] {
+    left: calc(43% + 30px);
+}
+
+.judgeResultIntroduce[data-type='card'] {
+    left: calc(46% + 48px);
+}
+
+.judgeCardArea {
+    top: 55px;
+    left: auto;
+    /*●未安装十周年UI时（--pd-cw/--pd-ch 由 panding.js 取原生判定牌尺寸），卡槽按卡牌大小；
+       安装十周年UI 时取兜底 100×140*/
+    width: var(--pd-cw, 100px);
+    height: var(--pd-ch, 140px);
+    background-size: 100% 100%;
+}
+
+.judgeCardArea[data-type='card'] {
+    right: auto;
+    left: calc(53% + 15px);
+}
+
+.judgeCardArea[data-type='skill'] {
+    right: auto;
+    left: calc(51.5% - 25.5px);
+    }
+
+.judgeCardArea>div {
+    top: -10px;
+    right: 0px;
+    left: 0px;
+    position: absolute;
+    z-index: 1;
+    /*●卡牌与卡背统一按原生卡牌尺寸，去掉克隆牌带过来的 zoom*/
+    width: var(--pd-cw, 100px) !important;
+    height: var(--pd-ch, 140px) !important;
+    zoom: 1 !important;
+    /*●.card 自带左右各 4px 外边距，会让牌在卡槽里整体右移、右侧顶出卡背，看起来像卡图被裁*/
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+
+.judgeCardArea > div:first-child {
+    z-index: 2;
+}
+
+/*●判定框里的牌是原生卡牌的克隆：原生 `.card > .image` 用 cover + 左上对齐，
+    牌面比例和卡槽不完全一致时右侧会被裁掉、看起来卡图右移；
+    这里改成按卡槽 100%×100% 铺满，整张卡图都能显示出来*/
+.judgeCardArea>div>.image {
+    background-position: center !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+}
+
+.judgeCard {
+    position: absolute;
+}
+
+.judgeDelayCard {
+    top: 55px;
+    left: calc(34% + 48px);
+    /*●同上：跟随原生判定牌尺寸，未安装十周年UI 时约为方形*/
+    width: var(--pd-cw, 100px);
+    height: var(--pd-ch, 140px);
+    background-size: 100% 100%;
+}
+
+.judgeDelayCard>div:not(.smallCharacter):not(.suit-num):not(.zhuanbj) {
+    top: -10px;
+    right: 5px;
+    
+
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    zoom: 1 !important;
+}
+
+/*●已移除判定框的花色点数自定义样式（.suit-num/.suit），改用十周年UI渲染*/
+
+.smallCharacter {
+    position: absolute;
+    z-index: 2;
+    height: 2.2em;
+    width: 2.2em;
+    background-repeat: no-repeat;
+    background-size: 50px;
+    background-position-y: 15%;
+    background-position-x: 50%;
+    border: 2px solid #ad5949;
+}
+
+.smallCharacter[data-type='card'] {
+    bottom: -20px;
+    z-index: 2;
+    left: 10px;
+}
+
+.smallCharacter[data-type='skill'] {
+    top: 50px;
+    left: calc(37% + 30px);
+}
+
+.smallCharacterName {
+    position: inherit;
+    color: #c9c9ab;
+    font-family: shousha;
+    font-size: 14px;
+    text-shadow: 1px 0 5px black, 1px 1px 2px black, -1px 0px 0 black, 0px -1px 0 black;
+    width: 46px;
+    left: 40px;
+    bottom: 0px;
+    z-index: 2;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.judgeDelayCard>.zhuanbj {
+    position: absolute;
+    left: auto !important;
+    bottom: auto !important;
+    width: 30px !important;
+    height: 30px !important;
+    top: -2px !important;
+    right: -6px !important;
+    background-size: 100% 100% !important;
+    z-index: 3;
+}
+
+.zhuanbj {
+    background-image: url('../image/panding/zhuan.png');
+    background-size: 100% 100%;
+    width: 25px;
+    height: 25px;
+    top: 7px !important;
+    right: 0px !important;
+    z-index: 1;
+}

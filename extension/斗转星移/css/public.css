@@ -1,0 +1,598 @@
+.dz-gray {
+	filter: grayscale(1);
+}
+.dz-noclick {
+	pointer-events: none;
+}
+
+/* 签到框 */
+.public-base1-frm {
+	position: absolute;
+	top: 55%;
+	left: 50%;
+	transform: translate(-446px, -52%);
+	width: 515px;
+	height: 287px;
+	border-top: 80px dashed;
+	border-right: 93px dashed;
+	border-bottom: 62px dashed;
+	border-left: 90px dashed;
+	border-image-source: url("../image/splash/public_base1_frm.png");
+	border-image-slice: 116 130 85 136 fill;
+	text-align: center;
+}
+
+.public-base1-frm.dz-zoomIn {
+	animation: zoomIn 0.3s linear;
+}
+
+@keyframes zoomIn {
+	0% {
+		transform: translate(-446px, -52%) scale(0.2);
+	}
+
+	100% {
+		transform: translate(-446px, -52%) scale(1);
+	}
+}
+
+.public-base1-frm > .dz-fcont {
+	position: absolute;
+	top: -35px;
+	left: -20px;
+	width: calc(100% + 46px);
+	height: 118%;
+}
+
+.public-base1-frm > .dz-ftitle {
+	position: absolute;
+	top: -121px;
+	left: -40px;
+	width: calc(100% + 80px);
+	height: 56px;
+	background-image: url("../image/splash/public_base1_ttl_frm_bg.png");
+	background-size: 100% 100%;
+}
+
+.dz-dialog {
+	position: absolute;
+	border-top: 24px dashed;
+	border-right: 50px dashed;
+	border-bottom: 25px dashed;
+	border-left: 56px dashed;
+	border-image-source: url("../image/splash/bg2.png");
+	border-image-slice: 44 103 45 fill;
+}
+
+.dz-dialog > .dz-fcont {
+	position: absolute;
+	top: 2%;
+	left: -28px;
+	width: calc(100% + 50px);
+	height: 102%;
+}
+
+.dz-grid-container {
+	position: absolute;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 150px);
+	grid-auto-rows: 170px;
+	justify-content: center;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+.dz-dialog > .dz-ftitle {
+	line-height: 26px;
+	left: 0;
+	top: -23px;
+	font-size: 18px;
+	width: 100%;
+	height: 28px;
+	font-size: 16px;
+	text-align: center;
+	font-family: "shousha";
+	color: #2c2727;
+	text-shadow: 0 0 1px #574949;
+}
+
+.public-base1-frm .dz-dialog {
+	left: -2%;
+	top: -3%;
+	width: 47%;
+	height: 88%;
+}
+
+/* 道具 */
+.public-base1-frm .dz-dialog .dz-props {
+	left: 0%;
+	top: 0px;
+	width: 100%;
+	height: 74%;
+	display: grid;
+	grid-template-columns: repeat(5, 20%);
+	justify-items: center;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* 道具 */
+.public-base1-frm .dz-dialog .dz-props .hidden {
+	display: none;
+}
+
+.public-base1-frm > .dz-fcont > .right-area {
+	display: flex;
+	top: 0;
+	right: -12px;
+	width: 200px;
+	height: 100%;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.public-base1-frm > .dz-fcont > .right-area .reward-row {
+	position: relative;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-evenly;
+}
+
+.public-base1-frm > .dz-fcont > .right-area .sign-reminder {
+	position: relative;
+	text-align: center;
+	width: 100%;
+	height: 35px;
+	font-family: "shousha";
+	margin-bottom: 5px;
+}
+
+.sign-reminder > .reminder-text {
+	position: absolute;
+	text-align: center;
+	font-size: 16px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	color: #3c2323;
+	text-shadow: 0 0 0.5px #574949;
+	line-height: 40px;
+}
+
+.sign-reminder > .public-btn-bg {
+	position: absolute;
+	left: calc(50% - 60px);
+	height: 30px;
+	width: 100px;
+	line-height: 31px;
+	background-size: 100% 100%;
+	color: #eff5f3;
+}
+
+/*道具*/
+.dz-prop-box {
+	position: relative;
+	width: 70px;
+	height: 70px;
+	font-family: "shousha";
+	color: #adbfbd;
+	--text-color: #2d2727;
+	text-shadow:
+		1px 0px 1px var(--text-color),
+		1px 0px 1px var(--text-color),
+		-1px 0px 1px var(--text-color),
+		-1px 0px 1px var(--text-color),
+		0px 1px 1px var(--text-color),
+		0px 1px 1px var(--text-color),
+		0px -1px 1px var(--text-color),
+		0px -1px 1px var(--text-color),
+		1px 1px 1px var(--text-color),
+		1px 1px 1px var(--text-color),
+		-1px 1px 1px var(--text-color),
+		-1px 1px 1px var(--text-color),
+		1px -1px 1px var(--text-color),
+		1px -1px 1px var(--text-color),
+		-1px -1px 1px var(--text-color),
+		-1px -1px 1px var(--text-color);
+}
+
+#package-page .dz-prop-box.package {
+	margin: auto;
+	zoom: 0.85;
+}
+
+.dz-prop-box.sign2 .dz-prop-img {
+	background-color: #2d2727;
+}
+
+.dz-prop-box.anim .dz-prop-bg,
+.dz-prop-box.anim .dz-prop-name,
+.dz-prop-box.anim .dz-prop-num {
+	animation: propAnim1 0.2s both linear 0.3s;
+}
+
+.dz-prop-box.anim .dz-prop-img {
+	animation: propAnim2 0.3s both linear;
+}
+
+@keyframes propAnim1 {
+	0% {
+		transform: scale(0);
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes propAnim2 {
+	0% {
+		transform: scale(4) translateY(10px);
+		opacity: 0;
+	}
+
+	70% {
+		transform: scale(0.4) translateXY(0px);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+/* 道具背景 */
+.dz-prop-ditu {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* 道具背景 */
+.dz-prop-bg {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: url("../image/splash/pub_icon_bg.png") no-repeat center/contain;
+}
+
+.dz-prop-bg[data-type="1"] {
+	background: url("../image/splash/sign_icon_bg_00.png") no-repeat center/contain;
+}
+
+.dz-prop-bg[data-type="2"] {
+	left: -5%;
+	top: -15%;
+	width: 108%;
+	height: 126%;
+	background: url("../image/splash/sign_total_priceitem_bg.png") no-repeat center/contain;
+}
+
+.dz-prop-bg-active {
+	left: -10%;
+	top: -10%;
+	width: 120%;
+	height: 120%;
+	background: url("../image/splash/sign_icon_bg_01.png") no-repeat center/contain;
+}
+
+.pubui_prop_bg {
+	left: -33%;
+	top: -51%;
+	width: 166%;
+	height: 197%;
+	background: url("../image/splash/pubui_prop_bg.png") no-repeat center/contain;
+}
+
+.pubui_prop_bg2 {
+	left: -20%;
+	top: -48%;
+	width: 139%;
+	height: 200%;
+	background: url("../image/splash/game_chr_bg_onlyshow.png") no-repeat center/contain;
+	transform: rotate(180deg);
+	opacity: 0.5;
+}
+
+.dz-prop-img {
+	left: 5%;
+	top: 5%;
+	width: 90%;
+	height: 90%;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+/* 道具数量 */
+.dz-prop-num {
+	right: 7%;
+	bottom: 4%;
+	font-size: 16px;
+}
+
+/* 道具名 */
+.dz-prop-name {
+	top: 100%;
+	font-family: "shousha";
+	font-size: 14px;
+	text-align: center;
+	width: 130%;
+	left: -15%;
+}
+
+.dz-prop-name.top {
+	top: -30%;
+	text-shadow: none;
+	font-size: 15px;
+	color: #2c2727;
+	font-weight: bolder;
+}
+
+/* 道具变暗 */
+.dz-prop-dim {
+	left: 5%;
+	top: 5%;
+	width: 90%;
+	height: 90%;
+	background-color: #0000005e;
+}
+
+/* 道具勾 */
+.dz-prop-checked {
+	right: -2%;
+	bottom: -7%;
+	width: 60%;
+	height: 60%;
+	background: url("../image/splash/item_reawred.png") no-repeat center/contain;
+}
+
+/* 道具今日 */
+.dz-prop-sign-label {
+	right: 1%;
+	top: -2%;
+	width: 71%;
+	height: 60%;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.dz-prop-sign-label[data-type="jinri"] {
+	background-image: url("../image/splash/sign_label_today.png");
+}
+
+.dz-prop-sign-label[data-type="buqian"] {
+	background-image: url("../image/splash/sign_buqian.png");
+}
+
+/* 签到 */
+.dz-dialog > .dz-fcont .sign-btn {
+	position: absolute;
+	left: 0;
+	bottom: -5%;
+	width: 100%;
+	height: 75px;
+	background-image: url("../image/splash/firstCharge_button.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.dz-dialog > .dz-fcont .sign-text {
+	left: 0;
+	top: 22%;
+	width: 100%;
+	height: 47%;
+	background-image: url("../image/splash/sign_label_qiandao.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+/* 包裹 */
+#package-page > .wujiang-group-btns {
+	width: 130px;
+	height: 95%;
+	top: 5%;
+	left: 28px;
+	overflow-y: auto;
+	transform: scale(0.85);
+}
+
+#package-page > .wujiang-group-btns > .wujiang-group-btn-back {
+	margin: -7px 0;
+}
+
+#package-page > .dz-dialog {
+	left: 155px;
+	top: 7%;
+	width: calc(100% - 370px);
+	height: 75%;
+}
+
+.dz-setFrame .prop-left-area {
+	top: 0px;
+	left: 8px;
+	width: 100px;
+	height: 100%;
+}
+
+.dz-setFrame .prop-left-area .dz-prop-box {
+	margin: 62px 0 0;
+}
+
+.dz-setFrame .prop-right-area {
+	top: 0;
+	left: 120px;
+	width: calc(100% - 125px);
+	height: 100%;
+}
+
+.dz-setFrame .prop-right-area .prop-intro {
+	top: 28px;
+	left: 0;
+	width: 100%;
+	height: calc(100% - 80px);
+	font-size: 16px;
+	text-align: left;
+	color: #323225;
+	text-shadow: none;
+	--text-shadow: #865959;
+	text-shadow:
+		0px 0px 0.4px var(--text-shadow),
+		0px 0px 0.4px var(--text-shadow),
+		0px 0px 0.4px var(--text-shadow),
+		0px 0px 0.4px var(--text-shadow);
+}
+
+.dz-setFrame .prop-right-area .prop-use {
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	height: 42px;
+	font-size: 16px;
+	text-align: center;
+	color: #323225;
+	text-shadow: none;
+}
+
+.public-btn-bg {
+	line-height: 41px;
+	color: #ffffff;
+	font-size: 18px;
+	margin: 0 10px;
+	position: relative;
+	width: 100px;
+	height: 40px;
+	background-image: url("../image/btn/public-btn7-bg.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.public-btn-bg[data-type="7"] {
+	background-image: url("../image/btn/public-btn7-bg.png");
+}
+
+.public-btn-bg[data-type="8"] {
+	background-position-x: 50%;
+	background-position-y: 3px;
+	background-image: url("../image/btn/public-btn8-bg.png");
+}
+
+/* 获得道具 */
+.dz-temp-tip-area {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	pointer-events: none;
+}
+
+.dz-prop-toasts {
+	position: absolute;
+	right: 0;
+	top: 10%;
+	width: 200px;
+	height: 80%;
+	display: flex;
+	flex-direction: column-reverse;
+	align-items: flex-end;
+}
+
+.dz-prop-toast {
+	flex: none;
+	display: block;
+	position: absolute;
+	width: auto;
+	height: 70px;
+	right: -100%;
+	bottom: 0;
+	transition: all 0.7s ease;
+}
+
+.dz-prop-toast > .prop-text {
+	position: relative;
+	min-width: 190px;
+	height: 100%;
+	right: 0;
+	top: 0;
+	display: flex;
+}
+
+.dz-prop-toast .dz-prop-box {
+	transform: scale(0.5);
+	top: -6%;
+	left: 8%;
+}
+
+.dz-prop-toast .ptext {
+	padding-left: 6px;
+	padding-right: 30px;
+	font-family: "shousha";
+	font-size: 19px;
+	color: #b9ceba;
+	line-height: 62px;
+	position: relative;
+	height: 100%;
+	width: auto;
+	white-space: nowrap;
+}
+
+.dz-prop-toast::before {
+	position: absolute;
+	content: "";
+	width: 100%;
+	height: 100%;
+	right: 0;
+	bottom: 0;
+	background-image: url("../image/splash/goods_toast.png");
+	background-size: 100% 100%;
+}
+
+.dz-prop-toast {
+	right: 0;
+}
+
+.dz-prop-toast.anim1 {
+	animation: prop-toast-anim 0.2s both linear 0.17s;
+}
+
+.dz-prop-toast.anim2 {
+	animation: prop-toast-anim2 0.3s both linear;
+}
+
+@keyframes prop-toast-anim {
+	0% {
+		transform: translate(100%, 0px);
+	}
+
+	100% {
+		transform: translate(0%, 0px);
+	}
+}
+
+@keyframes prop-toast-anim2 {
+	0% {
+		transform: translate(0, 0px);
+		opacity: 1;
+	}
+
+	100% {
+		transform: translate(0%, -80px);
+		opacity: 0;
+	}
+}

@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-08T03:06:44.883Z",
+  "platform": "Windows Electron",
+  "profile": "isolated copies only",
+  "checks": [
+    {
+      "mode": "fresh",
+      "passed": true
+    },
+    {
+      "mode": "original",
+      "passed": true
+    },
+    {
+      "mode": "persist",
+      "passed": true
+    },
+    {
+      "mode": "restore",
+      "passed": true
+    },
+    {
+      "mode": "ban",
+      "passed": true
+    },
+    {
+      "mode": "ai",
+      "passed": true
+    },
+    {
+      "mode": "ui",
+      "passed": true
+    }
+  ],
+  "version": "1.11.7-c3nhx.1",
+  "fix": "settings-ban-1",
+  "distributionTests": {
+    "passed": 18,
+    "failed": 0
+  },
+  "coreBuild": "passed; emitted shared configuration module matches source SHA-256",
+  "updater": {
+    "install": "passed",
+    "repeat": "passed",
+    "rollback": "passed",
+    "preservedUserData": true
+  },
+  "installedWindows": "six program files updated after backup; Home configuration not modified",
+  "reproducedBeforeFix": [
+    "fresh profile ignored bundled card back preset",
+    "saving ordinary bans left the active filter unchanged",
+    "plan four overwrote lazy bundle AI exclusions",
+    "recent manual selection included a banned character"
+  ],
+  "coverage": [
+    "new profile recommendation and loaded card styles",
+    "installed profile customizations retained",
+    "ordinary settings survive reload",
+    "restore recommendations retains ban plan",
+    "ordinary candidate filter after saving plans",
+    "AI sources, actual option switches, independent exclusions and reload",
+    "recent selection, reopened selection, replacement candidates and auto-play image request"
+  ],
+  "limits": [
+    "Android and iOS were not rebuilt or tested on physical devices",
+    "previous EXE, APK and IPA remain unpatched",
+    "optional missing artwork was not exhaustively replaced"
+  ]
+}

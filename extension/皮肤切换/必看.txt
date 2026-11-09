@@ -1,0 +1,103 @@
+必看*!
+2026年最新pr测试版以后十周年ui动皮参数文件位置和格式都改变了
+位置在十周年UI/src/skins/dynamicSkin.js
+格式如下(含自动共享参数代码):
+
+"use strict";
+
+/**
+ * @fileoverview 动态皮肤配置模块
+ */
+ var bianshenhp = 2;
+import { lib, game, ui, get, ai, _status } from "noname";
+
+/**
+ * @type {Object.<string, Object>}
+ * @description 动态皮肤配置表，按武将名和皮肤名组织
+ */
+export const dynamicSkinConfig = {
+  diaochan: {//貂蝉
+战场绝版: {
+                name: "貂蝉/战场绝版/daiji2",
+                x: [0, 0.42],
+                y: [0, 0.38],
+                scale: 1.1,
+                angle: 0,
+                speed: 1,
+                chuchang: {
+					name: '貂蝉/战场绝版/chuchang',
+					scale: 0.9,
+					action: 'play',
+				},
+				gongji: {
+					name: '貂蝉/战场绝版/chuchang',
+					scale: 1.1,
+					action: 'play',
+				},
+				beijing: {
+					name: '貂蝉/战场绝版/beijing',
+					x: [0, 0.5],
+					y: [0, 0.5],
+					scale: 0.4,
+				},
+			},
+		},
+};
+
+/**
+ * 设置动态皮肤模块
+ * @returns {void}
+ */
+export function setupDynamicSkin() {
+	if (!window.decadeUI) return;
+
+	decadeUI.dynamicSkin = { ...dynamicSkinConfig };
+
+	// 动皮共享
+	const dynamicSkinExtend = {
+dm_diaochan: decadeUI.dynamicSkin.diaochan,
+        
+  };   
+	
+/*	//自动共享
+for (let i in lib.character) {
+				let skinKey;
+				
+	/*if (i.includes('shen_')) { //保留神将
+				let index = i.indexOf('shen_');
+					skinKey = i.slice(index);
+				}*/
+	/*			
+				 if (i.includes('dm_')) { //保留
+						let index = i.indexOf('dm_');
+						skinKey = i.slice(index);
+				} 
+				else if (i.includes('sh_')) { //保留sh
+						let index = i.indexOf('sh_');
+						skinKey = i.slice(index);
+				} 
+	else if (i.includes('jin_guohuai')) { //保留同名武将郭槐
+						let index = i.indexOf('jin_guohuai');
+						skinKey = i.slice(index);
+				}
+				else if (i.includes('yl_luzhi')) { //卢植
+						let index = i.indexOf('yl_luzhi');
+						skinKey = i.slice(index);
+				}
+				else if (i.includes('mp_wangrong')) { //王戎
+						let index = i.indexOf('mp_wangrong');
+						skinKey = i.slice(index);
+				}
+				else {
+						let parts = i.split('_');
+						skinKey = parts[parts.length - 1];
+				}
+				
+				if (!skinKey) continue;
+				if (!Object.keys(dynamicSkinExtend).includes(i)) {
+						dynamicSkinExtend[i] = decadeUI.dynamicSkin[skinKey] || {};
+				}
+		}
+		*/
+	decadeUI.get.extend(decadeUI.dynamicSkin, dynamicSkinExtend);
+}

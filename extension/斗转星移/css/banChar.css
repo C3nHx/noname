@@ -1,0 +1,887 @@
+.roundarenabutton {
+  z-index: 9;
+}
+
+.menu-container {
+  z-index: 9;
+}
+
+.dz-menu-lineSeparator {
+  font-size: 1.2em;
+  width: 100%;
+  text-align: center;
+  background-color: #ffffff7a;
+  border-radius: 20px;
+}
+
+.dz-menu-config-btn {
+  width: calc(100%);
+  height: 35px;
+  text-align: center;
+}
+
+.not-display {
+  display: none !important;
+}
+
+/*全屏背景*/
+.dz-bigBg {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 12;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 技能提示 */
+.dz-bigBg-skill {
+  z-index: 20;
+  pointer-events: none;
+}
+
+.dz-bigBg-skill>div {
+  pointer-events: auto;
+}
+
+/*点击提示*/
+.dz-icon-tip {
+  width: auto;
+  height: auto;
+  border-width: 15px 25px 25px;
+  border-style: dashed;
+  border-image: url('../image/chooseCharacter/tip2.png');
+  border-image-slice: 21 27 40 fill;
+  overflow: auto;
+  font-family: shousha;
+  font-size: 18px;
+  color: rgb(208 219 206);
+}
+
+.dz-icon-tip.view-card {
+  width: 440px;
+  height: 140px;
+  overflow: hidden;
+  left: calc(50% - 220px);
+  top: calc(50% - 110px);
+  z-index: 6;
+}
+
+.dz-icon-tip.view-card>.dz-title {
+  display: block;
+  position: relative;
+  margin-left: 13px;
+}
+
+.dz-icon-tip.view-card>.view-cards {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 120px;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.dz-icon-tip.view-card .card {
+  position: absolute;
+  transform: scale(0.72);
+  margin-left: -10px;
+  margin-top: -13px;
+}
+
+
+.dz-icon-tip p {
+  margin-block-start: 0.5em;
+  margin-block-end: 0.5em;
+}
+
+/*返回*/
+.dz-backBtn {
+  position: absolute;
+  width: 120px;
+  height: 90px;
+  top: 0px;
+  right: 0px;
+  background-image: url('../image/banChar/backBtn.png');
+  background-size: 100% 100%;
+  transition: none;
+  z-index: 5;
+}
+
+.dz-cont {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+/*右边禁将框*/
+.dz-planFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(330px, -43%);
+  width: 123px;
+  height: 250px;
+  border-top: 72px dashed;
+  border-right: 30px dashed;
+  border-bottom: 35px dashed;
+  border-left: 30px dashed;
+  border-image-slice: 90 45 39 45 fill;
+  border-image-source: url('../image/banChar/plan_frame.png');
+  text-align: center;
+}
+
+.dz-bigBg.banChar-filter .dz-planFrame {
+  transform: translate(375px, -43%);
+}
+
+.dz-bigBg.banChar-filter .dz-mainFrame {
+  transform: translate(-495px, -50%);
+}
+
+/* 标题 */
+.dz-planFrame>.dz-title {
+  position: absolute;
+  height: 22px;
+  width: 90px;
+  top: -60px;
+  left: 5px;
+  background-image: url('../image/banChar/ban_title.png');
+  background-size: 100% 100%;
+}
+
+/*设置按钮*/
+.dz-planFrame>.dz-setting {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: -63px;
+  right: 4px;
+  background-image: url('../image/banChar/setting.png');
+  background-size: 100% 100%;
+}
+
+.dz-setting:active {
+  filter: brightness(180%);
+}
+
+/* 按钮位置 */
+.dz-planFrame>.dz-cont {
+  width: 144%;
+  height: 108%;
+  left: -22%;
+  top: -5%;
+  overflow-y: auto;
+}
+
+/*方案按钮*/
+.dz-planBtn {
+  position: relative;
+  width: 90%;
+  height: 70px;
+  margin-top: -5px;
+  background-image: url('../image/btn/planBtn1.png');
+  background-size: 100% 100%;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+}
+
+.dz-planBtn.active {
+  background-image: url('../image/btn/planBtn2.png');
+}
+
+/*方案名*/
+.dz-planBtn>.dz-btn-text {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 24px;
+  font-family: shousha;
+  color: #A3DEC5;
+  line-height: 70px;
+}
+
+/*当前*/
+.jj-item-cur {
+  position: absolute;
+  left: 11px;
+  top: 12px;
+  width: 38px;
+  height: 32px;
+  background-image: url('../image/banChar/privilege_item_cur.png');
+  background-size: 100% 100%;
+}
+
+.dz-planBtn:not(.active)>.jj-item-cur {
+  display: none;
+}
+
+/*序号*/
+.will-pan {
+  position: absolute;
+  left: 18px;
+  top: calc(50% - 14px);
+  width: 28px;
+  height: 28px;
+  background-size: 100% 100%;
+}
+
+/*编辑*/
+.dz-edit {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 28px;
+  height: 45px;
+  background-image: url('../image/banChar/edit.png');
+  background-size: 100% 100%;
+}
+
+.dz-planBtn:not(.active)>.dz-edit {
+  display: none;
+}
+
+/* 主体框 */
+.dz-mainFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-543px, -50%);
+  width: 810px;
+  height: auto;
+  border-top: 80px dashed;
+  border-right: 40px dashed;
+  border-bottom: 20px dashed;
+  border-left: 40px dashed;
+  border-image-source: url('../image/banChar/frame1.png');
+  border-image-slice: 100 60 25 60 fill;
+  text-align: center;
+}
+
+/*水平滚动条*/
+.sp-kdiv {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.dz-break {
+  white-space: break-spaces;
+}
+
+.kdiv {
+  position: relative;
+  width: 100%;
+  height: auto;
+  text-align: center;
+  /* vertical-align: top; */
+  overflow-y: auto;
+}
+
+.kdiv.left {
+  text-align: left;
+}
+
+.kdiv.right {
+  text-align: right;
+}
+
+/*禁将背景*/
+.jj-contentBg {
+  position: relative;
+  vertical-align: top;
+  border-top: 10px solid;
+  border-right: 10px solid;
+  border-left: 10px solid;
+  border-bottom: 10px solid;
+  border-image-source: url('../image/banChar/bg1.png');
+  border-image-slice: 17 fill;
+  overflow-y: scroll;
+}
+
+.dz-mainFrame>.jj-contentBg {
+  top: -5px;
+  width: calc(100% - 20px);
+  height: 290px;
+}
+
+/*可禁用*/
+.table-will-can {
+  position: relative;
+  width: 100%;
+  height: 23px;
+  background-image: url('../image/banChar/table_will_can.png');
+  background-size: contain;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+}
+
+/*已禁用*/
+.table-will-ban {
+  position: relative;
+  width: 100%;
+  height: 23px;
+  background-image: url('../image/banChar/table_will_ban.png');
+  background-size: contain;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+}
+
+/*空白*/
+.table-will-blank {
+  position: relative;
+  width: 100%;
+  font-size: 25px;
+  font-family: 'shousha';
+  color: #dfd9cc;
+  margin: 5px 0;
+}
+
+.opacity4 {
+  opacity: 0.4 !important;
+}
+
+/*武将包*/
+.jj-charPackBtn {
+  position: relative;
+  min-width: 90px;
+  max-width: 155px;
+  height: 46px;
+  text-align: center;
+  line-height: 23px;
+  font-size: 16px;
+  font-family: shousha;
+  color: #F9F5F4;
+  margin: 4px;
+  text-shadow: 0px 0px 1.5px black, 0px 0px 1.5px black, 0px 0px 1.5px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 1px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black;
+}
+
+.jj-charPackBtn.active {
+  background-image: url('../image/banChar/btnBg.png');
+  background-size: 100% 100%;
+}
+
+/*底部功能按钮*/
+.jj-gnBtn {
+  position: relative;
+  width: 110px;
+  height: 50px;
+  background-image: url('../image/btn/btn9.png');
+  background-size: 100% 100%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 20px;
+  font-family: 'shousha';
+  color: #dae6da;
+  text-shadow: 0px 0px 1px black, 0px 0px 1px black, 0px 0px 2px black, 0px 0px 2px black;
+}
+
+.jj-gnBtn:active {
+  filter: brightness(150%);
+}
+
+.dz-mainFrame .jj-gnBtn {
+  left: 23px;
+}
+
+/*输入框*/
+.dz-inputFrame {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  left: calc(50% - 400px);
+  top: 10%;
+  width: 800px;
+  height: 45px;
+}
+
+.dz-inputFrame>input {
+  width: 710px;
+  height: 100%;
+  font-size: 22px;
+}
+
+.dz-inputFrame>.inputok {
+  position: relative;
+  width: 75px;
+  height: 45px;
+  margin: 0 5px;
+  background-color: white;
+  text-align: center;
+  font-size: 20px;
+  line-height: 45px;
+  color: black;
+  text-shadow: none;
+}
+
+
+.jj-char-base-back {
+  flex: none;
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 5px;
+  font-family: shousha;
+}
+
+.jj-char-base-back .jj-char-base-back2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+/* 武将背景 */
+.jj-charBg2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-image: url('../image/banChar/adv_table_headbg.png');
+  background-size: 100% 100%;
+}
+
+.jj-char-base-back.dz_selected .jj-charBg2 {
+  background-image: url('../image/banChar/adv_table_headbg_select.png');
+}
+
+/*武将框*/
+.jj-charFrame {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-size: 100% 100%;
+  background-image: url('../image/chooseCharacter/game_arena_selectchar_bg.png');
+}
+
+/* 我的选择 */
+.jj-self-selected {
+  width: 100%;
+  height: 106%;
+  left: -1%;
+  top: -16%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('../image/chooseCharacter/game_arena_self_selected_newx.png');
+}
+
+.jj-self-selected[data-type='self'] {
+  background-image: url('../image/chooseCharacter/game_arena_self_selected_new.png');
+}
+
+.jj-self-selected[data-type='other'] {
+  background-image: url('../image/chooseCharacter/game_arena_other_selected_new.png');
+}
+
+.dz-gray {
+  filter: grayscale(1);
+}
+
+.not-click {
+  pointer-events: none;
+}
+
+.dz-gray2 {
+  filter: grayscale(1);
+  pointer-events: none;
+}
+
+
+/*武将图*/
+.jj-charPic {
+  width: 78%;
+  height: 78%;
+  left: 11%;
+  top: 11%;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+}
+
+/*武将图*/
+.jj-charPic-ss {
+  width: 78%;
+  height: 78%;
+  left: 11%;
+  top: 11%;
+  background-size: 100% 100% !important;
+  background-position-x: 50%;
+}
+
+.jj-charPic.jj-frame-size,
+.jj-charPic-ss.jj-frame-size {
+  width: 71%;
+  height: 71%;
+  left: 14%;
+  top: 12%;
+}
+
+/* 武将名 */
+.jj-charName {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  font-size: 16px;
+  height: 16px;
+  line-height: 18px;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  color: #b9e0cf;
+}
+
+/*禁用图*/
+.jj-banPic {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/banChar/ban.png');
+  background-size: 80%;
+  background-position: center;
+  background-color: RGBA(0, 0, 0, 0.5);
+  top: 0px;
+  left: 0px;
+}
+
+.dz-setFrame {
+  position: absolute;
+  width: 600px;
+  height: 360px;
+  background-image: url('../image/banChar/frame2.png');
+  background-size: 100% 100%;
+  text-align: center;
+  font-family: shousha;
+  color: #dae6da;
+  /* text-shadow: 0px 0px 1px black, 0px 0px 1px black, 0px 0px 2px black, 0px 0px 2px black; */
+  text-shadow: 0px 0px 2px #d3b1b1, 0px 0px 2px #543434, 0px 0px 2px #372d2d, 0px 0px 2px black;
+  font-size: 20px;
+}
+
+.dz-setFrame .dz-cont {
+  position: relative;
+  top: 6%;
+  width: 88%;
+  height: 83%;
+  overflow: auto;
+  /* background-color: #A3DEC5; */
+}
+
+.dz-center {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.dz-hcenter {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.dz-wcenter {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* 方案名 */
+.jj-planNames {
+  display: flex;
+  text-shadow: none;
+  position: relative;
+  width: 100%;
+  color: rgb(40, 40, 32);
+  line-height: 50px;
+  font-family: shousha;
+  font-size: 20px;
+  text-align: center;
+  justify-content: space-around;
+}
+
+.jj-planNames>.mode-title {
+  position: relative;
+  width: 120px;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.jj-planNames>.jj-planNames {
+  display: flex;
+  position: relative;
+  width: calc(100% - 120px);
+  height: 100%;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.jj-planName {
+  position: relative;
+  width: 110px;
+  white-space: nowrap;
+}
+
+/*水平盒*/
+.hor-item {
+  position: relative;
+  width: 100%;
+  height: 45px;
+  margin: 5px 0px;
+  border: none;
+  background-image: url('../image/banChar/horItem.png');
+  background-size: 100% 100%;
+  line-height: 45px;
+  text-align: center;
+  font-size: 20px;
+  font-family: shousha;
+  color: rgb(209, 228, 206);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hor-item.active {
+  filter: brightness(1.2);
+}
+
+
+.hor-item>.mode-title {
+  position: relative;
+  width: 120px;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.hor-item>.subplans {
+  display: flex;
+  position: relative;
+  width: calc(100% - 120px);
+  height: 100%;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.hor-item>.subplans>.subplan {
+  position: relative;
+  width: 80px;
+  height: 100%;
+  background-image: url('../image/banChar/circularSW1.png');
+  background-size: auto 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hor-item>.subplans>.subplan:active {
+  filter: brightness(130%);
+}
+
+.hor-item>.subplans>.subplan.active {
+  background-image: url('../image/banChar/circularSW2.png');
+}
+
+.hor-item .plan-text {
+  position: relative;
+  height: 100%;
+  margin-right: 35px;
+}
+
+.hor-item .plan-text::before {
+  position: absolute;
+  content: '';
+  width: 40px;
+  height: 100%;
+  right: -34px;
+  background: url('../image/banChar/circularSW1.png') no-repeat center/65%;
+}
+
+.hor-item .plan-text.active::before {
+  background: url('../image/banChar/circularSW2.png') no-repeat center/65%;
+}
+
+/*底部提示条*/
+.dz-bottomBarTip {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  padding: 10px 40px;
+  min-width: 300px;
+  text-align: center;
+  font-family: shousha;
+  color: #A3DEC5;
+  font-size: 22px;
+  transform: translate(-50%, 0px);
+  z-index: 21;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 15%, rgba(0, 0, 0, 0.4) 85%, rgba(0, 0, 0, 0));
+  animation: bottomBarTipAnim 0.5s both linear 0.5s;
+}
+
+@keyframes bottomBarTipAnim {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50px);
+  }
+}
+
+/* 确定 */
+.dz-okBtn {
+  position: relative;
+  width: 106px;
+  height: 40px;
+  background-image: url('../image/btn/ok.png');
+  background-size: 100% 100%;
+  z-index: 3;
+}
+
+.dz-okBtn:active {
+  filter: brightness(180%);
+}
+
+.dz-gray {
+  filter: grayscale(1);
+  pointer-events: none;
+}
+
+.fy-btn {
+  position: relative;
+  width: 110px;
+  height: 55px;
+  margin: 0 5px;
+  overflow: auto;
+  white-space: nowrap;
+  line-height: 55px;
+  font-family: shousha;
+  color: #A3DEC5;
+  font-size: 20px;
+  background-image: url('../image/btn/btn6.png');
+  background-size: 100% 100%;
+}
+
+.fy-btn.active {
+  background-image: url('../image/btn/btn7.png');
+}
+
+/* 调节 */
+.sp-kdiv2 {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.ss-text2 {
+  position: relative;
+  text-align: center;
+  font-family: shousha;
+  color: #dae6da;
+  text-shadow: 0px 0px 1px black, 0px 0px 1px black, 0px 0px 2px black, 0px 0px 2px black;
+}
+
+.dz-jia {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background-image: url('../image/chooseCharacter/jia.png');
+  background-size: 100% 100%;
+}
+
+.dz-jia2 {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background-image: url('../image/chooseCharacter/jia2.png');
+  background-size: 100% 100%;
+}
+
+.dz-jian {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background-image: url('../image/chooseCharacter/jian.png');
+  background-size: 100% 100%;
+}
+
+.dz-jian2 {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background-image: url('../imagechooseCharacter/jian2.png');
+  background-size: 100% 100%;
+}
+
+/* 搜索筛选 */
+.search-filter-area {
+  width: 123px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-606px, -44%);
+  /* background-color: #cdb4b45c; */
+  overflow-y: auto;
+}
+
+.search-filter-area .char-name-btn {
+  position: relative;
+  width: 100%;
+  margin-bottom: 3px;
+  height: 35px;
+  background-image: url('../image/btn/btn3.png');
+  background-size: 100% 100%;
+  text-align: center;
+  font-size: 20px;
+  font-family: shousha;
+  color: #A3DEC5;
+  line-height: 35px;
+}
+
+.search-filter-area .char-name-btn.active {
+  filter: brightness(150%);
+}
+
+.search-filter-area::-webkit-scrollbar {
+  display: block !important;
+  width: 10px;
+}
+
+.search-filter-area::-webkit-scrollbar-track {
+  background-color: #786464;
+  border-radius: 15px;
+}
+
+.search-filter-area::-webkit-scrollbar-thumb {
+  background-color: #c5d7c5;
+  border-radius: 5px;
+}
+
+.search-filter-area.chooseChar {
+  width: 80px;
+  height: 90%;
+  transform: translate(-562px, -50%);
+}
+
+.search-filter-area.chooseChar .char-name-btn {
+  font-family: none;
+  margin-bottom: -4px;
+}

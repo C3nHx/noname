@@ -1,0 +1,1127 @@
+
+/* ============================================================
+   拆顺框（#shunshouDialog）样式总表
+   作用对象：顺手牵羊/过河拆桥、技能类拿牌弃牌（反馈/麒麟弓等）、
+   choosePlayerCard 放置牌框、五谷丰登框（复用同一对话框容器）
+   ============================================================ */
+
+/*●拆顺框主窗口：背景图、整体宽高、屏幕定位与展开动画*/
+#shunshouDialog {
+    
+    background-image: url('../image/scdialog.png') !important;
+    background-size: 100% 100%;
+    width: 1303px;
+    
+    /*●窗口高度随十周年UI实测的卡牌高度（--ss-ch）自适应：
+       上下两行（手牌区 + 装备/判定区）的高度都按卡牌高度算，卡牌变大时窗口同步变高，卡槽不会被卡牌撑破
+       ●写成加减形式（ch+ch）而不是 2*(ch+4px)：旧版 WebView 不支持 calc 里「数字 × 括号表达式」，
+       那样整条 height 会失效，窗口会退回固定高度*/
+    height: calc(114px + var(--ss-ch, 106px) + var(--ss-ch, 106px));
+    top: 118px;
+    
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    top: 65px;
+    display: block !important;
+    z-index: 8;
+    position: absolute;
+    text-align: center;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    
+    transition: height 0.3s ease, top 0.3s ease;
+    animation: 0.5s ease 0s 1 normal none running open-dialog;
+}
+
+/*●普通拆顺框整体缩放：按 --ss-zoom（由 JS 的 K 值写入）等比放大，并以左上角为原点定位*/
+#shunshouDialog:not(.ss-look) {
+    zoom: 1 !important;
+    left: calc(50% - 651.5px * var(--ss-zoom, 1)) !important;
+    right: auto !important;
+    transform: scale(var(--ss-zoom, 1)) !important;
+    -webkit-transform: scale(var(--ss-zoom, 1)) !important;
+    transform-origin: top left !important;
+    -webkit-transform-origin: top left !important;
+}
+
+/*●卡牌大小：全扩展唯一来源（JS 只负责摆放位置，不再写任何卡牌尺寸）
+   卡牌保持十周年UI原生尺寸（108×150），这里统一缩放到 70%；
+   缩放后的实际大小由 JS 实测写入 --ss-cw/--ss-ch（拆顺框）与 --ss-mc-w/--ss-mc-h（移动牌框），
+   卡槽再反过来适应卡牌，所以点击换槽不会改变卡牌大小。
+   想整体调大/调小只改这一个值即可。*/
+/*●注意：普通拆顺框在 game.check 里会被移到 <body> 下（不在 #window 里），
+   所以这里只能用 #shunshouDialog 本身，绝不能加 #window 前缀，否则 0.7 会失效*/
+#shunshouDialog {
+    --ss-card-zoom: 0.7;
+}
+
+#shunshouDialog .card {
+    zoom: var(--ss-card-zoom, 0.7) !important;
+    box-sizing: border-box !important;
+    flex: 0 0 auto !important;
+}
+
+/*●只有一行区域（只显示装备/只显示判定/两者/只手牌）时：窗口高度与顶部位置*/
+#shunshouDialog[data-pst='e'],
+#shunshouDialog[data-pst='j'],
+#shunshouDialog[data-pst='ej'],
+#shunshouDialog[data-pst='h'] {
+    /*●只有一行区域时，窗口高度同样随卡牌高度自适应*/
+    height: calc(96px + var(--ss-ch, 106px) + 4px);
+    top: 132px;
+    background-size: cover;
+}
+
+/*●单行布局时，三个区域标签统一贴到顶部（不再用底部定位）*/
+#shunshouDialog[data-pst='ej']>.eTitle,
+#shunshouDialog[data-pst='ej']>.jTitle,
+#shunshouDialog[data-pst='e']>.eTitle,
+#shunshouDialog[data-pst='j']>.jTitle,
+#shunshouDialog[data-pst='h']>.hTitle {
+    top: 58px;
+    bottom: auto;
+}
+
+/*●单行布局时，装备区/判定区容器贴到顶部*/
+#shunshouDialog[data-pst='ej']>.jArea,
+#shunshouDialog[data-pst='ej']>.eArea,
+#shunshouDialog[data-pst='j']>.jArea,
+#shunshouDialog[data-pst='e']>.eArea {
+    top: 60px;
+    bottom: auto;
+}
+
+/*●只显示手牌区时：手牌区贴顶部并左对齐*/
+#shunshouDialog[data-pst='h']>.hArea {
+    top: 60px;
+    bottom: auto;
+    justify-content: flex-start !important;
+}
+
+/*●只显示装备区时：装备标签的水平位置*/
+#shunshouDialog[data-pst='e']>.eTitle {
+    left: 29.7%;
+}
+
+/*●只显示判定/延时锦囊区时：标签的水平位置*/
+#shunshouDialog[data-pst='j']>.jTitle {
+    left: 36.5%;
+}
+
+/*●只显示装备区时：装备区容器的位置与左对齐*/
+#shunshouDialog[data-pst='e']>.eArea {
+    left: 32.5%;
+    justify-content: flex-start !important;
+}
+
+/*●只显示延时锦囊区时：判定区容器的位置与左对齐*/
+#shunshouDialog[data-pst='j']>.jArea {
+    left: 39.4% !important;
+    right: auto !important;
+    justify-content: flex-start !important;
+}
+
+/*●同时显示手牌区+延时锦囊区时：延时锦囊标签的水平位置*/
+#shunshouDialog[data-pst='hj']>.jTitle {
+    left: 16%;
+}
+
+/*●同时显示手牌区+延时锦囊区时：判定区容器的位置与左对齐*/
+#shunshouDialog[data-pst='hj']>.jArea {
+    left: 18.8% !important;
+    right: auto !important;
+    justify-content: flex-start !important;
+}
+
+/*●内容外层容器：裁剪纵向溢出、内容左对齐*/
+#shunshouDialog>.content-container {
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    justify-content: flex-start !important;
+}
+
+/*●内容内层容器：横向裁剪、纵向允许溢出、左对齐*/
+#shunshouDialog>.content-container>.content {
+    overflow: hidden !important;
+    overflow-y: visible !important;
+    justify-content: flex-start !important;
+}
+
+/*●框顶标题文字：金色渐变描边字（如“顺手牵羊”“反馈”等标题）*/
+#shunshouDialog .shunshouTitle {
+    left: 5px;
+    overflow: visible !important;
+    padding-top: 0;
+    width: 100%;
+    top: 2px;
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+    letter-spacing: 3px !important;
+    background: linear-gradient(#C8BEB4 1%, #FCF8CC 12%, #F3F0BE, #FEF5A8, #E1D275, #C9B173, #D6CB6F, #A99355, #AC9557, #A38A51, #A38A51, #B29983, #B19786, #B19786, #B19786, #9B8583), linear-gradient(to right, #FCF8CC, #AC9557);
+    
+    font-family: shousha !important;
+    font-weight: bold !important;
+    -webkit-text-stroke: 1.5px rgba(43, 31, 25, 0.4) !important;
+    text-shadow: none !important;
+    
+    font-size: 36px !important;
+    font-weight: normal;
+    -webkit-background-clip: text;
+    text-shadow: none;
+    -webkit-text-fill-color: transparent;
+    
+}
+
+/*●“手牌”竖排标签：背景、尺寸随卡牌高度自适应、文字颜色与描边、水平位置*/
+#shunshouDialog .hTitle {
+    background-image: url('../image/cebian.png') !important;
+    background-size: 100% 100%;
+    /*●标签高度随实测卡牌高度（--ss-ch）自适应，与卡槽同高，不再写死 112px*/
+    height: calc(var(--ss-ch, 106px) + 6px);
+    width: 34px;
+    writing-mode: tb-rl;
+    /*●字号也随标签高度缩放，避免标签变矮后文字被裁掉*/
+    font-size: clamp(12px, calc(var(--ss-ch, 106px) * 0.19), 20px);
+    /*●整体右移 3%：手牌区缩窄后，标题也跟着右移，保证左右留白一致（原来 16%）*/
+    left: 19%;
+    
+    top: 54px;
+    color: #eddac3;
+    text-shadow: 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325;
+    font-family: shousha;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+/*●手牌区容器：背景底图、宽度/高度随卡牌自适应、横向滚动、左对齐排布*/
+#shunshouDialog .hArea {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-image: url('../image/newarena1.png');
+    
+    /*●手牌区宽度 801px → 767px（缩窄 34px），右侧边缘与延时锦囊卡槽右边缘对齐*/
+    width: 767px;
+    
+    /*●手牌区高度不再写死，改为随十周年UI实测卡牌高度（--ss-ch）自适应，卡牌多时可横向滑动*/
+    height: calc(var(--ss-ch, 106px) + 4px) !important;
+    min-height: calc(var(--ss-ch, 106px) + 4px) !important;
+    max-height: calc(var(--ss-ch, 106px) + 4px) !important;
+    /*●整体右移 3%：与缩窄后的手牌区配合，左侧留白与右侧留白保持均衡（原来 19%）*/
+    left: 22%;
+    
+    top: 56px;
+    
+    padding-left: 0;
+    /*●右侧内边距 14px → 0：这块不参与排牌，是「手牌区可用宽度比卡槽短一截」的原因；
+       改为 0 后卡牌可铺满到卡槽右边缘，与延时锦囊卡槽右边缘对齐*/
+    padding-right: 0;
+    
+    padding-bottom: 6px;
+    box-sizing: border-box;
+    
+    align-items: center !important;
+    display: flex;
+    border-radius: 5px;
+    flex-wrap: nowrap;
+    
+    /*●超出卡槽后改为左右滑动：手牌区开启横向滚动，卡牌不再溢出到卡槽外；
+       纵向保持可溢出（不裁剪卡牌上下边缘），滚动条已由下面的 ::-webkit-scrollbar 规则隐藏*/
+    overflow: visible !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+/*●手牌区/装备区/判定区的排牌层不跟随十周年UI的对话框按钮缩放，
+   保证框内所有卡牌的大小只由上面唯一的 --ss-card-zoom 决定，不被祖先 zoom 二次缩放*/
+#shunshouDialog .content .buttons {
+    zoom: 1 !important;
+}
+
+/*●手牌区“排牌层”：按卡牌实际宽度撑开、不收缩、可横向滚动*/
+#shunshouDialog .hArea>.buttons {
+    
+    margin-top: auto;
+    margin-bottom: -6px;
+    margin-left: 2px;
+    
+    gap: 0 !important;
+    /*●宽度改为 max-content：整排宽度按卡牌实际排布撑开，超出卡槽时由手牌区横向滚动，
+       而不是把卡牌挤出卡槽；flex 不收缩，保证卡牌尺寸不被容器压扁*/
+    width: max-content;
+    flex: 0 0 auto;
+    overflow-x: visible !important;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+/*●手牌区里不可选的牌压暗（区分可选/不可选）*/
+#shunshouDialog .hArea>.buttons>.card:not(.selectable) {
+    filter: brightness(50%);
+}
+
+/*●手牌区卡牌重叠间距（-6px 左移形成叠放效果）*/
+#shunshouDialog .hArea>.buttons>.card,
+#shunshouDialog .hArea>.buttons>.card.button {
+    
+    margin: 0 -6px 0 0 !important;
+}
+
+/*●覆盖原生给第 2 张起卡牌加的左边距，保持手牌紧贴叠放*/
+#shunshouDialog .hArea>.buttons>div:not(:first-child) {
+    margin-left: 0 !important;
+}
+
+/*●“装备牌”竖排标签：样式、尺寸自适应、水平/底部位置*/
+#shunshouDialog .eTitle {
+    background-image: url('../image/cebian.png') !important;
+    background-size: 100% 100%;
+    /*●标签高度随实测卡牌高度（--ss-ch）自适应，与卡槽同高，不再写死 112px*/
+    height: calc(var(--ss-ch, 106px) + 6px);
+    width: 34px;
+    writing-mode: tb-rl;
+    /*●字号也随标签高度缩放，避免标签变矮后文字被裁掉*/
+    font-size: clamp(12px, calc(var(--ss-ch, 106px) * 0.19), 20px);
+    /*●整体右移 3%：装备牌标题与装备区一起右移，与手牌区保持同一条左边线（原来 16%）*/
+    left: 19%;
+    
+    bottom: 39px;
+    color: #eddac3;
+    text-shadow: 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325;
+    font-family: shousha;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+/*●装备区容器：位置、宽度、高度随卡牌自适应、横向滚动、左对齐*/
+#shunshouDialog .eArea {
+    
+    bottom: 40px;
+    /*●整体右移 3%：装备区右移后与延时锦囊卡槽的间距约 58px，与参考图一致（原来 18.8%）*/
+    left: 21.8%;
+    width: 466px;
+    /*●装备区高度随卡牌自适应；卡槽变多（同一槽位多张牌、装备超过5张）时改为平铺并横向滑动*/
+    height: calc(var(--ss-ch, 106px) + 4px);
+    display: flex;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/*●隐藏手牌区/装备区/判定区的横向滚动条（仍可滑动）*/
+#shunshouDialog .eArea::-webkit-scrollbar,
+#shunshouDialog .jArea::-webkit-scrollbar,
+#shunshouDialog .ss-scroll-x::-webkit-scrollbar,
+#shunshouDialog .hArea::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/*●装备卡槽：深色底、宽高跟随卡牌尺寸、居中显示*/
+#shunshouDialog .eAreaCard {
+    background-color: #4e413b;
+    background-size: 100% 100%;
+    margin-left: 4px;
+    /*●卡槽宽高跟随十周年UI实测的卡牌尺寸（--ss-cw/--ss-ch），卡牌本身大小不再由本扩展控制*/
+    width: calc(var(--ss-cw, 76px) + 2px);
+    height: calc(var(--ss-ch, 106px) + 2px);
+    flex: 0 0 auto;
+    font-size: 20px;
+    top: 0;
+    position: relative;
+    font-family: shousha;
+    color: #605f5d;
+    text-shadow: 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    opacity: 0.95;
+}
+
+/*●“延时锦囊牌”竖排标签：样式、尺寸自适应、水平/底部位置*/
+#shunshouDialog .jTitle {
+    background-image: url('../image/cebian.png') !important;
+    background-size: 100% 100%;
+    
+    /*●标签高度随实测卡牌高度（--ss-ch）自适应，与卡槽同高，不再写死 112px*/
+    height: calc(var(--ss-ch, 106px) + 6px);
+    width: 34px;
+    writing-mode: tb-rl;
+    /*●字号也随标签高度缩放，避免标签变矮后文字被裁掉*/
+    font-size: clamp(12px, calc(var(--ss-ch, 106px) * 0.19), 20px);
+    
+    /*●标签右移：56.7% → 59%，标签右边缘到延时锦囊卡槽左边缘的间距约 5px，
+       与手牌区标题→手牌区（约 5px）、装备牌标题→装备区（约 2.5px）的间距一致*/
+    left: 59%;
+    
+    bottom: 39px;
+    color: #eddac3;
+    text-shadow: 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325;
+    font-family: shousha;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+/*●延时锦囊区容器：右边缘与手牌区对齐、宽度容纳 3 个槽位、超出横向滑动*/
+#shunshouDialog .jArea {
+    
+    bottom: 40px;
+    /*●判定区右边缘与手牌区（left:22% + width:767px）的右边缘对齐：
+       100% - 22% - 767px 即手牌区右边界位置，延时锦囊卡槽右侧与手牌区右侧落在同一条竖线上*/
+    right: calc(100% - 22% - 767px) !important;
+    left: auto !important;
+    /*●宽度改为正好容纳 3 个延时锦囊槽位（随十周年UI实测卡槽宽 --ss-cw 自适应），
+       第 4 张起超出宽度，由下面的 overflow-x 横向滑动，不再留一大块空白导致右侧对不齐*/
+    width: calc(var(--ss-cw, 76px) + var(--ss-cw, 76px) + var(--ss-cw, 76px) + 18px) !important;
+    /*●判定区高度随卡牌自适应；延时锦囊超过3张时逐张平铺并横向滑动，不再挤进同一个框*/
+    height: calc(var(--ss-ch, 106px) + 4px);
+    display: flex;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    /*●改为左对齐：开启横向滚动后右对齐会导致左侧卡片滚动不到*/
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/*●延时锦囊卡槽：深色底、宽高跟随卡牌尺寸、圆角、居中显示*/
+#shunshouDialog .jAreaCard {
+    background-color: #4e413b;
+    background-size: 100% 100%;
+    margin-left: 4px;
+    /*●卡槽宽高跟随十周年UI实测的卡牌尺寸（--ss-cw/--ss-ch），卡牌本身大小不再由本扩展控制*/
+    width: calc(var(--ss-cw, 76px) + 2px);
+    height: calc(var(--ss-ch, 106px) + 2px);
+    flex: 0 0 auto;
+    font-size: 20px;
+    top: 0;
+    position: relative;
+    font-family: shousha;
+    border-radius: 5px;
+    color: #605f5d;
+    text-shadow: 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325, 0 0 2px #453325;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    opacity: 0.95;
+}
+
+/*●卡槽内部子元素（牌面、按钮层等）统一绝对定位，去掉原生偏移*/
+#shunshouDialog .jAreaCard>div,
+#shunshouDialog .eAreaCard>div {
+    
+    margin: 0 !important;
+    bottom: auto;
+    right: auto;
+    position: absolute;
+}
+
+/*●装备/延时锦囊卡槽内卡牌：只清外边距，尺寸交给卡牌自身*/
+#shunshouDialog .eAreaCard .card,
+#shunshouDialog .jAreaCard .card {
+    /*●不再写死卡牌宽高（原来 80×116 会把卡牌压变形），大小完全交给十周年UI；
+       卡槽已按 --ss-cw/--ss-ch 自适应卡牌尺寸*/
+    margin: 0 !important;
+}
+
+/*●原生确认按钮（非对话框内的 combo-control）：换成皮肤图标并调整位置*/
+.control.combo-control.lbtn-confirm.newconfirm1>div.primary {
+    background-image: url('../image/confirmButton.png');
+    top: calc(100% + 25px);
+    margin: 0px 85px !important;
+    padding: 6.75px 15px !important;
+    min-height: 6.75px;
+    min-width: 15px;
+    z-index: 8;
+    display: block;
+}
+
+/*●选将界面里的原生确认按钮位置（固定到左下角）*/
+#arena.choose-character.selecting>#dui-controls>.control.combo-control.lbtn-confirm.newconfirm1>div.primary {
+    top: -150px !important;
+    left: 10px !important;
+    position: fixed;
+}
+
+/*●原生取消按钮：换成皮肤图标并下移*/
+.control.combo-control.lbtn-confirm.newconfirm1>div.primary2 {
+    background-image: url('../image/cancel.png') !important;
+    top: calc(100% + 35px);
+}
+
+/*●选将界面里隐藏取消按钮图标（避免与皮肤图标重叠）*/
+#arena.selecting>#dui-controls>.control.combo-control.lbtn-confirm.newconfirm1>div.primary2>img {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+/*●框底部操作提示文字（如“请选择…”）*/
+#shunshouDialog .shunshouHint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    
+    bottom: 0px;
+    top: auto;
+    text-align: center;
+    white-space: nowrap;
+    font-family: shousha, xinwei;
+    
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.25;
+    
+    color: #ffffff;
+    text-shadow: 0 0 3px #000, 0 0 6px #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000;
+    pointer-events: none;
+    z-index: 9;
+}
+
+/*●提示文字里的蓝色强调（牌名/角色名）*/
+#shunshouDialog .shunshouHint .card-blue {
+    color: #8fd6ff;
+}
+
+/*●折叠态下隐藏底部提示文字*/
+#shunshouDialog.folded>.shunshouHint {
+    display: none !important;
+}
+
+/*●进度条容器不吃点击事件，避免挡住按钮*/
+#shunshouDialog>#jindutiaopl {
+    pointer-events: none !important;
+}
+
+/*●倒计时条：位置、圆角、底色与描边*/
+#shunshouDialog .ss-timer {
+    display: block !important;
+    position: absolute !important;
+    
+    left: 31% !important;
+    right: 31% !important;
+    
+    top: auto !important;
+    bottom: 20px !important;
+    height: 8px !important;
+    border-radius: 1000px !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 0 9px #2e2b27 inset, 0 0 2.1px #FFFFD5 !important;
+    border: 1.2px solid #000000 !important;
+    overflow: hidden !important;
+    z-index: 6 !important;
+    pointer-events: none !important;
+}
+
+/*●倒计时条内部的进度填充（黄红渐变，由 JS 控制宽度）*/
+#shunshouDialog .ss-timer-fill {
+    
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
+    width: 100%;
+    background-image: linear-gradient(#fccc54 15%, #d01424 30%, #cc6953 90%) !important;
+}
+
+/*●折叠态窗口：只保留标题条（矮窗口、顶部定位、无展开动画）*/
+#shunshouDialog.folded {
+    
+    width: 1303px !important;
+    height: 78px !important;
+    /*●折叠态统一位置：由 extension.js 的 --ss-fold-top 控制*/
+    top: var(--ss-fold-top) !important;
+    background-image: url('../image/scdialog.png') !important;
+    background-size: 100% auto !important;
+    background-position: top center !important;
+    background-repeat: no-repeat !important;
+    
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+
+/*●折叠态倒计时条贴近底部*/
+#shunshouDialog.folded .ss-timer {
+    bottom: 6px !important;
+}
+
+/*●折叠态隐藏原生进度条*/
+#shunshouDialog #jindutiaopl {
+    
+    display: none !important;
+}
+
+/*●拆顺框打开时隐藏桌面的原生进度条*/
+body.ss-dlg-open #jindutiaopl {
+    display: none !important;
+}
+
+/*●折叠态下原生进度条改为底部细条*/
+#shunshouDialog.folded #jindutiaopl {
+    top: auto !important;
+    bottom: 6px !important;
+    left: 18% !important;
+    height: 5px !important;
+}
+
+/*●折叠态隐藏三个区域和三个标签，只留标题*/
+#shunshouDialog.folded>.hArea,
+#shunshouDialog.folded>.eArea,
+#shunshouDialog.folded>.jArea,
+#shunshouDialog.folded>.hTitle,
+#shunshouDialog.folded>.eTitle,
+#shunshouDialog.folded>.jTitle {
+    display: none !important;
+}
+
+/*●折叠态标题：占满整条、字号更大、无描边、金色渐变字*/
+#shunshouDialog.folded .shunshouTitle {
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+    top: 2px !important;
+    height: 46px !important;
+    line-height: 46px !important;
+    
+    font-family: HYZLSJ, shousha, xinwei !important;
+    font-size: 42px !important;
+    font-weight: 500 !important;
+    
+    background: linear-gradient(#C8BEB4 1%, #FCF8CC 12%, #F3F0BE, #FEF5A8, #E1D275, #C9B173, #D6CB6F, #A99355, #AC9557, #A38A51, #A38A51, #B29983, #B19786, #B19786, #B19786, #9B8583), linear-gradient(to right, #FCF8CC, #AC9557) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/*●折叠/展开箭头方向（折叠时上下翻转）*/
+#shunshouDialog.folded .shunshouTitle img.ss-arrow {
+    transform: scaleY(-1) !important;
+    -webkit-transform: scaleY(-1) !important;
+}
+
+/*●折叠/展开箭头可点击，并带过渡动画*/
+#shunshouDialog .shunshouTitle .ss-arrow {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    transition: transform .25s ease;
+}
+
+/*●框内所有卡牌、卡槽统一圆角*/
+#shunshouDialog .card,
+#shunshouDialog .hArea>.buttons>.card,
+#shunshouDialog .eAreaCard .card,
+#shunshouDialog .jAreaCard .card,
+#shunshouDialog .eAreaCard,
+#shunshouDialog .jAreaCard {
+    border-radius: 4px !important;
+}
+
+/*●手牌排牌层：垂直居中、左对齐、高度自适应*/
+#shunshouDialog .hArea>.buttons {
+    align-items: center !important;
+    justify-content: flex-start !important;
+    
+    height: auto !important;
+}
+
+/*●未安装手杀美化时：手牌之间改为 8px 间隙（不叠放）*/
+body.ss-no-shousha-ui #shunshouDialog .hArea>.buttons {
+    gap: 8px !important;
+}
+
+/*●未安装手杀美化时：手牌卡牌不收缩、上下外边距归零*/
+/*●手牌区卡牌不再写死 80×116，大小交给十周年UI；这里只保留 flex 布局与不收缩*/
+body.ss-no-shousha-ui #shunshouDialog .hArea>.buttons>.card,
+body.ss-no-shousha-ui #shunshouDialog .hArea>.buttons>.card.button {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/*●手牌卡牌：不参与 flex 收缩，上下外边距归零*/
+#shunshouDialog .hArea>.buttons>.card,
+#shunshouDialog .hArea>.buttons>.card.button {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/*●标题字体统一（覆盖上面默认字体的描边设置）*/
+#shunshouDialog .shunshouTitle {
+    
+    font-family: HYZLSJ, shousha, xinwei !important;
+    font-size: 42px !important;
+    font-weight: 500 !important;
+    -webkit-text-stroke: 0 !important;
+}
+
+/*●折叠态标题字体统一（与展开态一致）*/
+#shunshouDialog.folded .shunshouTitle {
+    
+    font-family: HYZLSJ, shousha, xinwei !important;
+    font-size: 42px !important;
+    font-weight: 500 !important;
+    -webkit-text-stroke: 0 !important;
+}
+
+/*●卡牌花色点数 .info：装了十周年UI时沿用 21 版原来的左上定位。
+   ●只有未装十周年UI时才补 absolute 固定右上角：原生 layout.css 只给了 top/right，没给 position，
+   关闭十周年UI后 .info 是普通块级元素，会跟着容器的 text-align（居中）跑到卡牌中间*/
+#shunshouDialog .card > .info,
+#shunshouDialog .card .info {
+    top: 6px !important;
+    left: 2px !important;
+    font-size: 22px !important;
+    line-height: 18px !important;
+}
+body.ss-no-decade #shunshouDialog .card > .info,
+body.ss-no-decade #shunshouDialog .card .info {
+    position: absolute !important;
+    left: auto !important;
+    right: 7px !important;
+}
+
+/*●触屏设备上花色点数缩小一号*/
+body.ss-touch #shunshouDialog .card > .info,
+body.ss-touch #shunshouDialog .card .info {
+    font-size: 18px !important;
+    line-height: 15px !important;
+}
+
+/*●窄屏（<900px）花色点数缩小一号*/
+@media (max-width: 900px) {
+    #shunshouDialog .card > .info,
+    #shunshouDialog .card .info {
+        font-size: 18px !important;
+        line-height: 15px !important;
+    }
+}
+
+/*●粗指针设备（触屏/手写笔）花色点数缩小一号*/
+@media (pointer: coarse) {
+    #shunshouDialog .card > .info,
+    #shunshouDialog .card .info {
+        font-size: 18px !important;
+        line-height: 15px !important;
+    }
+}
+
+/*●装备/延时锦囊卡槽内卡牌的展开/收起过渡动画*/
+#shunshouDialog .eAreaCard .card,
+#shunshouDialog .jAreaCard .card {
+    transition: transform 0.18s ease !important;
+}
+
+/*●装备/延时锦囊卡槽内的按钮层：跟随卡槽尺寸，去掉原生外边距*/
+#shunshouDialog .eAreaCard>.buttons,
+#shunshouDialog .jAreaCard>.buttons {
+    position: absolute !important;
+    left: 2px !important;
+    top: 0 !important;
+    /*●内部按钮层跟随卡槽（也即跟随十周年UI卡牌尺寸），不再写死 80×116*/
+    width: var(--ss-cw, 76px) !important;
+    height: var(--ss-ch, 106px) !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+/*●卡槽内卡牌贴左上角定位*/
+#shunshouDialog .eAreaCard .card,
+#shunshouDialog .jAreaCard .card {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+}
+
+/*●卡槽“收起”态：裁剪超出卡槽的卡牌*/
+#shunshouDialog .eAreaCard.ss-folded,
+#shunshouDialog .jAreaCard.ss-folded {
+    overflow: hidden !important;
+}
+
+/*●卡槽“展开”态：允许卡牌溢出显示*/
+#shunshouDialog .eAreaCard.ss-expanded,
+#shunshouDialog .jAreaCard.ss-expanded {
+    overflow: visible !important;
+}
+
+/*●不可选卡槽：半透明提示*/
+#shunshouDialog .ss-slot-disabled,
+#shunshouDialog .eAreaCard.ss-slot-disabled,
+#shunshouDialog .jAreaCard.ss-slot-disabled {
+    opacity: 0.55 !important;
+}
+
+/*●五谷框：顶部提示文字（当前轮到谁选牌等）*/
+#shunshouDialog .ss-wugu-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    top: auto;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 15px;
+    pointer-events: none;
+    z-index: 9;
+}
+
+/*●五谷框：左上角选牌者头像*/
+#shunshouDialog .ss-wugu-avatar {
+    position: absolute;
+    left: 31%;
+    top: 0;
+    bottom: auto;
+    width: 2.4em;
+    height: 2.4em;
+    background-size: 50px;
+    background-position-y: 15%;
+    background-position-x: 50%;
+    background-repeat: no-repeat;
+    border: 2px solid #c9c9ab;
+    box-sizing: border-box;
+}
+
+/*●五谷框：轮次/回合提示文字*/
+#shunshouDialog .ss-wugu-turntext {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.5em;
+    text-align: center;
+    font-family: shousha, xinwei;
+    font-size: 18px;/*●*/
+    font-weight: 500;
+    line-height: 1.3;
+    color: #F5DC96;
+    -webkit-text-fill-color: #F5DC96;
+    -webkit-text-stroke: 0.6px rgba(43, 31, 25, 0.65);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+}
+
+/*●五谷框：右侧“被无懈”名单容器*/
+#shunshouDialog .wuguWuxieBox {
+    position: absolute;
+    right: 10px;
+    left: auto;
+    top: 300px;
+    height: auto;
+    width: auto;
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/*●五谷框：选牌卡按钮的左右间距*/
+#shunshouDialog.ss-wugu .content .buttons > .button {
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+}
+
+/*●五谷框：“被失效”文字标签*/
+#shunshouDialog .wuguWuxieText {
+    position: absolute;
+    right: calc(2.2em + 8px);
+    top: 0.3em;
+    font-family: shousha, xinwei;
+    font-size: 14px;
+    color: #ffffff;
+    text-shadow: 0 0 3px #000, 0 1px 0 #000;
+    white-space: nowrap;
+}
+
+/*●五谷框：被无懈角色的小头像*/
+#shunshouDialog .wuguWuxieSmallCharacter {
+    position: relative;
+    width: 2.2em;
+    height: 2.2em;
+    background-size: 50px;
+    background-position-y: 15%;
+    background-position-x: 50%;
+    background-repeat: no-repeat;
+    border: 2px solid #ad5949;
+    box-sizing: border-box;
+}
+
+/*●五谷框：头像上的红色叉号容器*/
+#shunshouDialog .wuguWuxieChahao {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/*●五谷框：红叉的第一笔（45°）*/
+#shunshouDialog .wuguWuxieChahao::before,
+#shunshouDialog .wuguWuxieChahao::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 8%;
+    width: 3px;
+    height: 84%;
+    background: #e23b2e;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+/*●五谷框：红叉的第二笔（-45°）*/
+#shunshouDialog .wuguWuxieChahao::after {
+    transform: translateX(-50%) rotate(-45deg);
+}
+
+/*●折叠态隐藏五谷的顶部提示*/
+#shunshouDialog.folded .ss-wugu-hint {
+    display: none !important;
+}
+
+/*●折叠态隐藏五谷的“被无懈”名单*/
+#shunshouDialog.folded .wuguWuxieBox {
+    display: none !important;
+}
+
+/*●五谷框：卡牌左下角的角色头像（选牌者标记）*/
+#shunshouDialog .xtx {
+    position: absolute;
+    bottom: -20px;
+    left: -10px;
+    z-index: 2;
+    height: 2.2em;
+    width: 2.2em;
+    background-repeat: no-repeat;
+    background-size: 50px;
+    background-position-y: 15%;
+    background-position-x: 50%;
+    border: 2px solid #c9c9ab;
+}
+
+/*●五谷框：头像旁的角色名文字*/
+#shunshouDialog .xtxName {
+    position: absolute;
+    display: block;
+    font-family: shousha, xinwei;
+    font-size: 14px;
+    color: #F5DC96;
+    text-shadow: 0 0 3px #000, 0 1px 0 #000;
+    width: auto;
+    left: 2.4em;
+    top: 0.8em;
+    bottom: auto;
+    z-index: 2;
+    white-space: nowrap;
+}
+
+/*●五谷框：不可选卡牌的黑色半透明遮罩*/
+#shunshouDialog .huise {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
+    z-index: 1;
+}
+
+/*●五谷框：隐藏五谷牌上的原生卡牌遮罩*/
+#shunshouDialog .card[sourcecard="wugu"] > .card-mask {
+    opacity: 0 !important;
+}
+
+/*●确认条容器：贴底水平居中、间距与尺寸（技能/choosePlayerCard 触发时才有）*/
+#shunshouDialog .ss-confirm {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    
+    bottom: 36px !important;
+    top: auto !important;
+    /*●确认条按原尺寸 0.8 倍缩小（52→42），只用于技能/choosePlayerCard 触发（卡牌触发无确认条）*/
+    height: 42px !important;
+    
+    transform: none !important;
+    -webkit-transform: none !important;
+    float: none !important;
+    clear: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    /*●按钮间距同步按 0.8 倍缩小（56→45）*/
+    gap: 45px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 30 !important;
+    
+    pointer-events: none !important;
+}
+
+/*●确认/取消按钮：尺寸 106×42、背景铺满、点击热区*/
+#shunshouDialog .ss-confirm-ok,
+#shunshouDialog .ss-confirm-cancel {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    
+    /*●按钮按原尺寸 0.8 倍缩小（132×52 → 106×42）*/
+    width: 106px !important;
+    height: 42px !important;
+    min-width: 106px !important;
+    max-width: 106px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 100% 100% !important;
+}
+
+/*●确认按钮图标（confirmButton.png）*/
+#shunshouDialog .ss-confirm-ok {
+    background-image: url('../image/confirmButton.png') !important;
+}
+
+/*●取消按钮图标（cancel.png）*/
+#shunshouDialog .ss-confirm-cancel {
+    background-image: url('../image/cancel.png') !important;
+}
+
+/*●条件不满足时确认按钮置灰且不可点*/
+#shunshouDialog .ss-confirm-ok.unclickable {
+    pointer-events: none !important;
+    filter: grayscale(1) brightness(0.85) !important;
+    -webkit-filter: grayscale(1) brightness(0.85) !important;
+}
+
+/*●全局禁用态（含移动牌框）：置灰、不可点、光标默认*/
+.ss-confirm-ok.ss-disabled,
+.ss-confirm-cancel.ss-disabled {
+    pointer-events: none !important;
+    filter: grayscale(1) brightness(0.85) !important;
+    -webkit-filter: grayscale(1) brightness(0.85) !important;
+    cursor: default !important;
+}
+
+/*●不需要取消操作时隐藏取消按钮*/
+#shunshouDialog .ss-confirm-cancel.ss-hidden {
+    display: none !important;
+}
+
+/*●折叠态隐藏整条确认条*/
+#shunshouDialog.folded .ss-confirm {
+    display: none !important;
+}
+
+#shunshouDialog.ss-has-confirm {
+    height: calc(156px + var(--ss-ch, 106px) + var(--ss-ch, 106px)); /*●窗口高度*/
+}
+
+/*●带确认条时：装备区/判定区直接贴在手牌区下方（间距 8px），不再用 bottom 贴对话框底边。*/
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .eArea,
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .jArea,
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .eTitle,
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .jTitle {
+    top: calc(66px + var(--ss-ch, 106px));
+    bottom: auto;
+}
+
+/*●带确认条且只有一行区域时：窗口高度同样随卡牌高度自适应（内容底部 = 64 + 卡牌高）*/
+#shunshouDialog.ss-has-confirm[data-pst='e'],
+#shunshouDialog.ss-has-confirm[data-pst='j'],
+#shunshouDialog.ss-has-confirm[data-pst='ej'],
+#shunshouDialog.ss-has-confirm[data-pst='h'] {
+    height: calc(160px + var(--ss-ch, 106px));
+}
+
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .ss-confirm {
+    top: calc(82px + var(--ss-ch, 106px) + var(--ss-ch, 106px)) !important; /*●确认条*/
+    bottom: auto !important;
+}
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .ss-timer {
+    top: calc(120px + var(--ss-ch, 106px) + var(--ss-ch, 106px)) !important; /*●进度条*/
+    bottom: auto !important;
+}
+#shunshouDialog.ss-has-confirm:not([data-pst='e']):not([data-pst='j']):not([data-pst='ej']):not([data-pst='h'])> .shunshouHint {
+    top: calc(135px + var(--ss-ch, 106px) + var(--ss-ch, 106px)) !important; /*●提示文字*/
+    bottom: auto !important;
+}
+
+/*●带确认条的单行布局：卡槽底 = 64 + 卡牌高，三件套同样贴着卡槽往下排*/
+#shunshouDialog.ss-has-confirm[data-pst='e']> .ss-confirm,
+#shunshouDialog.ss-has-confirm[data-pst='j']> .ss-confirm,
+#shunshouDialog.ss-has-confirm[data-pst='ej']> .ss-confirm,
+#shunshouDialog.ss-has-confirm[data-pst='h']> .ss-confirm {
+    top: calc(68px + var(--ss-ch, 106px)) !important;
+    bottom: auto !important;
+}
+#shunshouDialog.ss-has-confirm[data-pst='e']> .ss-timer,
+#shunshouDialog.ss-has-confirm[data-pst='j']> .ss-timer,
+#shunshouDialog.ss-has-confirm[data-pst='ej']> .ss-timer,
+#shunshouDialog.ss-has-confirm[data-pst='h']> .ss-timer {
+    top: calc(120px + var(--ss-ch, 106px)) !important;
+    bottom: auto !important;
+}
+#shunshouDialog.ss-has-confirm[data-pst='e']> .shunshouHint,
+#shunshouDialog.ss-has-confirm[data-pst='j']> .shunshouHint,
+#shunshouDialog.ss-has-confirm[data-pst='ej']> .shunshouHint,
+#shunshouDialog.ss-has-confirm[data-pst='h']> .shunshouHint {
+    top: calc(134px + var(--ss-ch, 106px)) !important;
+    bottom: auto !important;
+}
+
+/*●手牌/装备标签点击时的缩放反馈动画*/
+#shunshouDialog .hTitle.ss-tap,
+#shunshouDialog .eTitle.ss-tap {
+    animation: ss-title-tap 0.3s ease-out;
+}
+
+/*●标签点击反馈动画关键帧：先放大 1.14 倍再回弹*/
+@keyframes ss-title-tap {
+    0% {
+        transform: scale(1);
+    }
+    45% {
+        transform: scale(1.14);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/*●choosePlayerCard 放置牌框：展开态高度/确认条/进度条由 JS 按内容实测后写成内联样式，
+   这里兜底折叠态——否则 .ss-has-confirm 的 calc 高度会盖掉 .folded 的 78px，
+   导致折叠后框体仍是展开高度、进度条掉到阴影底图下面*/
+#shunshouDialog.folded.ss-has-confirm {
+    height: 78px !important;
+    min-height: 78px !important;
+}
+
+
+
