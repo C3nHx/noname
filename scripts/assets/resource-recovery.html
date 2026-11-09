@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>恢复游戏启动</title>
+		<style>
+			body { margin: 0; background: #f5f3ed; color: #222; font: 16px/1.7 system-ui, sans-serif; }
+			main { max-width: 520px; margin: 12vh auto; padding: 24px; }
+			h1 { font-size: 26px; }
+			button { padding: 12px 18px; border: 0; border-radius: 8px; background: #245b46; color: white; font: inherit; cursor: pointer; }
+			button:disabled { opacity: .6; cursor: wait; }
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>恢复游戏启动</h1>
+			<p>重新获取启动文件，保留已下载素材和本机游戏设置。</p>
+			<button id="recover" type="button">更新启动文件并重新打开</button>
+			<p id="status" role="status"></p>
+		</main>
+		<script type="module">
+			const button = document.querySelector("#recover");
+			const status = document.querySelector("#status");
+			const root = new URL("./", location.href);
+			button.onclick = async () => {
+				button.disabled = true;
+				status.textContent = "正在更新启动文件，已下载素材会保留……";
+				try {
+					if ("serviceWorker" in navigator) {
+						const registrations = await navigator.serviceWorker.getRegistrations();
+						await Promise.all(registrations.filter(registration => registration.scope === root.href).map(registration => registration.unregister()));
+					}
+					if ("caches" in window) {
+						const names = await caches.keys();
+						await Promise.all(names.filter(name => /^noname-core-[a-f0-9]{64}$/.test(name)).map(name => caches.delete(name)));
+					}
+					const entry = new URL("index.html", root);
+					entry.searchParams.set("recovered", Date.now().toString());
+					location.replace(entry);
+				} catch (error) {
+					status.textContent = `更新未完成：${error.message}。请保持联网后重试。`;
+					button.disabled = false;
+				}
+			};
+		</script>
+	</body>
+</html>

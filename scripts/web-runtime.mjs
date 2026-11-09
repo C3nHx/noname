@@ -27,4 +27,5 @@ export async function configureWebRuntime(web) {
 	manifest.core = [...new Set([...manifest.core, "deployment.js"])];
 	await fs.writeFile(manifestPath, JSON.stringify(manifest) + "\n");
 	await fs.writeFile(path.join(web, "resource-version.json"), JSON.stringify({ schemaVersion: 1, version: manifest.version, buildId: manifest.buildId }) + "\n");
+	await fs.copyFile(new URL("assets/resource-recovery.html", import.meta.url), path.join(web, "resource-recovery.html"));
 }
