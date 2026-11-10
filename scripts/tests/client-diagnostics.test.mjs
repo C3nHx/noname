@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { configureClientDiagnostics, createDiagnosticRecorder, diagnosticText, installClientDiagnostics } from "../../apps/core/noname/util/client-diagnostics.js";
+import { configureClientDiagnostics, createDiagnosticRecorder, installClientDiagnostics } from "../../apps/core/noname/util/client-diagnostics.js";
+import { diagnosticText } from "../../apps/core/noname/util/client-diagnostics-format.js";
 
 function memoryStore() {
 	const saved = new Map();

@@ -16,6 +16,7 @@ await configureWebRuntime(web);
 const server = path.join(destination, "server");
 await fs.mkdir(server);
 await fs.cp(path.join(repository, "packages/fs/dist"), path.join(server, "dist"), { recursive: true });
+await fs.copyFile(path.join(repository, "scripts/read-client-diagnostics.mjs"), path.join(server, "read-client-diagnostics.mjs"));
 const sourcePackage = JSON.parse(await fs.readFile(path.join(repository, "packages/fs/package.json"), "utf8"));
 const { engines } = JSON.parse(await fs.readFile(path.join(repository, "package.json"), "utf8"));
 const requireServer = createRequire(path.join(repository, "packages/fs/package.json"));

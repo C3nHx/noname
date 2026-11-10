@@ -5209,7 +5209,7 @@ export class Library {
 					clear: true,
 				},
 				clear_client_diagnostics: {
-					name: "清空诊断记录",
+					name: "清空本机诊断记录",
 					onclick() { if (confirm("清空本机诊断记录？存档和已下载素材会保留。")) void clearClientDiagnostics(); },
 					clear: true,
 				},

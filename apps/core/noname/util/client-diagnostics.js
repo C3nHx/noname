@@ -1,28 +1,9 @@
+import { diagnosticText } from "./client-diagnostics-format.js";
+
 const DATABASE = "noname-client-diagnostics-v1";
 const MAX_RECORDS = 200;
 const MAX_BYTES = 256 * 1024;
 const encoder = new TextEncoder();
-
-export function diagnosticText(value, limit = 2000) {
-	return String(value ?? "")
-		.replace(/\b(?:data|blob):[^\s<>"']+/gi, "[embedded URL]")
-		.replace(/\b(?:https?|wss?|file):\/\/[^\s<>"']+/gi, address => {
-			try {
-				const url = new URL(address);
-				url.username = "";
-				url.password = "";
-				url.search = "";
-				url.hash = "";
-				return url.href;
-			} catch {
-				return "[URL]";
-			}
-		})
-		.replace(/([?&](?:[^=\s&]+)=)[^\s&#]*/g, "$1[redacted]")
-		.replace(/\b(?:Bearer|Basic)\s+[A-Za-z0-9+/_=.-]+/gi, "[redacted credential]")
-		.replace(/\b(password|authorization|secret|token|key)\s*[:=]\s*[^\s,;]+/gi, "$1=[redacted]")
-		.slice(0, limit);
-}
 
 function diagnosticURL(value) {
 	if (!value) return "";
@@ -108,11 +89,20 @@ export function indexedDiagnosticStore(indexedDB = globalThis.indexedDB) {
 				};
 			}),
 		clear: () => transaction("readwrite", store => store.clear()),
+		acknowledge: versions => transaction("readwrite", store => {
+			for (const version of versions) {
+				store.get(version.id).onsuccess = event => {
+					const record = event.target.result;
+					if (record && record.count === version.count && record.lastAt === version.lastAt) store.put({ ...record, reportedCount: version.count, reportedLastAt: version.lastAt });
+				};
+			}
+		}),
 	};
 }
 
 export function createDiagnosticRecorder({ store = indexedDiagnosticStore(), now = Date.now, context = () => ({}), session = `${Date.now()}-${Math.random().toString(36).slice(2)}`, delay = 250 } = {}) {
 	const records = new Map();
+	const acknowledged = new Map();
 	let seen = new WeakSet();
 	let pending = new Map();
 	let timer;
@@ -122,6 +112,7 @@ export function createDiagnosticRecorder({ store = indexedDiagnosticStore(), now
 	let persistence = true;
 	let queue = Promise.resolve();
 	const recorder = {
+		session,
 		record(input) {
 			try {
 				if (input.error && typeof input.error === "object") {
@@ -158,6 +149,7 @@ export function createDiagnosticRecorder({ store = indexedDiagnosticStore(), now
 				while (records.size > MAX_RECORDS || recordBytes + 2 > MAX_BYTES) {
 					const oldest = records.keys().next().value;
 					pending.delete(records.get(oldest).id);
+					acknowledged.delete(records.get(oldest).id);
 					recordBytes -= sizes.get(oldest);
 					sizes.delete(oldest);
 					records.delete(oldest);
@@ -197,12 +189,20 @@ export function createDiagnosticRecorder({ store = indexedDiagnosticStore(), now
 					persistence = false;
 				}
 			}
-			const merged = new Map([...saved, ...records.values()].map(record => [record.id, record]));
+			const merged = new Map(saved.map(record => [record.id, record]));
+			for (const record of records.values()) {
+				const stored = merged.get(record.id);
+				const version = acknowledged.get(record.id);
+				const reportedCount = version?.count ?? stored?.reportedCount;
+				const reportedLastAt = version?.lastAt ?? stored?.reportedLastAt;
+				merged.set(record.id, reportedCount === record.count && reportedLastAt === record.lastAt ? { ...record, reportedCount, reportedLastAt } : record);
+			}
 			return { schemaVersion: 1, exportedAt: new Date(now()).toISOString(), persistence: persistence ? "indexeddb" : "memory", context: contextValues(context()), records: limitDiagnosticRecords([...merged.values()]) };
 		},
 		async clear() {
 			await recorder.flush();
 			records.clear();
+			acknowledged.clear();
 			pending.clear();
 			sizes.clear();
 			recordBytes = 0;
@@ -212,6 +212,14 @@ export function createDiagnosticRecorder({ store = indexedDiagnosticStore(), now
 			} catch {
 				persistence = false;
 			}
+		},
+		async acknowledge(versions) {
+			await recorder.flush();
+			if (persistence) {
+				try { await store.acknowledge(versions); } catch { persistence = false; }
+			}
+			for (const version of versions) acknowledged.set(version.id, version);
+			while (acknowledged.size > MAX_RECORDS) acknowledged.delete(acknowledged.keys().next().value);
 		},
 	};
 	return recorder;
@@ -237,6 +245,8 @@ export function readClientDiagnostics() {
 export function clearClientDiagnostics() {
 	return diagnostics().clear();
 }
+export function acknowledgeClientDiagnostics(versions) { return diagnostics().acknowledge(versions); }
+export function clientDiagnosticSession() { return diagnostics().session; }
 export async function exportClientDiagnostics(game) {
 	const report = await readClientDiagnostics();
 	game.export(new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }), `noname-diagnostics-${new Date().toISOString().replaceAll(":", "-")}.json`);

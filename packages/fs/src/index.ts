@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import path from "path";
 import { cwd } from "process";
 import { exec } from "child_process";
+import { registerClientDiagnostics } from "./client-diagnostics";
 
 interface JsonResult<T = any> {
 	success: boolean;
@@ -31,6 +32,8 @@ export const defaultConfig = {
 	readonly: false,
 	host: "localhost",
 	dirname: cwd(),
+	diagnosticsDir: process.env.NONAME_CLIENT_DIAGNOSTICS_DIR ?? "",
+	diagnosticsOrigin: process.env.NONAME_CLIENT_DIAGNOSTICS_ORIGIN ?? "",
 };
 
 function createFsHandler(dirname: string) {
@@ -83,6 +86,12 @@ export default function createApp(config: Partial<typeof defaultConfig> = {}) {
 		origin: cfg.readonly ? false : "*",
 		methods: ["GET", "POST", "OPTIONS"],
 	});
+	if (cfg.diagnosticsDir) {
+		const directory = path.resolve(cfg.diagnosticsDir);
+		const relative = path.relative(cfg.dirname, directory);
+		if (!relative || (!relative.startsWith(".." + path.sep) && relative !== ".." && !path.isAbsolute(relative))) throw new Error("Client diagnostics must be outside the public resource directory");
+		registerClientDiagnostics(app, { directory, origin: cfg.diagnosticsOrigin });
+	}
 
 	app.register(fastifyStatic, {
 		root: cfg.dirname,

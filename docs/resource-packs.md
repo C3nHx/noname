@@ -83,7 +83,7 @@ Android 私有覆盖目录按文件路径直接查询，不为每个素材枚举
 
 ## 验证
 
-游玩时的缺图、缓存丢失和逻辑异常可从“资源 → 导出诊断记录”或“选项 → 其它”导出本机 JSON。记录、保存限制及启动失败时的导出入口见[客户端诊断记录](./client-diagnostics.md)。
+Web 部署启用诊断服务后，游玩时的缺图、缓存丢失和逻辑异常会自动上报本站服务器。“资源”面板显示上报状态，本机 JSON 导出仍可备用。服务端保存、离线重试及管理检索见[客户端诊断记录](./client-diagnostics.md)。
 
 运行 `pnpm test:distribution`，检查轻量包保留规则与 Worker、分卷还原、缓存复用、校验失败、目录越界及缓存音频 Range 响应。移动端启动适配器另运行 `pnpm -F @noname/mobile test:android-startup`。
 

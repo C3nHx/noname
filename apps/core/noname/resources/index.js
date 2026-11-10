@@ -4,6 +4,7 @@ import { downloadResourcePacks, installResourcePack } from "./download.js";
 import { createResourceDecryptor } from "./crypto.js";
 import { bundledExtensions, hasBundledResources } from "../util/bundled-extensions.js";
 import { recordClientError, exportClientDiagnostics } from "../util/client-diagnostics.js";
+import { subscribeDiagnosticUpload } from "../util/client-diagnostics-upload.js";
 
 async function resourceState() {
 	const database = await new Promise((resolve, reject) => {
@@ -186,6 +187,13 @@ function mountResourcePanel(manager, save, game) {
 	diagnostics.type = "button";
 	diagnostics.textContent = "导出诊断记录";
 	diagnostics.onclick = () => { void exportClientDiagnostics(game); };
+	const uploadStatus = document.createElement("p");
+	uploadStatus.id = "client-diagnostics-upload-status";
+	const uploadDescription = state => {
+		const phase = state.phase === "disabled" ? "仅保存在本机" : state.phase === "checking" ? "正在连接本站日志服务" : state.phase === "retry" ? "暂未上传，稍后重试" : state.phase === "sending" ? "正在上传到本站" : state.lastSuccess ? `已上传到本站，${state.pending}条待发送` : "自动上报至本站已开启";
+		uploadStatus.textContent = `诊断记录：${phase}。当前会话：${state.session}`;
+	};
+	subscribeDiagnosticUpload(uploadDescription);
 	const artwork = document.createElement("input");
 	artwork.type = "checkbox";
 	artwork.checked = manager.state.artwork;
@@ -292,7 +300,7 @@ function mountResourcePanel(manager, save, game) {
 	const actions = document.createElement("div");
 	actions.className = "resource-pack-actions";
 	actions.append(downloadAll, pause);
-	panel.append(heading, description, label, actions, progressBar, status, rows, sourceLabel, diagnostics, close);
+	panel.append(heading, description, label, actions, progressBar, status, rows, sourceLabel, uploadStatus, diagnostics, close);
 	button.onclick = () => {
 		panel.hidden = !panel.hidden;
 	};

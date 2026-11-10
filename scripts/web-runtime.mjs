@@ -14,7 +14,7 @@ export async function configureWebRuntime(web) {
 	config.mode_config.connect.read_clipboard = false;
 	const serializedConfig = JSON.stringify(config, null, "\t") + "\n";
 	await fs.writeFile(configPath, serializedConfig);
-	const deployment = 'import { lib } from "/noname.js";\nconst lobby = new URL("/lobby", location.href);\nlobby.protocol = location.protocol === "https:" ? "wss:" : "ws:";\nlib.hallURL = lobby.href;\nconst loadtime = lib.configprefix + "loadtime";\nif (localStorage.getItem(loadtime) === null) localStorage.setItem(loadtime, "60000");\n';
+	const deployment = 'import { lib } from "/noname.js";\nimport { enableClientDiagnosticUpload } from "/noname/util/client-diagnostics-upload.js";\nenableClientDiagnosticUpload();\nconst lobby = new URL("/lobby", location.href);\nlobby.protocol = location.protocol === "https:" ? "wss:" : "ws:";\nlib.hallURL = lobby.href;\nconst loadtime = lib.configprefix + "loadtime";\nif (localStorage.getItem(loadtime) === null) localStorage.setItem(loadtime, "60000");\n';
 	await fs.writeFile(path.join(web, "deployment.js"), deployment);
 	const indexPath = path.join(web, "index.html");
 	const original = await fs.readFile(indexPath, "utf8");
