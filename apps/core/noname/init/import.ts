@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { lib, game, _status } from "noname";
+import { recordClientError } from "../util/client-diagnostics.js";
 
 export async function importCardPack(name: string) {
 	await importFunction("card", `/card/${name}`);
@@ -8,6 +9,7 @@ export async function importCardPack(name: string) {
 export async function importCharacterPack(name: string) {
 	const path = import.meta.env.DEV ? `/character/${name}/index` : `/character/${name}`;
 	await importFunction("character", path).catch(e => {
+		recordClientError({ kind: "package", source: "character", error: e, url: path, context: { package: name } });
 		console.error(`武将包《${name}》加载失败`, e);
 		// 		alert(`武将包《${name}》加载失败
 		// 错误信息:
@@ -28,6 +30,7 @@ export async function importExtension(name: string) {
 	try {
 		await importFunction("extension", `/extension/${name}/extension`);
 	} catch (e) {
+		recordClientError({ kind: "package", source: "extension", error: e, url: `/extension/${name}/extension.js`, context: { extension: name } });
 		console.error(`扩展《${name}》加载失败`, e);
 		let close = confirm(`扩展《${name}》加载失败，是否关闭此扩展？错误信息: \n${e instanceof Error ? e.stack : String(e)}`);
 		if (close) {

@@ -2,6 +2,7 @@ import StackFrame from "stackframe";
 import ErrorStackParser from "error-stack-parser";
 import StackTraceGPS from "stacktrace-gps";
 import { ErrorManager } from "@/util/sandbox.js";
+import { recordClientError } from "./client-diagnostics.js";
 
 function getStatusInfo({ lib, get, _status }) {
 	if (!_status?.event) return "";
@@ -106,6 +107,7 @@ export function setOnError({ lib, game, get, _status }) {
 	};
 
 	window.onerror = async (_msg: string | Event, _src?: string, _line?: number, _column?: number, err?: Error) => {
+		recordClientError({ kind: "runtime", source: "onerror", error: err, message: typeof _msg === "string" ? _msg : undefined, url: _src, context: { line: _line, column: _column } });
 		if (!err) return;
 		const stackframes = await fromError(err);
 		const frame = stackframes[0].source || stackframes[0].origin;

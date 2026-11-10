@@ -17,12 +17,38 @@
 			<h1>恢复游戏启动</h1>
 			<p>重新获取启动文件，保留已下载素材和本机游戏设置。</p>
 			<button id="recover" type="button">更新启动文件并重新打开</button>
+			<button id="export-diagnostics" type="button">导出诊断记录</button>
 			<p id="status" role="status"></p>
 		</main>
 		<script type="module">
 			const button = document.querySelector("#recover");
 			const status = document.querySelector("#status");
 			const root = new URL("./", location.href);
+			document.querySelector("#export-diagnostics").onclick = async () => {
+				try {
+					const database = await new Promise((resolve, reject) => {
+						const request = indexedDB.open("noname-client-diagnostics-v1", 1);
+						request.onupgradeneeded = () => request.result.createObjectStore("records", { keyPath: "id" });
+						request.onsuccess = () => resolve(request.result);
+						request.onerror = () => reject(request.error);
+					});
+					const records = await new Promise((resolve, reject) => {
+						const request = database.transaction("records").objectStore("records").getAll();
+						request.onsuccess = () => resolve(request.result);
+						request.onerror = () => reject(request.error);
+					});
+					database.close();
+					const blob = new Blob([JSON.stringify({ schemaVersion: 1, exportedAt: new Date().toISOString(), records }, null, 2)], { type: "application/json" });
+					const link = document.createElement("a"), url = URL.createObjectURL(blob);
+					link.href = url;
+					link.download = `noname-diagnostics-${Date.now()}.json`;
+					link.click();
+					setTimeout(() => URL.revokeObjectURL(url), 1000);
+					status.textContent = `已导出 ${records.length} 条本机诊断记录。`;
+				} catch (error) {
+					status.textContent = `无法读取诊断记录：${error.message}`;
+				}
+			};
 			button.onclick = async () => {
 				button.disabled = true;
 				status.textContent = "正在更新启动文件，已下载素材会保留……";

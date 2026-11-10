@@ -3,6 +3,7 @@ import { browserResourceStorage, desktopResourceStorage, nativeResourceStorage, 
 import { downloadResourcePacks, installResourcePack } from "./download.js";
 import { createResourceDecryptor } from "./crypto.js";
 import { bundledExtensions, hasBundledResources } from "../util/bundled-extensions.js";
+import { recordClientError, exportClientDiagnostics } from "../util/client-diagnostics.js";
 
 async function resourceState() {
 	const database = await new Promise((resolve, reject) => {
@@ -108,7 +109,7 @@ export async function prepareResourcePacks({ lib, game }) {
 			mode = state.artwork && cards?.files.every(available) ? "art" : "text";
 			document.documentElement.dataset.resourceMode = mode;
 			if (isDesktop) attachDesktopFiles(game, manager);
-			mountResourcePanel(manager, save);
+			mountResourcePanel(manager, save, game);
 		},
 	};
 	lib.resourcePacks = manager;
@@ -135,6 +136,7 @@ export async function prepareResourcePacks({ lib, game }) {
 			const html = await fetch(new URL("index.html", root));
 			if (html.ok) await shell.put(new URL("index.html", root).href, html);
 		} catch (error) {
+			recordClientError({ kind: "resource", source: "worker-registration", error });
 			console.warn("资源缓存未启用，继续文字模式", error);
 		}
 	}
@@ -162,7 +164,7 @@ function attachDesktopFiles(game, manager) {
 	}
 }
 
-function mountResourcePanel(manager, save) {
+function mountResourcePanel(manager, save, game) {
 	const button = document.createElement("button");
 	button.id = "resource-packs-button";
 	button.textContent = "资源";
@@ -180,6 +182,10 @@ function mountResourcePanel(manager, save) {
 	close.onclick = () => {
 		panel.hidden = true;
 	};
+	const diagnostics = document.createElement("button");
+	diagnostics.type = "button";
+	diagnostics.textContent = "导出诊断记录";
+	diagnostics.onclick = () => { void exportClientDiagnostics(game); };
 	const artwork = document.createElement("input");
 	artwork.type = "checkbox";
 	artwork.checked = manager.state.artwork;
@@ -250,6 +256,7 @@ function mountResourcePanel(manager, save) {
 			const requires = selected.length === 1 ? (bundledExtensions.find(extension => selected[0].id === `extension-${extension.name}`)?.requires ?? []) : [];
 			status.textContent = `${selected.length === packs.length ? "全部资源" : selected[0].label}已保存。${requires.length ? `此扩展还需${requires.join("、")}美术。` : ""}勾选美术选项后，重新启动即可使用。`;
 		} catch (error) {
+			recordClientError({ kind: "resource", source: "pack-download", error, url: source.value });
 			status.textContent = controller.signal.aborted ? "下载已暂停，已保存的资源可继续复用。" : `下载未完成：${error.message}。已保存的资源会保留，可以重试或继续文字模式。`;
 		} finally {
 			running = null;
@@ -285,7 +292,7 @@ function mountResourcePanel(manager, save) {
 	const actions = document.createElement("div");
 	actions.className = "resource-pack-actions";
 	actions.append(downloadAll, pause);
-	panel.append(heading, description, label, actions, progressBar, status, rows, sourceLabel, close);
+	panel.append(heading, description, label, actions, progressBar, status, rows, sourceLabel, diagnostics, close);
 	button.onclick = () => {
 		panel.hidden = !panel.hidden;
 	};

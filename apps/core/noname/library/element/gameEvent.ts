@@ -1,4 +1,5 @@
 import { _status, game, get, lib, ui } from "noname";
+import { recordClientError } from "../../util/client-diagnostics.js";
 import { Player } from "./index.js";
 import ContentCompiler from "./GameEvent/compilers/ContentCompiler.js";
 import { EventCompileable, EventCompiledContent } from "./GameEvent/compilers/IContentCompiler.js";
@@ -266,6 +267,7 @@ export class GameEvent implements PromiseLike<void> {
 					this.#inContent = true;
 					let next = this.content(this).catch(error => {
 						if (lib.config.ignore_error || (_status.connectMode && !lib.config.debug)) {
+							recordClientError({ kind: "game-event", source: "content", error, context: { event: this.name, step: this.step, skill: this.skill } });
 							game.print("游戏出错：" + this.name);
 							game.print(error.toString());
 							console.error(error);

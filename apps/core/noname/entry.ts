@@ -3,12 +3,35 @@ import { boot } from "@/init/index.js";
 import { userAgentLowerCase, device } from "@/util/index.js";
 import { loadBuildInfo } from "@/util/meta.js";
 import { prepareResourcePacks } from "./resources/index.js";
+import { configureClientDiagnostics, installClientDiagnostics, recordClientError } from "./util/client-diagnostics.js";
 import "core-js-bundle";
 // 保证打包时存在(importmap)
 import "vue/dist/vue.esm-browser.js";
 
 (async () => {
 	try {
+		installClientDiagnostics();
+		configureClientDiagnostics({
+			context: () => ({
+				version: lib.version, commit: lib.buildInfo?.commit, channel: lib.buildInfo?.channel,
+				platform: device || "browser", userAgent: navigator.userAgent, mode: lib.config?.mode,
+				resourceMode: document.documentElement.dataset.resourceMode, buildId: lib.resourcePacks?.manifest.buildId,
+				extensions: lib.config?.extensions?.filter(name => lib.config[`extension_${name}_enable`] !== false),
+				event: _status.event?.name, step: _status.event?.step, parentEvent: _status.event?.parent?.name,
+				skill: _status.event?.skill, card: _status.event?.card?.name,
+			}),
+			isExpectedResource: (path, hash) => {
+				const manager = lib.resourcePacks;
+				if (!manager) return undefined;
+				try {
+					const root = new URL(manager.root), url = new URL(path, root);
+					if (url.origin !== root.origin || !url.pathname.startsWith(root.pathname)) return undefined;
+					const filename = decodeURIComponent(url.pathname.slice(root.pathname.length)).split("/").filter(Boolean).join("/");
+					const file = manager.index.files.get(filename);
+					return file ? manager.state.files[filename] === (hash || file.sha256) : undefined;
+				} catch { return undefined; }
+			},
+		});
 		lib.device = device;
 		const resources = await prepareResourcePacks({ lib, game });
 
@@ -53,6 +76,7 @@ https://www.gnu.org/licenses/gpl-3.0.html
 
 		await boot();
 	} catch (e) {
+		recordClientError({ kind: "startup", source: "entry", error: e });
 		console.error(e);
 		alert(`《无名杀》加载内容失败
 浏览器UA信息: 

@@ -83,6 +83,8 @@ Android 私有覆盖目录按文件路径直接查询，不为每个素材枚举
 
 ## 验证
 
+游玩时的缺图、缓存丢失和逻辑异常可从“资源 → 导出诊断记录”或“选项 → 其它”导出本机 JSON。记录、保存限制及启动失败时的导出入口见[客户端诊断记录](./client-diagnostics.md)。
+
 运行 `pnpm test:distribution`，检查轻量包保留规则与 Worker、分卷还原、缓存复用、校验失败、目录越界及缓存音频 Range 响应。移动端启动适配器另运行 `pnpm -F @noname/mobile test:android-startup`。
 
 Android 仪器测试由 `node scripts/verify-resource-android.mjs --device emulator-N --adb <adb路径>` 顺序驱动，每个阶段之间强制停止进程。先构建 release APK 和对应的 AndroidTest APK。驱动仅接受可丢弃的模拟器，会清空其中的游戏测试数据，验证文字对局、加密资源保存、进程重启复用及缺图回退。

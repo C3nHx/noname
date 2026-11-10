@@ -1,5 +1,6 @@
 import { rootURL, get, lib, game, _status, ui } from "noname";
 import { LibInitPromises } from "./promises.js";
+import { recordClientError } from "../../util/client-diagnostics.js";
 import { ContentCompiler } from "@/library/element/gameEvent.js";
 import { security } from "@/util/sandbox.js";
 
@@ -276,6 +277,10 @@ export class LibInit {
 			sScriptURL = url + str;
 		}
 		const oReq = new XMLHttpRequest();
+		oReq.addEventListener("load", () => {
+			if (![0, 200].includes(oReq.status)) recordClientError({ kind: "request", source: "xhr", url: sScriptURL, status: oReq.status, message: "HTTP请求失败" });
+		});
+		oReq.addEventListener("error", () => recordClientError({ kind: "request", source: "xhr", url: sScriptURL, message: "网络请求失败" }));
 		if (typeof onload == "function") {
 			oReq.addEventListener("load", result => {
 				if (![0, 200].includes(oReq.status)) {
@@ -296,6 +301,10 @@ export class LibInit {
 
 	json(url, onload, onerror) {
 		const oReq = new XMLHttpRequest();
+		oReq.addEventListener("load", () => {
+			if (![0, 200].includes(oReq.status)) recordClientError({ kind: "request", source: "json", url, status: oReq.status, message: "HTTP请求失败" });
+		});
+		oReq.addEventListener("error", () => recordClientError({ kind: "request", source: "json", url, message: "网络请求失败" }));
 		if (typeof onload == "function") {
 			oReq.addEventListener("load", () => {
 				if (![0, 200].includes(oReq.status)) {
@@ -311,6 +320,7 @@ export class LibInit {
 						throw new Error("err");
 					}
 				} catch (e) {
+					recordClientError({ kind: "request", source: "json-parse", url, status: oReq.status, message: "JSON解析失败" });
 					if (typeof onerror == "function") {
 						onerror(e);
 					}

@@ -19,6 +19,30 @@ export function rangeResponse(response, range) {
 export function installResourceWorker(worker) {
 	const root = worker.registration.scope;
 	let current;
+	const reported = new Map();
+	function report(event, detail) {
+		if (!event.clientId || !worker.clients?.get) return;
+		const key = `${event.clientId}|${detail.reason}|${detail.path}|${detail.status}`;
+		const now = Date.now();
+		if (now - (reported.get(key) ?? 0) < 10000) return;
+		reported.delete(key);
+		reported.set(key, now);
+		if (reported.size > 128) reported.delete(reported.keys().next().value);
+		const url = new URL(event.request.url);
+		url.username = ""; url.password = ""; url.search = ""; url.hash = "";
+		const task = Promise.resolve().then(() => worker.clients.get(event.clientId)).then(client => client?.postMessage({ type: "noname-resource-error", url: url.href, ...detail })).catch(() => {});
+		try { event.waitUntil?.(task); } catch {}
+	}
+	async function network(event, filename = new URL(event.request.url).pathname) {
+		try {
+			const response = await fetch(event.request);
+			if (response.status >= 400 && filename !== "preload.js" && (mediaType(filename) || /\.(?:m?js|css|json)$/.test(filename))) report(event, { reason: "http-error", path: filename, status: response.status });
+			return response;
+		} catch (error) {
+			report(event, { reason: "network-error", path: filename });
+			throw error;
+		}
+	}
 	const describe = manifest => ({ manifest, index: createResourceIndex(manifest), core: new Set([...manifest.core, "index.html", "resource-manifest.json", "resource-version.json"]) });
 	function manifest() {
 		return (current ??= (async () => {
@@ -70,6 +94,7 @@ export function installResourceWorker(worker) {
 					const cache = await caches.open(RESOURCE_CACHE);
 					const cached = await cache.match(cacheKey(root, file.sha256));
 					if (cached) return rangeResponse(cached, request.headers.get("Range"));
+					report(event, { reason: "cache-miss", path: filename, sha256: file.sha256, buildId: description.buildId });
 					if (mediaType(filename)?.startsWith("image/")) return new Response('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>', { headers: { "Content-Type": "image/svg+xml" } });
 					return new Response(null, { status: 404 });
 				}
@@ -78,12 +103,12 @@ export function installResourceWorker(worker) {
 					const key = new URL(filename, root).href;
 					const cached = await cache.match(key);
 					if (cached) return cached;
-					const response = await fetch(request);
+					const response = await network(event, filename);
 					if (response.ok) await cache.put(key, response.clone());
 					return response;
 				}
-				return fetch(request);
-			})().catch(() => fetch(request))
+				return network(event, filename);
+			})().catch(() => network(event))
 		);
 	});
 }

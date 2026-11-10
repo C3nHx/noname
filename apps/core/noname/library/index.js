@@ -10,6 +10,7 @@
  */
 import { ai, get, game, _status, ui } from "noname";
 import { LibInit } from "./init/index.js";
+import { exportClientDiagnostics, clearClientDiagnostics } from "../util/client-diagnostics.js";
 import { forgetLobbyPassword, rememberLobbyPassword } from "@/game/lobby-auth.js";
 import { Announce } from "./announce/index.js";
 import { experimental } from "./experimental/index.js";
@@ -5199,6 +5200,17 @@ export class Library {
 							});
 						}
 					},
+					clear: true,
+				},
+				export_client_diagnostics: {
+					name: "导出诊断记录",
+					intro: "导出本机保存的资源加载失败和游戏异常，供排查使用。最近记录会合并重复项，最多保留200条。",
+					onclick() { void exportClientDiagnostics(game); },
+					clear: true,
+				},
+				clear_client_diagnostics: {
+					name: "清空诊断记录",
+					onclick() { if (confirm("清空本机诊断记录？存档和已下载素材会保留。")) void clearClientDiagnostics(); },
 					clear: true,
 				},
 				remove_extension_onfig: {

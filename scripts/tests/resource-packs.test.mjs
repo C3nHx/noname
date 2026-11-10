@@ -416,6 +416,36 @@ test("cached extension images resolve repeated URL slashes without a network req
 	assert.deepEqual(network, []);
 });
 
+test("worker reports cache loss and HTTP failures to the requesting page without changing fallback responses", async t => {
+	const { manifest } = await fixture(t);
+	const file = manifest.packs.flatMap(pack => pack.files).find(file => file.path.endsWith(".jpg"));
+	const root = "https://game.example/";
+	const previousCaches = globalThis.caches;
+	t.after(() => { if (previousCaches === undefined) delete globalThis.caches; else globalThis.caches = previousCaches; });
+	globalThis.caches = { async open() { return { async match(key) { if (key === new URL("resource-manifest.json", root).href) return new Response(JSON.stringify(manifest)); } }; } };
+	t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+	const handlers = new Map(), messages = [], recipients = [];
+	installResourceWorker({ registration: { scope: root }, clients: { async get(id) { recipients.push(id); return { postMessage(data) { messages.push(data); } }; } }, addEventListener(name, handler) { handlers.set(name, handler); } });
+	async function request(filename) {
+		let response;
+		const tasks = [];
+		handlers.get("fetch")({ request: new Request(resourceURL(root, filename) + "?key=private"), clientId: "requesting-page", respondWith(value) { response = value; }, waitUntil(value) { tasks.push(value); } });
+		const result = await response;
+		await Promise.all(tasks);
+		return result;
+	}
+	assert.equal((await request(file.path)).headers.get("Content-Type"), "image/svg+xml");
+	assert.equal((await request(file.path)).status, 200);
+	assert.equal(messages.length, 1);
+	assert.equal(messages[0].reason, "cache-miss");
+	assert.equal(messages[0].sha256, file.sha256);
+	assert.equal((await request("extension/示例/missing.png")).status, 404);
+	assert.equal(messages[1].reason, "http-error");
+	assert.equal(messages[1].status, 404);
+	assert.deepEqual(recipients, ["requesting-page", "requesting-page"]);
+	assert.equal(JSON.stringify(messages).includes("private"), false);
+});
+
 test("native resource writes preserve root paths and detect incomplete or corrupted files", async () => {
 	const data = new TextEncoder().encode("verified image");
 	const file = { path: "logo.png", bytes: data.length, sha256: await sha256(data) };
